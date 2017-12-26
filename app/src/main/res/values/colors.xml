@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3a83ba</color>
+    <color name="colorPrimaryDark">#2670a7</color>
+    <color name="colorAccent">#34b2e1</color>
+
+
+    <color name="btn_reject">#f3a44e3c</color>
+
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black_light">#222222</color>
+    <color name="black_very_light">#666666</color>
+    <color name="gray">#BCBCBC</color>
+
+
+    <color name="send_chat_color">#fde6b8</color>
+    <color name="recieve_chat_color">#fcf9c7</color>
+
+
+    <color name="bg_card">#1f8a8a91</color>
+
+    <color name="progressbarPrimaryColor">#FFFFFF</color>
+    <color name="progressbarSecondoryColor">#0EBFE9</color>
+
+    <color name="bg_trancparent_black">#4D000000</color>
+
+    <color name="bg_card_color1">#f39c12</color>
+    <color name="bg_card_color2">#DD4B39</color>
+    <color name="bg_card_color3">#00A65A</color>
+
+
+
+
+    <color name="accent_dark">#2670a7</color>
+    <color name="accent">#3a83ba</color>
+    <color name="secondary_text">#727272</color>
+    <color name="white_overlay">#F3F3F3</color>
+
+
+
+</resources>

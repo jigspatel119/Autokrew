@@ -1,0 +1,69 @@
+{
+  "country": [
+
+    {
+      "name": "Dashboard",
+      "image":"Dashboard",
+      "dishes": [
+      ]
+    },
+    {
+      "name": "Attendance",
+      "image":"Attendance",
+      "dishes": [
+        {
+          "dishname": "My Attendance",
+          "image":"dumplings",
+          "description": "Dumplings are either pan fried using a simple recipe including all-purpose flour, water, and salt made into a thick dough before frying on a pan until golden brown, or boiled in a soup. The fried version is usually served with breakfast codfish as a side."
+        },
+        {
+          "dishname": "My Team Attendance",
+          "image":"chowmein",
+          "description":"Cantonese style chow mein contains deep-fried crunchy golden egg noodles, green peppers, pea pods, bok choy, bamboo shoots, water chestnuts, shrimp, Chinese roast pork (char siu), chicken, and beef, and is served in a thick sauce."
+        },
+        {
+          "dishname": "Group Attendance",
+          "image":"springrolls",
+          "description":"Spring roll is a fried dish usually available as a dim sum. They typically contain minced pork, shredded carrot, bean sprouts and other vegetables served with a sauce similar to Worcestershire sauce."
+
+        }
+      ]
+    },
+
+
+    {
+      "name": "Leave",
+      "image":"Leave",
+      "dishes": [
+        {
+          "dishname": "My Leave",
+          "image":"dalmakhani",
+          "description":"Dal makhani or dal makhni (pronounced daal ma-khaa-nee, 'buttery lentils') is a popular dish from the Punjab region of India and Pakistan. The primary ingredients are whole black lentil (urad), red kidney beans (rajma), butter and cream."
+
+        },
+        {
+          "dishname": "Team Leave",
+          "image":"biriyani",
+          "description":"Learn About This Indian Food. ... A world-renowned Indian dish, biryani takes time and practice to make but is worth every bit of the effort. Long-grained rice (like basmati) flavored with exotic spices such as saffron is layered with lamb, chicken, fish, or vegetables cooked in a thick gravy."
+
+        },
+        {
+          "dishname": "Group Leave",
+          "image":"chanamasala",
+          "description":"Ingredients. Along with chickpeas, the ingredients of chana masala typically include onion, chopped tomatoes, coriander seed, garlic, chillies, ginger, dried mango powder (amchur, sometimes spelled 'amchoor'), crushed pomegranate seed (anardana) and garam masala."
+
+        }
+      ]
+    },
+
+
+
+    {
+      "name": "Sign Out",
+      "image":"Sign Out",
+      "dishes": [
+      ]
+    }
+
+  ]
+}

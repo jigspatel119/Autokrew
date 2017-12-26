@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        android:id="@+id/mLeaveType"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="@string/sNo">
+
+    </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+
+    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        android:id="@+id/mEligible"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="@string/product" >
+    </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+
+    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        android:id="@+id/mAvailed"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="@string/category" >
+    </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+
+    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        android:id="@+id/mBalance"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/cell_shape"
+        android:ellipsize="end"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="@string/price" >
+    </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:gravity="center"
+        android:layout_weight="0.5">
+        <ImageView
+            android:id="@+id/mImgApply"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/check_mark"
+            />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

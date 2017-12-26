@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/card_padding_left_right"
+    android:paddingRight="@dimen/card_padding_left_right"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="@dimen/card_corner_radius"
+        card_view:cardElevation="@dimen/card_elevation"
+        card_view:cardUseCompatPadding="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/btn_reject"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Name"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="Rahul Patel" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Employee Code"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_emp_code"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="AN10000006" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="From Date"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_from_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="06 sept,2017" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="To Date"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_to_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="07 sept,2017" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Department"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_department"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="Web Technology" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Designation"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_designation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="Intern" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Leave Type"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_leave_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="Paid Leave" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Leave Day Type"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_leave_day_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="Full Day" />
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="Duration"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text=":"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="1" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp">
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+              >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="start">
+
+
+                    <ImageView
+                        android:id="@+id/iv_cancel"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="4dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/close"
+                        android:visibility="gone"/>
+
+
+                    <ImageView
+                        android:id="@+id/iv_approved"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="2dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/ic_approved"
+                        android:visibility="gone"/>
+
+
+                    <ImageView
+                        android:id="@+id/iv_edit"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_edit"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/iv_lock"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:padding="2dp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_lock" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end">
+
+
+                    <ImageView
+                        android:id="@+id/iv_lock_revised"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:padding="2dp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_lock" />
+
+                    <ImageView
+                        android:id="@+id/iv_revised"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:padding="2dp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_revised" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

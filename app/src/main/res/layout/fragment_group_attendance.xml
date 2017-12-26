@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg5"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        android:id="@+id/txt_child_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:background="@color/bg_trancparent_black"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:text="Child Item"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/ll_main_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_company"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Company"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:background="@drawable/angle3">
+
+                  <!--  <EditText
+                        android:id="@+id/edt_company"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_company"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_company"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+
+
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_location"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Location"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                   <!-- <EditText
+                        android:id="@+id/edt_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_location"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_sublocation"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Sub Location"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                   <!-- <EditText
+                        android:id="@+id/edt_sub_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_sub_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_sub_location"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Vertical"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                   <!-- <EditText
+                        android:id="@+id/edt_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_vertical"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_department"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Department"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                    <!--<EditText
+                        android:id="@+id/edt_department"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_department"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_department"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_subdepartment"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Sub Department"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                  <!--  <EditText
+                        android:id="@+id/edt_sub_department"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+                    <Spinner
+                        android:id="@+id/edt_sub_department"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_sub_department"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_designation"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:layout_gravity="center_vertical"
+
+                    android:text="Designation"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+              <!--      <EditText
+                        android:id="@+id/edt_designation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_designation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_designation"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Month"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:background="@drawable/angle3">
+<!--
+                    <EditText
+                        android:id="@+id/edt_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+                    <Spinner
+                        android:id="@+id/edt_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_month"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Year"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+        <!--            <EditText
+                        android:id="@+id/edt_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+                    <Spinner
+                        android:id="@+id/edt_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_year"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Team Member"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                  <!--  <EditText
+                        android:id="@+id/edt_team_member"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />-->
+
+                    <Spinner
+                        android:id="@+id/edt_team_member"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+
+
+                    <ImageView
+                        android:id="@+id/iv_team_member"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/com.autokrew.customfonts.CustomFont_GillSansSemiBold2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Approval Status"
+                    android:layout_gravity="center_vertical"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+
+                    android:background="@drawable/angle3">
+
+                    <!--<EditText
+                        android:id="@+id/edt_leave_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:cursorVisible="false"
+                        android:enabled="false"
+                        android:hint="Please Select"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorPrimary" />
+-->
+                    <Spinner
+                        android:id="@+id/edt_approval_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/bg_border_primary_transparent"
+                        android:paddingLeft="5dp"
+                        android:padding="5dp" />
+                    <ImageView
+                        android:id="@+id/iv_leave_status"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="2dp"
+                        android:padding="2dp"
+                        app:srcCompat="@drawable/ic_edittext_dropdown" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:background="@drawable/child_selector"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:text="Search"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

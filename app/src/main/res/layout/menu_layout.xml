@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    android:background="@mipmap/bg5"
+
+    android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/rl_profile"
+            android:layout_width="match_parent"
+            android:background="@color/bg_trancparent_black"
+            android:layout_height="150dp"
+            android:weightSum="2">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8">
+                <ImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/profile_image" />
+
+            </RelativeLayout>
+
+          <LinearLayout
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight="1.2"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+            <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                android:id="@+id/txt_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_profile"
+                android:text="Brock Lesnar"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/bg_border_primary"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:textSize="16dp" />
+
+
+              <TextView
+                  android:id="@+id/txt_employee_code"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:layout_toRightOf="@+id/img_profile"
+                  android:text="-"
+                  android:layout_marginLeft="10dp"
+                  android:textColor="@color/white"
+                  android:padding="5dp"
+                  android:textSize="16dp" />
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#EAEAEA">
+
+        </View>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_trancparent_black"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_trancparent_black"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_dashboard"/>
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_dashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Dashboard"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:background="@android:color/transparent" />
+
+            <ExpandableListView
+                android:id="@+id/ev_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:groupIndicator="@null"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="none">
+
+            </ExpandableListView>
+
+            <View
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/transparent" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_trancparent_black"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_signout"/>
+
+                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    android:id="@+id/txt_signout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Sign Out"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>
