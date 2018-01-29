@@ -1,63 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/relativeParentAcceptInviteDialogEvent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
 
-    >
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+    <RelativeLayout
+        android:id="@+id/dialog_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
-        card_view:cardBackgroundColor="@android:color/transparent"
-        app:cardUseCompatPadding="false"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_marginTop="130dp"
+        android:background="@drawable/dialog_round">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:text="Detail"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
-                    android:id="@+id/title"
-                    style="@style/Base.TextAppearance.AppCompat.Display1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:text="Detail"
-                    android:textColor="#1d1d1d"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/iv_dialog_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="5dp"
-                    android:src="@mipmap/ic_cancel_black_24dp" />
-
-            </RelativeLayout>
-
 
             <View
                 android:layout_width="match_parent"
@@ -65,7 +40,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/colorPrimary" />
+                android:background="@color/black" />
 
 
             <LinearLayout
@@ -83,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    <TextView
                         android:id="@+id/tv_pending_month"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -108,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    <TextView
                         android:id="@+id/tv_pending_attendance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -141,7 +116,40 @@
                 android:background="@drawable/bg_border_primary_black"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+
+
+
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/colored_circle"
+            style="@style/AlertDialog.AppCompat.CircleBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            >
+
+            <ImageView
+                android:id="@+id/iv_dialog_cancel"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_close_popup"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

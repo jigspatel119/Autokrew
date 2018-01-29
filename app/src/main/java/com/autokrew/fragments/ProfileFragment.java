@@ -1,7 +1,10 @@
 package com.autokrew.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.autokrew.R;
+import com.autokrew.activity.MainActivity;
 import com.autokrew.models.MyprofileModel;
 import com.autokrew.models.MyprofileParams;
 import com.autokrew.network.ApiListener;
@@ -23,6 +27,10 @@ public class ProfileFragment extends Fragment implements ApiListener {
     String mToken;
     MyprofileModel model;
 
+    private Toolbar toolbar;
+    private MainActivity appCompatActivity;
+
+
     TextView txt_name,txt_gender,txt_dob,txt_address,txt_mobile,txt_email,txt_employee_code
             ,txt_marital_status,txt_height,txt_weight,txt_blood_group,txt_nationality;
 
@@ -34,9 +42,16 @@ public class ProfileFragment extends Fragment implements ApiListener {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        appCompatActivity = (MainActivity) activity;
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile2, container, false);
        /* RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS));*/
@@ -75,6 +90,12 @@ public class ProfileFragment extends Fragment implements ApiListener {
 
     private void findView(View view) {
 
+       /* toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+        ((CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar)).setTitle("My Profile");
+        setupToolbar();*/
+
+
         txt_name = (TextView)view.findViewById(R.id.txt_name);
         txt_gender = (TextView)view.findViewById(R.id.txt_gender);
         txt_email = (TextView)view.findViewById(R.id.txt_email);
@@ -95,6 +116,13 @@ public class ProfileFragment extends Fragment implements ApiListener {
     }
 
 
+
+
+    private void setupToolbar() {
+        toolbar.setTitle("");
+        appCompatActivity.setSupportActionBar(toolbar);
+    }
+
     private void setData() {
         txt_name.setText(model.getTable().get(0).getFirstName()+" "+model.getTable().get(0).getLastName());
         if(model.getTable().get(0).getGenderPK()==2){
@@ -103,19 +131,74 @@ public class ProfileFragment extends Fragment implements ApiListener {
             txt_gender.setText("Male");
         }
         txt_dob.setText(model.getTable().get(0).getDateOfBirth());
-        txt_email.setText(model.getTable().get(0).getPersonalEmail());
-        txt_address.setText(model.getTable().get(0).getPerAddress());
-        txt_mobile.setText(model.getTable().get(0).getMobileModel());
 
-        txt_marital_status.setText(model.getTable().get(0).getMaritalStatus());
-        txt_height.setText(model.getTable().get(0).getHeight());
-        txt_weight.setText(model.getTable().get(0).getWeight());
-        txt_blood_group.setText(model.getTable().get(0).getBloodGroup());
-        txt_nationality.setText(model.getTable().get(0).getNationality());
+
+
+        if(model.getTable().get(0).getPersonalEmail().equalsIgnoreCase("")){
+            txt_email.setText("-");
+        }
+        else{
+            txt_email.setText(model.getTable().get(0).getPersonalEmail());
+        }
+
+        if(model.getTable().get(0).getPerAddress().equalsIgnoreCase("")){
+            txt_address.setText("-");
+        }
+        else{
+            txt_address.setText(model.getTable().get(0).getPerAddress());
+        }
+
+
+
+        if(model.getTable().get(0).getMobileModel().equalsIgnoreCase("")){
+            txt_mobile.setText("-");
+        }
+        else{
+            txt_mobile.setText(model.getTable().get(0).getMobileModel());
+        }
+        if(model.getTable().get(0).getMaritalStatus().equalsIgnoreCase("")){
+            txt_marital_status.setText("-");
+        }
+        else{
+            txt_marital_status.setText(model.getTable().get(0).getMaritalStatus());
+        }
+
+
+        if(model.getTable().get(0).getHeight().equalsIgnoreCase("")){
+            txt_height.setText("-");
+        }
+        else{
+            txt_height.setText(model.getTable().get(0).getHeight());
+        }
+
+
+        if(model.getTable().get(0).getWeight().equalsIgnoreCase("")){
+            txt_weight.setText("-");
+        }
+        else{
+            txt_weight.setText(model.getTable().get(0).getWeight());
+        }
+
+
+        if(model.getTable().get(0).getBloodGroup().equalsIgnoreCase("")){
+            txt_blood_group.setText("-");
+        }
+        else{
+            txt_blood_group.setText(model.getTable().get(0).getBloodGroup());
+        }
+
+
+        if(model.getTable().get(0).getNationality().equalsIgnoreCase("")){
+            txt_nationality.setText("-");
+        }
+        else{
+            txt_nationality.setText(model.getTable().get(0).getNationality());
+        }
+
+
 
         txt_employee_code.setText(model.getTable().get(0).getEmployeeCode());
 
-       // ((SpringAppBarLayoutWithTabActivity)getActivity()).setImage(model.getTable().get(0).getPhotoImageUrl());
 
 
     }

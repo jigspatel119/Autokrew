@@ -1,9 +1,9 @@
 package com.autokrew.network;
 
 
-
 import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AddDeviationTeamParams;
+import com.autokrew.models.ApplyAttendanceParam;
 import com.autokrew.models.ApplyLeaveParams;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.BindWeekOffParams;
@@ -14,8 +14,9 @@ import com.autokrew.models.DashbordModelParam;
 import com.autokrew.models.IsDocumentRequireParams;
 import com.autokrew.models.IsLeaveAppliedParams;
 import com.autokrew.models.LeaveCardParams;
-import com.autokrew.models.LoginModelParams;
+import com.autokrew.models.LetestVersionModel;
 import com.autokrew.models.LoginModel;
+import com.autokrew.models.LoginModelParams;
 import com.autokrew.models.ManageLeaveParams;
 import com.autokrew.models.MyprofileParams;
 import com.autokrew.models.PointingUrlModel;
@@ -24,29 +25,15 @@ import com.autokrew.models.ProfileImageParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
-import com.autokrew.models.TempParams;
 import com.autokrew.models.UserProfileParams;
 import com.autokrew.utils.Constant;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -122,6 +109,16 @@ public interface ApiInterface {
             @Header("Authorization") String token,
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body DashbordModelParam body);
+
+
+    //dashboard
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}api/Attendance/OutSideAttendanceFromMobileApp")
+    Call<String> applyAttendance(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body ApplyAttendanceParam body);
+
 
 
 
@@ -371,5 +368,9 @@ public interface ApiInterface {
 
     @GET("api/CommonAPI/CompanyDetail")
     Call<PointingUrlModel> getPointingUrl(@Query("OTP") String otp);
+
+
+    @GET("api/CommonAPI/LatestVersion")
+    Call<LetestVersionModel> getLetestVersion();
 
 }

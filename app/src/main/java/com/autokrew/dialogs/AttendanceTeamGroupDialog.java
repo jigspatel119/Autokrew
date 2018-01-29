@@ -3,6 +3,7 @@ package com.autokrew.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
@@ -95,6 +96,7 @@ public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.O
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
     }
 
@@ -154,7 +156,7 @@ public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.O
     private void findView() {
         btn_save = (Button) this.findViewById(R.id.btn_save);
         iv_dialog_cancel = (ImageView) this.findViewById(R.id.iv_dialog_cancel);
-        rv_parent = (RelativeLayout) this.findViewById(R.id.rv_parent);
+       // rv_parent = (RelativeLayout) this.findViewById(R.id.rv_parent);
 
         txt_date_time = (TextView)this.findViewById(R.id.txt_date_time);
         txt_name = (TextView)this.findViewById(R.id.txt_name);
@@ -167,8 +169,8 @@ public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.O
         edt_remarks = (EditText)this.findViewById(R.id.edt_remarks);
         rb_group = (RadioGroup)this.findViewById(R.id.rb_group);
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
-        btn_save.setTypeface(copperplateGothicLight);
+     /*   Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+        btn_save.setTypeface(copperplateGothicLight);*/
 
     }
 

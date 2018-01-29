@@ -7,7 +7,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_trancparent_black"
         android:orientation="horizontal">
 
         <ImageView
@@ -18,11 +17,10 @@
             android:layout_marginLeft="16dp"
             android:src="@drawable/ic_dashboard" />
 
-        <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+        <TextView
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:textColor="#ffffff"

@@ -3,7 +3,6 @@ package com.autokrew.fragments;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.graphics.Typeface;
-import android.icu.text.DateFormatSymbols;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.autokrew.R;
+import com.autokrew.activity.AttendanceActivity;
 import com.autokrew.activity.AttendanceDeviationActivity;
 import com.autokrew.interfaces.RecyclerViewClickListener;
 import com.autokrew.models.CommonDetailModel;
@@ -44,6 +44,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -56,7 +57,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     View view;
     String str_name, str_disname;
 
-    Button btn_search;
+    TextView txt_search;
     String TAG = "GroupAttendanceFragment";
 
     TextView txt_child_item;
@@ -473,7 +474,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         iv_year.setOnClickListener(this);
         iv_team_member.setOnClickListener(this);
         iv_leave_status.setOnClickListener(this);
-        btn_search.setOnClickListener(this);
+        txt_search.setOnClickListener(this);
 
     }
 
@@ -513,10 +514,10 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         edt_team_member = (Spinner)v.findViewById(R.id.edt_team_member);
         edt_approval_status = (Spinner)v.findViewById(R.id.edt_approval_status);
 
-        btn_search = (Button)v.findViewById(R.id.btn_search);
+        txt_search = (TextView) v.findViewById(R.id.txt_search);
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
-        btn_search.setTypeface(copperplateGothicLight);
+      /*  Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+        btn_search.setTypeface(copperplateGothicLight);*/
 
 
         dialog = new Dialog(getActivity(), R.style.progressDialog);
@@ -676,7 +677,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
         switch (v.getId())
         {
-            case R.id.btn_search:
+            case R.id.txt_search:
 
                 if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("pending")){
                     mApprovalStatus = "-1";
@@ -727,7 +728,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
                 //for team no need to store above details.
 
 
-                CommonUtils.getInstance().startActivity(getActivity(), AttendanceDeviationActivity.class);
+                CommonUtils.getInstance().startActivity(getActivity(), AttendanceActivity.class);
                 getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
 
 

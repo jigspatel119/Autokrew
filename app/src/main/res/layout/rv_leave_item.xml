@@ -25,6 +25,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
+            android:visibility="gone"
             android:background="@color/btn_reject"/>
 
         <LinearLayout
@@ -41,13 +42,13 @@
                 android:layout_marginTop="5dp"
                 android:visibility="gone">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/date_time_fromdate_todate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wed,06 sept,2017  -  Thu,07 sept,2017 "
                     android:textColor="@color/black"
-                    android:textStyle="bold" />
+                     />
 
 
 
@@ -61,23 +62,23 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:text="Leave Type"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/txt_leave_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -102,23 +103,23 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:text="Leave From"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/txt_leave_from"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -134,23 +135,23 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:text="Leave To"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/txt_leave_to"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -168,23 +169,23 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
-                    android:text="Leave Day"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:text="Leave Day Type"
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/txt_leave_day"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -204,21 +205,21 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:text="Duration"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
                 <TextView
                     android:id="@+id/txt_duration"
@@ -237,23 +238,23 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:text="Leave Status"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text=":"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:textColor="@color/black"
+                     />
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:id="@+id/txt_leave_status"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -262,6 +263,12 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="5dp"
+                android:background="@color/gray"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -290,7 +297,8 @@
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/iv_edit"
                     android:layout_toStartOf="@+id/iv_edit"
-                    android:background="@color/colorPrimary" />
+                    android:background="@color/gray"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_status"
@@ -314,7 +322,8 @@
                     android:layout_toLeftOf="@+id/iv_status"
                     android:layout_toStartOf="@+id/iv_status"
                     android:visibility="gone"
-                    android:background="@color/colorPrimary" />
+                    android:background="@color/gray"
+                    />
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -330,10 +339,9 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:padding="2dp"
-
                         android:src="@drawable/ic_round"/>
 
-                    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"

@@ -12,8 +12,9 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="2dp"
         card_view:cardUseCompatPadding="true"
-        card_view:cardCornerRadius="8dp"
         >
 
         <!--   Recycler View Item Row   -->
@@ -48,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.autokrew.customfonts.CustomFont_GillSans
+                <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -57,12 +58,11 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:text="Title"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
 
-                <com.autokrew.customfonts.CustomFont_GillSans
+                <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -70,8 +70,7 @@
                     android:layout_marginLeft="@dimen/card_padding_left_right"
                     android:paddingBottom="5dp"
                     android:text="Description"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

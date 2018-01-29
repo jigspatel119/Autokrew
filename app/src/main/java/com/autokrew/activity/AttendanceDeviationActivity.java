@@ -165,7 +165,7 @@ public class AttendanceDeviationActivity extends AppCompatActivity implements Ap
         card_view = (CardView) this.findViewById(R.id.card_view);
         card_view.setVisibility(View.GONE);
 
-        CommonUtils.setupCustomToolbar(toolbar);
+       // CommonUtils.setupCustomToolbar(toolbar);
 
     }
 

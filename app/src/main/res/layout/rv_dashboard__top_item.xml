@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="180dp"
-    android:layout_height="200dp"
-    android:paddingLeft="@dimen/card_padding_left_right"
-    android:paddingRight="@dimen/card_padding_left_right">
-
-
+    android:layout_width="160dp"
+    android:layout_height="180dp"
+  >
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_pendingattendance"
@@ -14,15 +11,15 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="5dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:id="@+id/rl_top_module"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_card_color3">
+            android:background="@color/bg_card_attendance">
 
 
             <RelativeLayout
@@ -49,13 +46,16 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="10dp">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
-                    app:srcCompat="@drawable/ic_frame2" />
+                <com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
+                    android:id="@+id/circularFillableLoaders"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/bg_loader"
+                    app:cfl_progress="80"
+                    app:cfl_border_width="3dp"
+                    app:cfl_wave_color="#ffffff" />
 
                 <TextView
                     android:id="@+id/tv_count"

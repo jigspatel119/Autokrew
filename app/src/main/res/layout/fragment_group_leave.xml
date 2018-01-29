@@ -3,24 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg5"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@color/bg_dashboard"
     android:fillViewport="true"
     android:orientation="vertical">
 
-    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+    <TextView
         android:id="@+id/txt_child_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="5dp"
-        android:background="@color/bg_trancparent_black"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="10dp"
         android:text="Child Item"
         android:textColor="@color/white"
         android:textSize="16sp"
 
-        android:textStyle="bold" />
+ />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,21 +41,28 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Company"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.8"
-                    android:background="@drawable/angle3">
+                 >
 
                     <Spinner
                         android:id="@+id/edt_company"
@@ -77,7 +85,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
-
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
@@ -89,37 +97,33 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Location"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
 
-                  <!--  <EditText
-                        android:id="@+id/edt_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignEnd="@+id/iv_location"
-                        android:layout_alignRight="@+id/iv_location"
-                        android:layout_alignTop="@+id/iv_location"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                 >
+
+
                     <Spinner
                         android:id="@+id/edt_location"
                         android:layout_width="match_parent"
@@ -142,6 +146,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -153,34 +158,32 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Sub Location"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
 
-                  <!--  <EditText
-                        android:id="@+id/edt_sub_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+               >
+
                     <Spinner
                         android:id="@+id/edt_sub_location"
                         android:layout_width="match_parent"
@@ -203,7 +206,7 @@
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
 
-
+                </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
@@ -214,37 +217,31 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Vertical"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.8"
+            >
 
-                    android:background="@drawable/angle3">
-
-                   <!-- <EditText
-                        android:id="@+id/edt_vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
 
                     <Spinner
                         android:id="@+id/edt_vertical"
@@ -267,6 +264,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -279,37 +277,31 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Department"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
 
-        <!--            <EditText
-                        android:id="@+id/edt_department"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+            >
 
                     <Spinner
                         android:id="@+id/edt_department"
@@ -332,6 +324,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -344,35 +337,30 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Sub Department"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
-
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+               >
 
- <!--                   <EditText
-                        android:id="@+id/edt_sub_department"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />
--->
                     <Spinner
                         android:id="@+id/edt_sub_department"
                         android:layout_width="match_parent"
@@ -394,6 +382,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -406,34 +395,29 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Designation"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
-
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                   >
 
-                    android:background="@drawable/angle3">
-
-                    <!--<EditText
-                        android:id="@+id/edt_designation"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
 
                     <Spinner
                         android:id="@+id/edt_designation"
@@ -457,6 +441,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -468,34 +453,31 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Month"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.8"
+             >
 
-                    android:background="@drawable/angle3">
-
-                   <!-- <EditText
-                        android:id="@+id/edt_month"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
 
                     <Spinner
                         android:id="@+id/edt_month"
@@ -518,6 +500,7 @@
                         android:padding="2dp"
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -528,23 +511,31 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Year"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+               >
 
                    <!-- <EditText
                         android:id="@+id/edt_year"
@@ -579,7 +570,7 @@
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
 
-
+                </android.support.v7.widget.CardView>
             </LinearLayout>
 
             <LinearLayout
@@ -588,34 +579,30 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Team Member"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.8"
+                  >
 
-                    android:background="@drawable/angle3">
-
-                    <!--<EditText
-                        android:id="@+id/edt_team_member"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
 
                     <Spinner
                         android:id="@+id/edt_team_member"
@@ -639,7 +626,7 @@
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
 
-
+                </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
@@ -649,35 +636,32 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
-                    android:id="@+id/com.autokrew.customfonts.CustomFont_GillSansSemiBold2"
+                <TextView
+                    android:id="@+id/TextView2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="Leave Status"
                     android:layout_gravity="center_vertical"
 
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:layout_weight="0.8"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    android:background="@drawable/angle3">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                  >
 
-          <!--          <EditText
-                        android:id="@+id/edt_leave_status"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_border_primary_transparent" 
-                        android:cursorVisible="false"
-                        android:enabled="false"
-                        android:hint="Please Select"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/colorPrimary" />-->
 
 
                     <Spinner
@@ -702,11 +686,49 @@
                         app:srcCompat="@drawable/ic_edittext_dropdown" />
                 </RelativeLayout>
 
-
+                </android.support.v7.widget.CardView>
             </LinearLayout>
 
 
-            <Button
+            <android.support.v7.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                card_view:cardCornerRadius="@dimen/card_corner_radius"
+                card_view:cardElevation="4"
+                android:layout_margin="10dp"
+                android:layout_gravity="right"
+                card_view:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:padding="1dp"
+                        android:src="@drawable/ic_search_white_18dp"/>
+
+                    <TextView
+                        android:id="@+id/txt_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/img"
+                        android:layout_centerVertical="true"
+                        android:text=" Search"
+                        android:textColor="#ffffff" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+
+          <!--  <Button
                 android:id="@+id/btn_search"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -715,7 +737,7 @@
                 android:background="@drawable/child_selector"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="Search"
-                android:textColor="@color/white" />
+                android:textColor="@color/white" />-->
 
 
         </LinearLayout>

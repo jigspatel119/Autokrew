@@ -2,7 +2,7 @@ package com.autokrew.dialogs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,32 +20,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.autokrew.R;
-import com.autokrew.adapter.BirthdayAdapter;
 import com.autokrew.adapter.CompOffAdapter;
-import com.autokrew.adapter.EmployeeAdapter;
-import com.autokrew.fragments.DashboardFragment;
 import com.autokrew.interfaces.AttendanceDialogInterface;
-import com.autokrew.interfaces.RecyclerViewClickListener;
-import com.autokrew.interfaces.RecyclerViewDashBoardListener;
-import com.autokrew.models.AddDeviationModel;
-import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.ApplyLeaveModel;
 import com.autokrew.models.ApplyLeaveParams;
 import com.autokrew.models.BindWeekOffParams;
-import com.autokrew.models.CommonDetailModelParams;
-import com.autokrew.models.CompoffCheckModel;
 import com.autokrew.models.CompoffLeaveModel;
 import com.autokrew.models.CompoffLeaveParams;
-import com.autokrew.models.Employee;
 import com.autokrew.models.IsDocumentRequire;
 import com.autokrew.models.IsDocumentRequireParams;
 import com.autokrew.models.IsLeaveAppliedParams;
 import com.autokrew.models.IsLeaveaAppliedModel;
-import com.autokrew.models.LoginModel;
 import com.autokrew.models.SandwichFormDateModel;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.SandwichToDateModel;
@@ -68,8 +57,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.autokrew.utils.AppController.getAppContext;
-
 
 public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener ,
@@ -91,6 +78,7 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
     TextView txt_name,txt_reporting_person,txt_leave_type ,txt_duration;
 
     RadioButton rb_fullday ,rb_halfday;
+    RadioGroup rb_group;
     AttendanceDialogInterface mInterface;
     WeekOffModel model_weekoff;
 
@@ -139,6 +127,8 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
     }
 
     @Override
@@ -147,12 +137,10 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_leave_apply);
 
-
         getData();
         findView();
         setData();
         setListner();
-
     }
 
     private void getData() {
@@ -259,6 +247,7 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
 
         rb_halfday = (RadioButton)this.findViewById(R.id.rb_halfday);
         rb_fullday = (RadioButton)this.findViewById(R.id.rb_fullday);
+        rb_group = (RadioGroup)this.findViewById(R.id.rb_group);
 
         txt_title = (TextView) this.findViewById(R.id.txt_title);
         txt_name = (TextView)this.findViewById(R.id.txt_name);
@@ -266,9 +255,18 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
         txt_leave_type = (TextView)this.findViewById(R.id.txt_leave_type);
 
         txt_duration = (TextView)this.findViewById(R.id.txt_duration);
-
+/*
         Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
-        btn_save.setTypeface(copperplateGothicLight);
+        btn_save.setTypeface(copperplateGothicLight);*/
+
+        rb_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                edt_from_date.setText("From Date");
+                edt_to_date.setText("To Date");
+            }
+        });
 
     }
 
@@ -307,26 +305,34 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                         params.setContactNo(edt_contact.getText().toString());
                         params.setDocumentUrl("");
 
-                        //from adapter public method called...
-                        List<CompoffLeaveModel.TableBean> stList = (mCompOffAdapter).getEmployeeList();
 
-                        List<ApplyLeaveParams.DtCompoffBean> stListTemp = new ArrayList<>();
-                        ApplyLeaveParams.DtCompoffBean modelTemp;
+                        //if compoff grid bind or not
+                        if(mCompOffAdapter!=null){
+                            //from adapter public method called...
+                            List<CompoffLeaveModel.TableBean> stList = (mCompOffAdapter).getEmployeeList();
 
-                        for (int i = 0; i < stList.size(); i++) {
-                            CompoffLeaveModel.TableBean bean = stList.get(i);
-                            if (bean.isSelected() == true) {
-                                modelTemp = new ApplyLeaveParams.DtCompoffBean();
-                                modelTemp.setBalance(String.valueOf(bean.getBalance()));
-                                modelTemp.setAttendancePK(bean.getAttendancePK());
-                                stListTemp.add(modelTemp);
+                            List<ApplyLeaveParams.DtCompoffBean> stListTemp = new ArrayList<>();
+                            ApplyLeaveParams.DtCompoffBean modelTemp;
 
-                              //  secemp = secemp + "\n" + bean.getDate().toString();
+                            for (int i = 0; i < stList.size(); i++) {
+                                CompoffLeaveModel.TableBean bean = stList.get(i);
+                                if (bean.isSelected() == true) {
+                                    modelTemp = new ApplyLeaveParams.DtCompoffBean();
+                                    modelTemp.setBalance(String.valueOf(bean.getBalance()));
+                                    modelTemp.setAttendancePK(bean.getAttendancePK());
+                                    stListTemp.add(modelTemp);
+
+                                    //  secemp = secemp + "\n" + bean.getDate().toString();
+                                }
                             }
+
+
+                            params.setDtCompoff(stListTemp); //<<<<<<<<<<<<
+                        }
+                        else{
+                            params.setDtCompoff(null);
                         }
 
-
-                        params.setDtCompoff(stListTemp);
 
                         //call common detail api here..
                         new WebServices(mContext, this,
@@ -378,6 +384,10 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
 
                 if(mBalance.contains(".0")){
                     mBalance = mBalance.replace(".0","");
+                }
+
+               else if(mBalance.contains(".5")){
+                    mBalance = mBalance.replace(".5","");
                 }
 
                 //CommonUtils.getInstance().displayToast(mContext," >>> "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
@@ -494,8 +504,12 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                         now.get(Calendar.DAY_OF_MONTH)
 
                 );
-        Calendar minAge = Calendar.getInstance();
-        startDpd.setMinDate(minAge);
+
+        //for disable previous date
+      //  Calendar minAge = Calendar.getInstance();
+      //  startDpd.setMinDate(minAge);
+
+
         //   minAge.set(Calendar.YEAR, now.get(Calendar.YEAR));
         //startDpd.setMaxDate(calendarEndDate);
 
@@ -521,7 +535,11 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
         Calendar saturday ;//6
 
         List<Calendar> weekends = new ArrayList<>();
+        List<Calendar> weekends_previous= new ArrayList<>();
+        List<Calendar> weekends_current = new ArrayList<>();
         int weeks = 600;
+
+
 
         for (int i = 0; i <model_weekoff.getTable1().size() ; i++) {
 
@@ -581,7 +599,7 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
             }
 
 
-            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("5")){
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("6")){
                 for (int j = 0; j < (weeks * 7) ; j = j + 7) {
                     saturday = Calendar.getInstance();
                     saturday.add(Calendar.DAY_OF_YEAR, (Calendar.SATURDAY - saturday.get(Calendar.DAY_OF_WEEK) + 7 + j));
@@ -589,11 +607,148 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                 }
             }
 
+
+            //disable previous dates....for week off...
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("0")){
+
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    sunday = Calendar.getInstance();
+                    sunday.add(Calendar.DAY_OF_YEAR, (Calendar.SUNDAY - sunday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(sunday);
+                }
+            }
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("1")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    monday = Calendar.getInstance();
+                    monday.add(Calendar.DAY_OF_YEAR, (Calendar.MONDAY - monday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(monday);
+                }
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("2")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    tuesday = Calendar.getInstance();
+                    tuesday.add(Calendar.DAY_OF_YEAR, (Calendar.TUESDAY - tuesday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(tuesday);
+                }
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("3")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    wednesday = Calendar.getInstance();
+                    wednesday.add(Calendar.DAY_OF_YEAR, (Calendar.WEDNESDAY - wednesday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(wednesday);
+                }
+            }
+
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("4")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    thursday = Calendar.getInstance();
+                    thursday.add(Calendar.DAY_OF_YEAR, (Calendar.THURSDAY - thursday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(thursday);
+                }
+            }
+
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("5")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    friday = Calendar.getInstance();
+                    friday.add(Calendar.DAY_OF_YEAR, (Calendar.FRIDAY - friday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(friday);
+                }
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("6")){
+                for (int j = 0; j < (weeks * 7) ; j = j + 7) {
+                    saturday = Calendar.getInstance();
+                    saturday.add(Calendar.DAY_OF_YEAR, (Calendar.SATURDAY - saturday.get(Calendar.DAY_OF_WEEK) - 7 - j));
+                    weekends_previous.add(saturday);
+                }
+            }
+
+
+            //current week days disable
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("0")){
+
+
+                    sunday = Calendar.getInstance();
+                    sunday.add(Calendar.DAY_OF_YEAR, (Calendar.SUNDAY - sunday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(sunday);
+
+            }
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("1")){
+                    monday = Calendar.getInstance();
+                    monday.add(Calendar.DAY_OF_YEAR, (Calendar.MONDAY - monday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(monday);
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("2")){
+                    tuesday = Calendar.getInstance();
+                    tuesday.add(Calendar.DAY_OF_YEAR, (Calendar.TUESDAY - tuesday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(tuesday);
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("3")){
+                    wednesday = Calendar.getInstance();
+                    wednesday.add(Calendar.DAY_OF_YEAR, (Calendar.WEDNESDAY - wednesday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(wednesday);
+
+            }
+
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("4")){
+                    thursday = Calendar.getInstance();
+                    thursday.add(Calendar.DAY_OF_YEAR, (Calendar.THURSDAY - thursday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(thursday);
+
+            }
+
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("5")){
+                    friday = Calendar.getInstance();
+                    friday.add(Calendar.DAY_OF_YEAR, (Calendar.FRIDAY - friday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(friday);
+
+            }
+
+
+            if(model_weekoff.getTable1().get(i).getWeekOff().equalsIgnoreCase("6")){
+                    saturday = Calendar.getInstance();
+                    saturday.add(Calendar.DAY_OF_YEAR, (Calendar.SATURDAY - saturday.get(Calendar.DAY_OF_WEEK)));
+                    weekends_previous.add(saturday);
+            }
+
+
         }
 
 
+
+        /**
+         *
+         * combine previous and future dates that going to be disable as week off
+        */
+
+
+        weekends.addAll(weekends_previous);
+       //weekends.addAll(weekends_current);
+
         Calendar[] disabledDays = weekends.toArray(new Calendar[weekends.size()]);
         dpd.setDisabledDays(disabledDays);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -850,16 +1005,6 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                 }
             }
 
-           /* for (int i = 0; i <stList.size() ; i++) {
-                if(stList.get(i).getSelected()){
-                    mListCompoffCheck.add(String.valueOf(Constant.mCheckList.get(i).getSelected()));
-
-                    model_compoff_check = new CompoffLeaveModel.TableBean();
-                    model_compoff_check.setAttendancePK(Constant.mCheckList.get(i).getTable().get(i).getAttendancePK());
-                    model_compoff_check.setBalance(Constant.mCheckList.get(i).getTable().get(i).getBalance());
-                    mListCompoffCheckModel.add(model_compoff_check);
-                }
-            }*/
             if(mListCompoffCheck.size()==0){
                CommonUtils.getInstance().displayToast(mContext,"Please select a date against which you would like to apply comp off.");
                 return false;
@@ -873,17 +1018,26 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
 
         }
 
-        //applied days> balance && halfday selected && iscompoff == 1
-        if(_day_temp> Integer.parseInt(mBalance) && rb_halfday.isChecked() && isCompoff == 1){
-            CommonUtils.getInstance().displayToast(mContext,"Comp off days (applied) should match with balance sum of days selected.");
-            return false;
+        //half day checked _day_temp
+        if(rb_halfday.isChecked()){
+            double _day_temp_double = 0.5 ;
+            //applied days> balance && halfday selected && iscompoff == 1
+            if(_day_temp_double> Double.parseDouble(mBalance) && rb_halfday.isChecked() && isCompoff == 1){
+                CommonUtils.getInstance().displayToast(mContext,"Comp off days (applied) should match with balance sum of days selected.");
+                return false;
+            }
         }
 
-        //applied days> balance && fullday  selected && iscompoff == 1
-        if(_day_temp> Integer.parseInt(mBalance) && rb_fullday.isChecked() && isCompoff == 1){
-            CommonUtils.getInstance().displayToast(mContext,"Comp off days (applied) should match with balance sum of days selected.");
-            return false;
+
+
+        if(rb_fullday.isChecked()){
+            //applied days> balance && fullday  selected && iscompoff == 1
+            if(_day_temp> Integer.parseInt(mBalance) && rb_fullday.isChecked() && isCompoff == 1){
+                CommonUtils.getInstance().displayToast(mContext,"Comp off days (applied) should match with balance sum of days selected.");
+                return false;
+            }
         }
+
 
         return true;
     }

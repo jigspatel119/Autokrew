@@ -4,10 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.Window;
 
-
 import com.autokrew.R;
 import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AddDeviationTeamParams;
+import com.autokrew.models.ApplyAttendanceParam;
 import com.autokrew.models.ApplyLeaveParams;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.BindWeekOffParams;
@@ -18,8 +18,9 @@ import com.autokrew.models.DashbordModelParam;
 import com.autokrew.models.IsDocumentRequireParams;
 import com.autokrew.models.IsLeaveAppliedParams;
 import com.autokrew.models.LeaveCardParams;
-import com.autokrew.models.LoginModelParams;
+import com.autokrew.models.LetestVersionModel;
 import com.autokrew.models.LoginModel;
+import com.autokrew.models.LoginModelParams;
 import com.autokrew.models.ManageLeaveParams;
 import com.autokrew.models.MyprofileParams;
 import com.autokrew.models.PointingUrlModel;
@@ -28,25 +29,14 @@ import com.autokrew.models.ProfileImageParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
-import com.autokrew.models.TempParams;
 import com.autokrew.models.UserProfileParams;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,6 +81,7 @@ public class WebServices {
         dialog = new Dialog(mContext, R.style.progressDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.progress_dialog);
+        //dialog.setCancelable(false);
 
         if (isShowProgressDialog) {
             //Show progress dialog
@@ -118,9 +109,14 @@ public class WebServices {
         //Constant.Main_URL =  Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,"");
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES).readTimeout(1, TimeUnit.MINUTES).
-                addInterceptor(interceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .addInterceptor(interceptor)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""))
                 .client(client)
@@ -238,6 +234,38 @@ public class WebServices {
 
 
     /**
+     * //===========================( vrersion check API )==============================//
+     */
+    public void callLetestVersionAPI() {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+            Call<LetestVersionModel> call = mApiInterfaceForUrl.getLetestVersion();
+            call.enqueue(new Callback<LetestVersionModel>() {
+                @Override
+                public void onResponse(Call<LetestVersionModel> call, Response<LetestVersionModel> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                    /*else{
+                        onFailureResponse();
+                    }*/
+                }
+                @Override
+                public void onFailure(Call<LetestVersionModel> call, Throwable t) {
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+    /**
      * //===========================( Login API )==============================//
      */
     public void callDashboardDetailAPI(String mToken,DashbordModelParam parms) {
@@ -248,10 +276,54 @@ public class WebServices {
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
+                    switch (response.code()) {
+                        case 401:
+                            onFailureResponse(null);
+                            break;
+                        case 200:
+                            Object mObject = response.body();
+                            if (mObject != null) {
+                                onSuccessResponse(mObject);
+                            }
+                            break;
+                    }
+                    /*else{
+                        onFailureResponse();
+                    }*/
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    onFailureResponse(t)
+                    ;
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+    /**
+     * //===========================( Login API )==============================//
+     */
+    public void callOutSideAttendanceFromMobileAppAPI(String mToken,ApplyAttendanceParam parms) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+            Call<String> call = mApiInterface.applyAttendance(mToken,Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),parms);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
                     Object mObject = response.body();
                     if (mObject != null) {
                         onSuccessResponse(mObject);
                     }
+                    /*else{
+                        onFailureResponse();
+                    }*/
                 }
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
@@ -264,7 +336,6 @@ public class WebServices {
             onNoInternetConnection();
         }
     }
-
 
 
 

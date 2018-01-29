@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">autoKREW</string>
+    <string name="app_name">AutoKrew</string>
 
 
     <!-- General Alerts Messages  -->
@@ -8,6 +8,12 @@
     <string name="alert_press_back_again_to_exit">Please click BACK again to exit.</string>
 
     <string name="spinner_prompt">Please Select</string>
+
+    <!--dialogs-->
+    <string name="dialog_ok_button">Ok</string>
+    <string name="dialog_yes_button">Yes</string>
+    <string name="dialog_no_button">No</string>
+    <string name="dialog_neutral_button">Neutral</string>
 
 
     <!-- Empty Data Alerts  -->
@@ -87,6 +93,9 @@
     <string name="msg_delete">Are you sure you want to delete \nleave request?</string>
 
     <string name="msg_revised">Are you sure you want to revise \nleave request?</string>
+
+    <string name="msg_version_upgrade">Please, update app to new version \nto continue using.</string>
+
 
 
 

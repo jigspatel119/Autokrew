@@ -3,6 +3,7 @@ package com.autokrew.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
 import android.util.Log;
@@ -82,6 +83,7 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
     }
 
@@ -144,7 +146,7 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
     private void findView() {
         btn_save = (Button) this.findViewById(R.id.btn_save);
         iv_dialog_cancel = (ImageView) this.findViewById(R.id.iv_dialog_cancel);
-        rv_parent = (RelativeLayout) this.findViewById(R.id.rv_parent);
+       //rv_parent = (RelativeLayout) this.findViewById(R.id.rv_parent);
 
         txt_name = (TextView)this.findViewById(R.id.txt_name);
         txt_reporting_person = (TextView)this.findViewById(R.id.txt_reporting_person);
@@ -154,8 +156,8 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
         edt_remarks = (EditText)this.findViewById(R.id.edt_remarks);
 
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
-        btn_save.setTypeface(copperplateGothicLight);
+        /*Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+        btn_save.setTypeface(copperplateGothicLight);*/
 
     }
 
@@ -172,7 +174,7 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
                     Log.e(TAG, ">>>>"+modelCommon.getTable21().get(i).getDeviationPK());
                 }*/
 
-                CommonUtils.getInstance().displayToast(mContext,modelCommon.getTable21().get(mySpinner.getSelectedItemPosition()).getDeviationPK());
+               // CommonUtils.getInstance().displayToast(mContext,modelCommon.getTable21().get(mySpinner.getSelectedItemPosition()).getDeviationPK());
                if(mySpinner.getSelectedItem().toString()!="Please Select"){
                    if(edt_remarks.getText().toString().length()>0 ){
                        AddDeviationParams params = new AddDeviationParams();
@@ -188,8 +190,6 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
                        new WebServices(mContext, this ,
                                false ,true).
                                callAddDeviationAPI(mToken,params);
-
-                       CommonUtils.getInstance().displayToast(mContext,"yup");
 
                    }
 

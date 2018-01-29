@@ -150,8 +150,6 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
             holder.iv_lock.setVisibility(View.VISIBLE);
         }
 
-
-
         if(feedItems.getTable().get(position).get_$MobileReviseLeave160().equalsIgnoreCase("Open Revise")){
             holder.iv_revised.setVisibility(View.VISIBLE);
         }

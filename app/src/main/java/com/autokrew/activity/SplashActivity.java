@@ -1,38 +1,30 @@
 package com.autokrew.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 import com.autokrew.R;
-import com.autokrew.adapter.AttendanceAdapter;
-import com.autokrew.fragments.MyAttendanceFragment;
-import com.autokrew.models.AttendanceModel;
+import com.autokrew.dialogs.AwesomeProgressDialog;
+import com.autokrew.interfaces.DialogListener;
 import com.autokrew.models.PointingUrlModel;
-import com.autokrew.network.ApiInterface;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
-import com.autokrew.utils.AppController;
 import com.autokrew.utils.BaseActivity;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.autokrew.interfaces.Constants.SPLASH_TIME_OUT;
 
 
-public class SplashActivity extends BaseActivity implements ApiListener {
+public class SplashActivity extends BaseActivity implements ApiListener ,DialogListener {
 
 
     //General Variables
@@ -42,24 +34,31 @@ public class SplashActivity extends BaseActivity implements ApiListener {
     Handler handler;
     Runnable runnable;
     String auto_login;
+    AwesomeProgressDialog mDialog;
+   // ProgressBar progressBar;
 
-    ProgressBar progressBar;
+   AVLoadingIndicatorView avi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_splash);
         CommonUtils.getInstance().printKeyHash(mActivity);
 
-        progressBar = (ProgressBar)this.findViewById(R.id.progressBar);
+       // progressBar = (ProgressBar)this.findViewById(R.id.progressBar);
+
+        avi  = (AVLoadingIndicatorView)this.findViewById(R.id.avi);
 
         handler = new Handler();
         auto_login = Pref.getValue(this, "auto_login", "");
         createFileDirectory();
         //Initialize Views
 
+        //after signin and exit
         if(auto_login.equalsIgnoreCase("true")){
-            progressBar.setVisibility(View.VISIBLE);
+            avi.setVisibility(View.VISIBLE);
+
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -69,6 +68,13 @@ public class SplashActivity extends BaseActivity implements ApiListener {
                 }
             }, 3000);
         }
+
+        //after signout...
+        else if(auto_login.equalsIgnoreCase("false")){
+            initializeData();
+        }
+
+        //very first time...
         else{
             displayAlert();
         }
@@ -76,22 +82,25 @@ public class SplashActivity extends BaseActivity implements ApiListener {
     }
 
     private void displayAlert() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        //context ,listner
+        mDialog =  new AwesomeProgressDialog(this ,SplashActivity.this);
+        mDialog.show();
+
+       /* AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Enter Company Code"); //Set Alert dialog title here
        // alert.setMessage("Enter Your Name Here"); //Message here
 
-        // Set an EditText view to get user input
         final EditText input = new EditText(this);
         input.setMaxLines(1);
         input.setLines(1);
         input.setSingleLine(true);
         alert.setView(input);
-
+        alert.setCancelable(false);
 
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //You will get as string input data in this variable.
-                // here we convert the input to a string and show in a toast.
+
                 String OTP = input.getEditableText().toString().trim();
 
                 if(OTP.length()>0){
@@ -100,19 +109,17 @@ public class SplashActivity extends BaseActivity implements ApiListener {
                 else{
                     CommonUtils.getInstance().displayToast(SplashActivity.this,"Please Insert OTP!");
                 }
-
-
-            } // End of onClick(DialogInterface dialog, int whichButton)
+            }
         });
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
-        alertDialog.setCancelable(false);
-       /* Alert Dialog Code End*/
+        alertDialog.setCancelable(false);*/
+
     }
 
     private void apiCalls(String OTP) {
 
-            new WebServices(this/* ActivityContext */, this /* ApiListener */, true /* show progress dialog */,
+            new WebServices(this/* ActivityContext */, this /* ApiListener */, false /* show progress dialog */,
                     false /*for new retrofitclient*/).
                     callGetPointingUrlAPI(OTP);
 
@@ -126,7 +133,7 @@ public class SplashActivity extends BaseActivity implements ApiListener {
     private void initializeData() {
         // TODO ... Initialize your data here
 
-            progressBar.setVisibility(View.VISIBLE);
+            avi.setVisibility(View.VISIBLE);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -137,21 +144,6 @@ public class SplashActivity extends BaseActivity implements ApiListener {
             }, 3000);
 
 
-        /*runnable = new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-
-                CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
-                if (AppController.getAppPref().getIsLogin()) {
-                   // CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), MainActivity.class);
-                } else {
-                    //CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
-                }
-
-            }
-        };
-        handler.postDelayed(runnable, SPLASH_TIME_OUT);*/
     }
 
 
@@ -187,10 +179,12 @@ public class SplashActivity extends BaseActivity implements ApiListener {
                 //CommonUtils.getInstance().startActivityWithoutStack(mActivity, HomeActivity.class);
                 Log.e(TAG, "onApiSuccess: "+model.getData().getMobileURL() );
                 Pref.setValue(this,Constant.PREF_MOBILE_URL,model.getData().getMobileURL());
-
+                mDialog.hide();
                 initializeData();
             } else {
                 //CommonUtils.getInstance().displaySnackBar(relativeParentLogin, mLogin_model.getMessage());
+                mDialog.hide();
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 CommonUtils.getInstance().displayToast(this,model.getMessage());
                 displayAlert();
               //  Log.e(TAG, "onApiSuccess: "+model.getMessage());
@@ -200,7 +194,15 @@ public class SplashActivity extends BaseActivity implements ApiListener {
 
     @Override
     public void onApiFailure(Throwable mThrowable) {
+        mDialog.hide();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         CommonUtils.getInstance().displayToast(this,"Incorrect OTP!");
         displayAlert();
+    }
+
+    @Override
+    public void dialogClick(String otp) {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        apiCalls(otp);
     }
 }

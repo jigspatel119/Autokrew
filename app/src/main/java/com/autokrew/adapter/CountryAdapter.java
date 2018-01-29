@@ -2,10 +2,14 @@ package com.autokrew.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,6 +44,8 @@ public class CountryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
+
+
         return al_country.get(i).getAl_state().size();
     }
 
@@ -51,6 +57,7 @@ public class CountryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int i, int i1) {
+
 
         return al_country.get(i).getAl_state().get(i1);
     }
@@ -117,6 +124,7 @@ public class CountryAdapter extends BaseExpandableListAdapter {
         }
 
         TextView tv_state = (TextView)view.findViewById(R.id.tv_name);
+        View view_top = (View) view.findViewById(R.id.view_top);
 
         tv_state.setText(al_country.get(i).getAl_state().get(i1).getStr_name());
         tv_state.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +134,13 @@ public class CountryAdapter extends BaseExpandableListAdapter {
             }
         });
 
+
+        if(tv_state.getText().toString().equalsIgnoreCase("My Attendance")||tv_state.getText().toString().equalsIgnoreCase("My Leave")){
+            view_top.setVisibility(View.VISIBLE);
+        }
+        else{
+            view_top.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -133,6 +148,5 @@ public class CountryAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int i, int i1) {
         return false;
     }
-
 
 }

@@ -1,13 +1,10 @@
 package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
-import android.icu.text.DateFormatSymbols;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,50 +12,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.autokrew.R;
 import com.autokrew.adapter.LeaveAdapter;
 import com.autokrew.adapter.listviewAdapter;
 import com.autokrew.dialogs.ApplyLeaveDialog;
+import com.autokrew.dialogs.CancelDialog;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.interfaces.RecyclerViewClickListener;
-import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.CommonDetailModel;
 import com.autokrew.models.CommonDetailModelParams;
 import com.autokrew.models.DropdownModel;
 import com.autokrew.models.LeaveCardModel;
 import com.autokrew.models.LeaveCardParams;
-import com.autokrew.models.LeaveModel;
 import com.autokrew.models.Model;
 import com.autokrew.models.ReportingPersonModel;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
-import com.autokrew.dialogs.CancelDialog;
-import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
+import com.autokrew.utils.MyListView;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
-import com.rackspira.kristiawan.rackmonthpicker.RackMonthPicker;
-import com.rackspira.kristiawan.rackmonthpicker.listener.DateMonthDialogListener;
-import com.rackspira.kristiawan.rackmonthpicker.listener.OnCancelMonthDialogListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,7 +64,8 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
     private RecyclerView rv_data_leave;
     LeaveAdapter mAdapter;
 
-    ImageView iv_month ,iv_year,iv_search;
+    ImageView iv_month ,iv_year;
+    TextView txt_search;
 
     Spinner edt_month,edt_year,edt_leave_status;
     CancelDialog mDialog;
@@ -86,7 +75,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
     private ArrayList<Model> productList = new ArrayList<>();
     listviewAdapter adapter;
-    ListView lview;
+    MyListView lview;
 
     String mToken;
     LeaveCardModel modelLeaveCard;
@@ -192,7 +181,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
         iv_year.setOnClickListener(this);
         iv_month.setOnClickListener(this);
-        iv_search.setOnClickListener(this);
+        txt_search.setOnClickListener(this);
         btn_apply_leave.setOnClickListener(this);
     }
 
@@ -210,14 +199,14 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
         iv_month = (ImageView)v.findViewById(R.id.iv_month);
         iv_year = (ImageView)v.findViewById(R.id.iv_year);
-        iv_search = (ImageView)v.findViewById(R.id.iv_search);
+        txt_search = (TextView) v.findViewById(R.id.txt_search);
 
         edt_month = (Spinner) v.findViewById(R.id.edt_month);
         edt_year = (Spinner) v.findViewById(R.id.edt_year);
         edt_leave_status = (Spinner)v.findViewById(R.id.edt_leave_status);
 
         //productList = new ArrayList<LeaveCardModel>();
-        lview = (ListView)v.findViewById(R.id.listview);
+        lview = (MyListView) v.findViewById(R.id.listview);
 
 
     }
@@ -375,7 +364,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
               //  pickMonthAndYear();
             break;
 
-            case R.id.iv_search:
+            case R.id.txt_search:
 
                 LeaveCardParams params = new LeaveCardParams();
                 params.setFlag("Grid");

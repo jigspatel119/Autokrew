@@ -1,21 +1,18 @@
 package com.autokrew.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.autokrew.R;
 import com.autokrew.interfaces.RecyclerViewClickListener;
 import com.autokrew.models.AttendanceModel;
-import com.autokrew.utils.CommonUtils;
-
-import java.util.List;
 
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.ViewHolder> {
@@ -40,7 +37,9 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
         TextView txt_intime ,txt_outtime,txt_workinghrs ,date_time ,
                 txt_deviation,txt_emp_remarks,txt_rep_person_status,txt_rep_person_remarks;
         Button btn_book;
-        ImageView iv_absent;
+        TextView txt_status;
+
+        RelativeLayout rv_status;
 
         ImageView iv_edit ;
 
@@ -56,7 +55,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
             this.txt_rep_person_status = (TextView) itemView.findViewById(R.id.txt_rep_person_status);
             this.txt_rep_person_remarks = (TextView) itemView.findViewById(R.id.txt_rep_person_remarks);
 
-            this.iv_absent = (ImageView)itemView.findViewById(R.id.iv_absent);
+            this.txt_status = (TextView) itemView.findViewById(R.id.txt_status);
+            this.rv_status = (RelativeLayout)itemView.findViewById(R.id.rv_status);
 
             this.iv_edit = (ImageView)itemView.findViewById(R.id.iv_edit);
         }
@@ -128,22 +128,45 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
        //set icons...
         if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("A")){
-            holder.iv_absent.setImageResource(R.drawable.absent);
+            holder.txt_status.setText("A");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("H")){
-            holder.iv_absent.setImageResource(R.drawable.holiday);
+            holder.txt_status.setText("H");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
+
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("WO")){
-            holder.iv_absent.setImageResource(R.drawable.weekoff);
+            holder.txt_status.setText("WO");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
+
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PL")){
-            holder.iv_absent.setImageResource(R.drawable.punchlate);
+            holder.txt_status.setText("PL");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P2")){
-            holder.iv_absent.setImageResource(R.drawable.halfday);
+            holder.txt_status.setText("P2");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
+
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PE")){
-            holder.iv_absent.setImageResource(R.drawable.punchearly);
+            holder.txt_status.setText("PE");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+
+
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("L")){
-            holder.iv_absent.setImageResource(R.drawable.leave);
+            holder.txt_status.setText("L");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
+
+
         }
         else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P")){
-            holder.iv_absent.setImageResource(R.drawable.present);
+            holder.txt_status.setText("P");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
+
+
         }
 
 

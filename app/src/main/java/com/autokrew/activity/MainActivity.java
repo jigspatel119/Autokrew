@@ -4,21 +4,27 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +35,8 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,6 +49,7 @@ import com.autokrew.fragments.GroupAttendanceFragment;
 import com.autokrew.fragments.GroupLeaveFragment;
 import com.autokrew.fragments.MyAttendanceFragment;
 import com.autokrew.fragments.MyLeaveFragment;
+import com.autokrew.fragments.ProfileFragment;
 import com.autokrew.models.Model_Dish;
 import com.autokrew.models.Model_country;
 import com.autokrew.models.ProfileImageParams;
@@ -82,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String TAG_FRAGMENT ;
 
     TextView tv_name ,txt_user_name ,txt_dashboard ,txt_employee_code;
+    LinearLayout ll_user_profile;
+    TextView txt_view_profile;
     RelativeLayout rl_menu;
     private int lastExpandedPosition = -1;
     private String filePath;
@@ -101,8 +112,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView img_profile ;
     private Boolean isForProfilePicture = false;
     String mToken;
-
-
+    Fragment f;
+    FragmentManager mManager = getSupportFragmentManager();
+    //ProgressBar progressBar ;
 
 
     @Override
@@ -120,14 +132,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setData() {
-        String mProfilePath = Pref.getValue(this,"profile_pic_path","");
-
-        /*if(mProfilePath!=null){
-            File myFile = new File(Constant.FILE_DIRECTORY_MEDIA+"/" + mProfilePath);
-            if(myFile.exists()){
-                loadImageIntoProfilePicture(Constant.FILE_DIRECTORY_MEDIA +"/"+ mProfilePath);
-            }
-        }*/
 
 
     }
@@ -135,7 +139,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setListner() {
 
         img_profile.setOnClickListener(this);
-        txt_user_name.setOnClickListener(this);
+        //txt_user_name.setOnClickListener(this);
+       // ll_user_profile.setOnClickListener(this);
+        txt_view_profile.setOnClickListener(this);
        // txt_dashboard.setOnClickListener(this);
     }
 
@@ -150,11 +156,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         obj_adapter = new CountryAdapter(MainActivity.this, al_main);
 
-        View v = findViewById(R.id.left_drawer);
+       final View v = findViewById(R.id.left_drawer);
+
+        v.post(new Runnable() {
+            @Override
+            public void run() {
+               /* Resources resources = getResources();
+                float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, resources.getDisplayMetrics());
+                DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) v.getLayoutParams();
+                params.width = (int) (width);
+                v.setLayoutParams(params);*/
+
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int height = displaymetrics.heightPixels;
+                int width = displaymetrics.widthPixels;
+
+                DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) v.getLayoutParams();
+                params.width = (int) ((int) (width) * (0.8));
+                v.setLayoutParams(params);
+
+             //   v.setLayoutParams(new DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.FILL_PARENT,width/2));
+
+            }
+        });
         img_profile = (ImageView)v.findViewById(R.id.img_profile);
+
+        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
         txt_user_name = (TextView)v.findViewById(R.id.txt_user_name);
         txt_user_name.setText(userProfileModel.getTable().get(0).getEmpName());
 
+       // ll_user_profile = (LinearLayout)v.findViewById(R.id.ll_user_profile);
+        txt_view_profile = (TextView)v.findViewById(R.id.txt_view_profile);
 
         txt_employee_code =(TextView)v.findViewById(R.id.txt_employee_code);
         txt_employee_code.setText(userProfileModel.getTable().get(0).getEmployeeCode());
@@ -182,17 +215,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(groupPosition == 0){
                     fragment = new DashboardFragment();
                     tv_name.setText("Dashboard");
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard").addToBackStack("null").commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard")
+                            .addToBackStack("null").commit();
 
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
 
                 }
                 else if(groupPosition == 3){
-
-
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
                     showAlert();
-
                 }
+
 
                 return false;
             }
@@ -221,20 +254,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //default fragment load..
-       /* fragment = new MyAttendanceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("name", al_main.get(1).getStr_country());
-        bundle.putString("des", al_main.get(1).getAl_state().get(0).getStr_description());
-        bundle.putString("dish", al_main.get(1).getAl_state().get(0).getStr_name());
-        bundle.putString("image", al_main.get(1).getAl_state().get(0).getStr_image());
-        tv_name.setText(al_main.get(1).getStr_country());
 
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "MyAttendanceFragment").addToBackStack("null").commit();
-*/
         fragment = new DashboardFragment();
         tv_name.setText(al_main.get(0).getStr_country()); // "name": "Dashboard" form json file
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard").addToBackStack("null").commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard")
+                .addToBackStack("null").commit();
 
 
         rl_menu.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             //progressLoadImage.setVisibility(View.GONE);
+                           // progressBar.setVisibility(View.GONE);
                             Log.e(TAG, "onException: TRUE");
                             return false;
                         }
@@ -264,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             // progressLoadImage.setVisibility(View.GONE);
+                            //progressBar.setVisibility(View.GONE);
                             Log.e(TAG, "onResourceReady: TRUE");
                             return false;
                         }
@@ -295,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     View listItem = listAdapter.getChildView(i, j, false, null,
                             listView);
                     listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
                     totalHeight += listItem.getMeasuredHeight();
 
                 }
@@ -546,8 +571,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        //super.onBackPressed();
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                Log.e(TAG, "onBackPressed: if >> "+getSupportFragmentManager().getBackStackEntryCount());
+                f = mManager.findFragmentById(R.id.content_frame);
+
+                if (f != null && f instanceof DashboardFragment) {
+                   // showAlert();
+                    exitAlert();
+                }
+
+                else{
+                    fragment = new DashboardFragment();
+                    tv_name.setText("Dashboard");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard").addToBackStack("null").commit();
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
+
+            }
+        }
     }
 
     @Override
@@ -555,16 +602,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.img_profile:
 
-              // CommonUtils.getInstance().startActivity(this, SpringAppBarLayoutWithTabActivity.class);
-               // this.overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
-
-                changeProfilePicture();
+                             changeProfilePicture();
                 break;
 
-            case R.id.txt_user_name:
+            case R.id.txt_view_profile:
 
-                 CommonUtils.getInstance().startActivity(this, SpringAppBarLayoutWithTabActivity.class);
-                 this.overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
+
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+
+                fragment = new ProfileFragment();
+                tv_name.setText("My Profile");
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Profile").addToBackStack("null").commit();
+
 
                 break;
 
@@ -680,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Create an File Uri
        // return Uri.fromFile(destination);
-        return FileProvider.getUriForFile(MainActivity.this, this.getApplicationContext().getPackageName() + ".com.autokrew.provider",destination);
+        return FileProvider.getUriForFile(MainActivity.this, this.getApplicationContext().getPackageName() + ".provider",destination);
     }
 
 
@@ -809,23 +858,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void loadImageIntoProfilePicture(String fileName) {
 
-        Bitmap bm = BitmapFactory.decodeFile(fileName);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-        byte[] b = baos.toByteArray();
-        String ImageAsString = Base64.encodeToString(b, Base64.DEFAULT);
+        try{
+            Bitmap bm = BitmapFactory.decodeFile(fileName);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 80, baos); //bm is the bitmap object
+            byte[] b = baos.toByteArray();
+            String ImageAsString = Base64.encodeToString(b, Base64.DEFAULT);
 
-        //api calls for image upload
-        ProfileImageParams params = new ProfileImageParams();
-        params.setEmployeeFK(Pref.getValue(this,Constant.PREF_SESSION_EMPLOYEE_FK,0));
-        params.setImageAsString(ImageAsString); //create file type object
+            //api calls for image upload
+            ProfileImageParams params = new ProfileImageParams();
+            params.setEmployeeFK(Pref.getValue(this,Constant.PREF_SESSION_EMPLOYEE_FK,0));
+            params.setImageAsString(ImageAsString); //create file type object
 
-        params.setFileName("profile_pic_"+System.currentTimeMillis() + ".jpeg");
+            params.setFileName("profile_pic_"+System.currentTimeMillis() + ".jpeg");
 
 
-        new WebServices(this/* ActivityContext */, this /* ApiListener */,
-                true /* show progress dialog */,true).
-                callProfileImageAPI(mToken,params);
+            new WebServices(this/* ActivityContext */, this /* ApiListener */,
+                    true /* show progress dialog */,true).
+                    callProfileImageAPI(mToken,params);
+        }
+        catch (Exception e){
+            Log.e(TAG, "loadImageIntoProfilePicture: " +e);
+        }
+
+
 
     }
 
@@ -833,7 +889,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
-        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setContentView(R.layout.dialog_signout);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
 
         //TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
         //text.setText(msg);
@@ -855,17 +913,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //clear pref
                 Pref.setValue(MainActivity.this, "auto_login","false");
 
-                    Pref.setValue(MainActivity.this,"mApprovalStatus","");
-                    Pref.setValue(MainActivity.this,"mYearPK","");
-                    Pref.setValue(MainActivity.this,"mMonthPK","");
-                    Pref.setValue(MainActivity.this,"mEmployeePK","");
+                //login credential
+                Pref.setValue(MainActivity.this,"user_id","");
+                Pref.setValue(MainActivity.this,"user_password","");
 
-              //  CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
+                Pref.setValue(MainActivity.this,"profile_pic_server" ,""); //clear profile pic
 
-                Intent startMain = new Intent(Intent.ACTION_MAIN);
+
+                Pref.setValue(MainActivity.this,"mApprovalStatus","");
+                Pref.setValue(MainActivity.this,"mYearPK","");
+                Pref.setValue(MainActivity.this,"mMonthPK","");
+                Pref.setValue(MainActivity.this,"mEmployeePK","");
+
+               CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
+
+                /*Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(startMain);
+                finish();*/
+
+
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+    private void exitAlert() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        //TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
+        //text.setText(msg);
+
+        Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
                 finish();
 
 
@@ -893,6 +994,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     CommonUtils.getInstance().displayToast(this,mObject.toString());
                 }
                 Log.e("", "onApiSuccess: profile image upload >>  " + mObject.toString());
+
+
 
             } catch (Exception e) {
                 e.printStackTrace();

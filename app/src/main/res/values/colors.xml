@@ -30,13 +30,45 @@
     <color name="bg_card_color2">#DD4B39</color>
     <color name="bg_card_color3">#00A65A</color>
 
+    <color name="bg_card_color4">#6888df</color>
+    <color name="bg_card_color5">#009688</color>
+    <color name="bg_card_color6">#795548</color>
+    <color name="bg_card_color7">#00838f</color>
 
+    <color name="bg_card_color8">#757575</color>
+
+
+
+    <color name="bg_card_attendance">#00C0EF</color>
+
+
+    <color name="bg_card_working_days">#6888df</color>
+    <color name="bg_card_present_days">#00A65A</color>
+    <color name="bg_card_absent">#DD4B39</color>
+    <color name="bg_card_weekoff">#737373</color>
+    <color name="bg_card_holiday">#3C8DBC</color>
+    <color name="bg_card_leave">#f39c12</color>
+    <color name="bg_card_halfday">#00C0EF</color>
+    <color name="bg_card_punch_early">#E391F5</color>
+    <color name="bg_card_punch_late">#E391F5</color>
+
+
+
+    <color name="dialogInfoBackgroundColor">#2866BF</color>
+    <color name="dialogSuccessBackgroundColor">#00b576</color>
+    <color name="dialogProgressBackgroundColor">#2866BF</color>
+    <color name="dialogErrorBackgroundColor">#C1272D</color>
+    <color name="dialogWarningBackgroundColor">#f2c304</color>
+    <color name="dialogNoticeBackgroundColor">#737373</color>
 
 
     <color name="accent_dark">#2670a7</color>
     <color name="accent">#3a83ba</color>
     <color name="secondary_text">#727272</color>
     <color name="white_overlay">#F3F3F3</color>
+
+
+    <color name="bg_dashboard">#E6E9EC</color>
 
 
 

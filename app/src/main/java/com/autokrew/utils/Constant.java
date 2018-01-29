@@ -1,5 +1,7 @@
 package com.autokrew.utils;
 
+import com.autokrew.models.AttendanceRegisterModel;
+import com.autokrew.models.AttendanceStatusModel;
 import com.autokrew.models.CompoffLeaveModel;
 
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class Constant {
     public static String LAST_ACTIVITY = "";
 
 
+    public static  AttendanceStatusModel mStatusModel = new AttendanceStatusModel();
+    public static  AttendanceRegisterModel mRegisterModel = new AttendanceRegisterModel();
 
 
 }

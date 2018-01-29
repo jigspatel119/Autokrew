@@ -84,6 +84,10 @@ public class SigninActivity extends AppCompatActivity implements  View.OnClickLi
             params.setUsername(edt_usernanme.getText().toString());
             params.setPassword(edt_password.getText().toString());
           //  params.setMobileURL("http://192.168.1.14:81/");
+
+            Pref.setValue(this,"user_id",edt_usernanme.getText().toString());
+            Pref.setValue(this,"user_password",edt_password.getText().toString());
+
             params.setMobileURL(Pref.getValue(this,Constant.PREF_MOBILE_URL,""));
 
             new WebServices(this/* ActivityContext */, this /* ApiListener */, true /* show progress dialog */,
@@ -121,7 +125,6 @@ public class SigninActivity extends AppCompatActivity implements  View.OnClickLi
 
             }
 
-
         }
         else if(mObject instanceof String){
             Log.e("", "onApiSuccess: user data  >>  "+mObject.toString());
@@ -133,11 +136,20 @@ public class SigninActivity extends AppCompatActivity implements  View.OnClickLi
                     +"Upload/EmployeDocument/"+userProfileModel.getTable().get(0).getImageUrl();
             //save data in to pref
             Pref.setValue(this,"profile_pic_server" ,file_path);
+            Pref.setValue(this,"is_outside_allow" ,userProfileModel.getTable1().get(0).getIsOutsideAttendaceAllow());
 
-
-            CommonUtils.getInstance().startActivityWithoutStack(this, MainActivity.class);
+           CommonUtils.getInstance().startActivityWithoutStack(this, MainActivity.class);
         }
     }
+
+    @Override
+    public void onApiFailure(Throwable mThrowable) {
+
+        //access token fail
+        //call login api
+
+    }
+
 
     private void getUserProfile(int EmployeeFK) {
         UserProfileParams params = new UserProfileParams();
@@ -148,10 +160,5 @@ public class SigninActivity extends AppCompatActivity implements  View.OnClickLi
         new WebServices(this/* ActivityContext */, this /* ApiListener */, false /* show progress dialog */,
                 true/*for new retrofitclient*/ ).
                 callUserProfileAPI(mToken,params);
-    }
-
-    @Override
-    public void onApiFailure(Throwable mThrowable) {
-
     }
 }

@@ -3,7 +3,6 @@ package com.autokrew.fragments;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.graphics.Typeface;
-import android.icu.text.DateFormatSymbols;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,15 +16,14 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.autokrew.R;
-import com.autokrew.activity.AttendanceDeviationActivity;
 import com.autokrew.activity.GroupLeaveActivity;
+import com.autokrew.activity.LeaveActivity;
 import com.autokrew.interfaces.RecyclerViewClickListener;
 import com.autokrew.models.CommonDetailModel;
 import com.autokrew.models.CommonDetailModelParams;
@@ -46,6 +44,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -58,7 +57,7 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
     View view;
     String str_name, str_disname;
 
-    Button btn_search;
+    TextView txt_search;
 
     TextView txt_child_item;
 
@@ -472,7 +471,7 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
         iv_team_member.setOnClickListener(this);
         iv_leave_status.setOnClickListener(this);
 
-        btn_search.setOnClickListener(this);
+        txt_search.setOnClickListener(this);
 
 
     }
@@ -516,10 +515,10 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
         edt_team_member = (Spinner) v.findViewById(R.id.edt_team_member);
         edt_leave_status = (Spinner) v.findViewById(R.id.edt_leave_status);
 
-        btn_search = (Button) v.findViewById(R.id.btn_search);
+        txt_search = (TextView) v.findViewById(R.id.txt_search);
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
-        btn_search.setTypeface(copperplateGothicLight);
+        /*Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+        btn_search.setTypeface(copperplateGothicLight);*/
 
         dialog = new Dialog(getActivity(), R.style.progressDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -664,7 +663,7 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.btn_search:
+            case R.id.txt_search:
 
                 //CommonUtils.getInstance().startActivity(getActivity(), GroupLeaveActivity.class);
                 // getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
@@ -713,8 +712,8 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
                 }
                 //for team no need to store above details.
 
-
-                CommonUtils.getInstance().startActivity(getActivity(), GroupLeaveActivity.class);
+                CommonUtils.getInstance().startActivity(getActivity(), LeaveActivity.class);
+                //CommonUtils.getInstance().startActivity(getActivity(), GroupLeaveActivity.class);
                 getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
                 break;

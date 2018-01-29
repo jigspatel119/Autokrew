@@ -17,6 +17,8 @@ public class PreferenceHelper {
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String CITY = "city";
+    private static final String ADDRESS = "address";
+
     private static final String STATE = "state";
     private static final String COUNTRY = "country";
     private static final String LIST_OF_SORTED_DATA_ID = "LIST_OF_SORTED_DATA_ID";
@@ -104,7 +106,21 @@ public class PreferenceHelper {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(CITY, City);
         editor.commit();
-    }//=======================( STATE )================================
+    }
+
+
+
+    public void setAddress(String Address) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(ADDRESS, Address);
+        editor.commit();
+    }
+
+    public String getAddress() {
+        return mSharedPreferences.getString(ADDRESS, "");
+    }
+
+    //=======================( STATE )================================
 
     public String getState() {
         return mSharedPreferences.getString(STATE, "");

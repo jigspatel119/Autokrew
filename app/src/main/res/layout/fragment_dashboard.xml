@@ -13,7 +13,7 @@
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/bg5"
+            android:background="@color/bg_dashboard"
             android:fillViewport="true"
             android:visibility="visible"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -31,7 +31,6 @@
                     android:paddingRight="@dimen/card_padding_left_right">
 
                     <android.support.v7.widget.CardView
-                        android:id="@+id/card_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -64,8 +63,7 @@
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@mipmap/bg_card2">
+                                    android:layout_height="match_parent">
 
 
                                     <RelativeLayout
@@ -76,7 +74,7 @@
                                         android:background="@color/bg_trancparent_black"
                                         android:gravity="center">
 
-                                        <com.autokrew.customfonts.CustomFont_GillSans
+                                        <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_centerInParent="true"
@@ -100,7 +98,7 @@
                                             android:layout_height="56dp"
                                             app:srcCompat="@drawable/ic_day_border" />
 
-                                        <com.autokrew.customfonts.CustomFont_GillSans
+                                        <TextView
                                             android:id="@+id/textView5"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -111,7 +109,7 @@
 
                                     </RelativeLayout>
 
-                                    <com.autokrew.customfonts.CustomFont_GillSans
+                                    <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_above="@+id/relativeLayout"
@@ -140,8 +138,7 @@
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@mipmap/bg_card2">
+                                    android:layout_height="match_parent">
 
 
                                     <RelativeLayout
@@ -152,7 +149,7 @@
                                         android:background="@color/bg_trancparent_black"
                                         android:gravity="center">
 
-                                        <com.autokrew.customfonts.CustomFont_GillSans
+                                        <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_centerInParent="true"
@@ -177,7 +174,7 @@
                                             android:layout_height="56dp"
                                             app:srcCompat="@drawable/ic_day_border" />
 
-                                        <com.autokrew.customfonts.CustomFont_GillSans
+                                        <TextView
                                             android:id="@+id/tv_pendingleave"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -189,7 +186,7 @@
                                     </RelativeLayout>
 
 
-                                    <com.autokrew.customfonts.CustomFont_GillSans
+                                    <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_above="@+id/rv_bottom"
@@ -215,10 +212,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_trancparent_black"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -260,28 +259,73 @@
                     android:paddingRight="5dp">
 
                     <android.support.v7.widget.CardView
+                        android:id="@+id/card_view_birthday"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:cardCornerRadius="2dp"
                         app:cardElevation="4dp"
+                        android:visibility="gone"
                         app:cardUseCompatPadding="true">
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_birthday_today"
-                            android:layout_width="fill_parent"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:scrollbars="none"
-                            />
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Birthday List (Month)"
+                                android:layout_margin="10dp"
+                                android:textSize="14sp" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@color/gray"
+                                android:layout_marginBottom="2dp"
+                                />
+
+
+                            <android.support.v7.widget.CardView
+                                android:id="@+id/card_view1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                >
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/no_data_found"
+                                    android:visibility="visible" />
+
+                            </android.support.v7.widget.CardView>
+
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rv_birthday_today"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginLeft="2dp"
+                                android:layout_marginRight="2dp"
+                                android:scrollbars="none" />
+                        </LinearLayout>
+
+
 
                     </android.support.v7.widget.CardView>
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_announcement"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="@color/bg_trancparent_black"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -319,26 +363,64 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp">
 
-                    <!--  <android.support.v7.widget.CardView
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="vertical"
-                      app:cardCornerRadius="8dp"
-                      app:cardElevation="5dp"
-                      app:cardUseCompatPadding="true">-->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_view_announcement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        android:visibility="gone"
+                        app:cardUseCompatPadding="true">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Announcements"
+                            android:layout_margin="10dp"
+                            android:textSize="14sp" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/gray"
+                            android:layout_marginBottom="2dp"
+                            />
 
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_view2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                       >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/no_data_found"
+                            android:visibility="visible" />
+
+                    </android.support.v7.widget.CardView>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_announcements"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="none"
+                        android:layout_marginBottom="2dp"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                    <!--  </android.support.v7.widget.CardView>-->
+
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
 
 
@@ -376,9 +458,9 @@
                 fab:menu_colorRipple="#99d4d4d4"
                 fab:menu_fab_size="normal"
                 fab:menu_icon="@drawable/fab_add"
-                fab:menu_labels_colorNormal="#333"
-                fab:menu_labels_colorPressed="#444"
-                fab:menu_labels_colorRipple="#66efecec"
+                fab:menu_labels_colorNormal="@color/colorPrimaryDark"
+                fab:menu_labels_colorPressed="@color/colorPrimary"
+                fab:menu_labels_colorRipple="#99d4d4d4"
                 fab:menu_labels_cornerRadius="3dp"
                 fab:menu_labels_ellipsize="none"
                 fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
@@ -399,19 +481,20 @@
                 fab:menu_showShadow="true">
 
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_announcement"
+                    android:id="@+id/fab_attendance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_speaker"
-                    fab:fab_label="Announcements"
+                    android:src="@mipmap/rc"
+                    fab:fab_label="Remote Attendance"
+                    android:visibility="gone"
                     fab:fab_size="mini" />
 
                 <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/fab_birthaday"
+                    android:id="@+id/fab_qrcode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_birthday"
-                    fab:fab_label="Birthdays"
+                    android:src="@mipmap/qr"
+                    fab:fab_label="Scan QR Code"
                     fab:fab_size="mini" />
 
             </com.github.clans.fab.FloatingActionMenu>

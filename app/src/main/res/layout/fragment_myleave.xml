@@ -4,24 +4,23 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg5"
+    android:background="@color/bg_dashboard"
     android:fillViewport="true"
     android:orientation="vertical">
 
 
-    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+    <TextView
         android:id="@+id/txt_child_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="5dp"
-        android:background="@color/bg_trancparent_black"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="10dp"
         android:text="Child Item"
         android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="16sp" />
 
 
     <android.support.v4.widget.NestedScrollView
@@ -38,14 +37,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
                     card_view:cardCornerRadius="@dimen/card_corner_radius"
-                    card_view:cardElevation="@dimen/card_elevation"
+                    card_view:cardElevation="4"
                     card_view:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -61,7 +60,7 @@
                             android:layout_marginRight="5dp"
                             android:layout_marginTop="5dp">
 
-                            <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="left"
@@ -72,7 +71,7 @@
                         </LinearLayout>
 
 
-                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -89,7 +88,7 @@
                                     android:layout_height="match_parent"
                                     android:background="@color/white" />
 
-                                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                                <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1.5"
@@ -98,7 +97,7 @@
                                     android:text="Leave Type"
                                     android:textColor="#ffffff">
 
-                                </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+                                </TextView>
 
                                 <View
                                     android:layout_width="1dp"
@@ -106,7 +105,7 @@
                                     android:background="@color/white" />
 
 
-                                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                                <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -115,7 +114,7 @@
                                     android:text="Eligible"
                                     android:textColor="#ffffff">
 
-                                </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+                                </TextView>
 
                                 <View
                                     android:layout_width="1dp"
@@ -123,7 +122,7 @@
                                     android:background="@color/white" />
 
 
-                                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                                <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -132,7 +131,7 @@
                                     android:text="Availed"
                                     android:textColor="#ffffff">
 
-                                </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+                                </TextView>
 
                                 <View
                                     android:layout_width="1dp"
@@ -140,8 +139,8 @@
                                     android:background="@color/white" />
 
 
-                                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
-                                    android:id="@+id/com.autokrew.customfonts.CustomFont_GillSansSemiBold2"
+                                <TextView
+                                    android:id="@+id/TextView2"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -150,14 +149,14 @@
                                     android:text="Balance"
                                     android:textColor="#ffffff">
 
-                                </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+                                </TextView>
 
                                 <View
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent"
                                     android:background="@color/white" />
 
-                                <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+                                <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.5"
@@ -167,7 +166,7 @@
 
                                     android:textColor="#ffffff">
 
-                                </com.autokrew.customfonts.CustomFont_GillSansSemiBold>
+                                </TextView>
 
                                 <View
                                     android:layout_width="1dp"
@@ -175,12 +174,15 @@
                                     android:background="@color/white" />
                             </LinearLayout>
 
-                            <ListView
+                            <com.autokrew.utils.MyListView
                                 android:id="@+id/listview"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="-2dp"
                                 android:layout_marginRight="-2dp"
-                                android:divider="@null"></ListView>
+                                android:divider="@null">
+
+                            </com.autokrew.utils.MyListView>
 
                         </LinearLayout>
 
@@ -209,76 +211,128 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
+                android:layout_margin="6dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/angle3">
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    <Spinner
-                        android:id="@+id/edt_month"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Spinner
+                            android:id="@+id/edt_month"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/bg_border_primary_transparent"
+                            android:padding="5dp"
+                            android:paddingLeft="5dp" />
+
+                        <ImageView
+                            android:id="@+id/iv_month"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="2dp"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_edittext_dropdown" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="0.5"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/bg_border_primary_transparent"
-                        android:padding="5dp"
-                        android:paddingLeft="5dp" />
 
-                    <ImageView
-                        android:id="@+id/iv_month"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="2dp"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_edittext_dropdown" />
-                </RelativeLayout>
+                        >
 
-                <RelativeLayout
+                        <Spinner
+                            android:id="@+id/edt_year"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/bg_border_primary_transparent"
+                            android:padding="5dp"
+                            android:paddingLeft="5dp" />
+
+                        <ImageView
+                            android:id="@+id/iv_year"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="2dp"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_edittext_dropdown" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/angle3">
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="0.5"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    <Spinner
-                        android:id="@+id/edt_year"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/bg_border_primary_transparent"
-                        android:padding="5dp"
-                        android:paddingLeft="5dp" />
+                        android:layout_height="match_parent">
 
-                    <ImageView
-                        android:id="@+id/iv_year"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="2dp"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_edittext_dropdown" />
-                </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/img"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:padding="1dp"
+                            android:src="@drawable/ic_search_white_18dp"/>
 
+                        <TextView
+                            android:id="@+id/txt_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/img"
+                            android:layout_centerVertical="true"
 
-                <ImageView
-                    android:id="@+id/iv_search"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center_vertical"
-                    android:padding="2dp"
-                    android:src="@drawable/ic_search_white" />
+                            android:text=" Search"
+                            android:textColor="#ffffff" />
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
 
 
             </LinearLayout>
@@ -286,39 +340,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/angle3">
+                    card_view:cardCornerRadius="@dimen/card_corner_radius"
+                    card_view:cardElevation="4"
+                    card_view:cardUseCompatPadding="true">
 
-                    <Spinner
-                        android:id="@+id/edt_leave_status"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/bg_border_primary_transparent"
-                        android:padding="5dp"
-                        android:paddingLeft="5dp" />
+                        android:layout_height="match_parent">
 
-                    <ImageView
-                        android:id="@+id/iv_leave_status"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="2dp"
-                        android:padding="2dp"
-                        app:srcCompat="@drawable/ic_edittext_dropdown" />
-                </RelativeLayout>
+                        <Spinner
+                            android:id="@+id/edt_leave_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/bg_border_primary_transparent"
+                            android:padding="5dp"
+                            android:paddingLeft="5dp" />
+
+                        <ImageView
+                            android:id="@+id/iv_leave_status"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="2dp"
+                            android:padding="2dp"
+                            app:srcCompat="@drawable/ic_edittext_dropdown" />
+                    </RelativeLayout>
+
+
+                </android.support.v7.widget.CardView>
 
                 <ImageView
                     android:layout_width="28dp"
@@ -346,8 +411,9 @@
                 android:layout_margin="10dp"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="10dp"
+
+                app:cardCornerRadius="2dp"
+                app:cardElevation="4dp"
                 app:cardUseCompatPadding="false"
                 card_view:cardBackgroundColor="@android:color/transparent">
 

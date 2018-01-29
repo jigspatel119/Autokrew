@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.autokrew.R;
@@ -99,6 +100,8 @@ public class AttendanceDeviationAdapter extends RecyclerView.Adapter<AttendanceD
         TextView txt_date_time,txt_name,txt_inouttime,txt_workinghrs,txt_deviation,txt_approval_status ,txt_emp_remarks;
 
         ImageView iv_edit ;
+        TextView txt_status;
+        RelativeLayout rv_status;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -110,6 +113,8 @@ public class AttendanceDeviationAdapter extends RecyclerView.Adapter<AttendanceD
             this.txt_approval_status = (TextView)itemView.findViewById(R.id.txt_approval_status);
             this.txt_emp_remarks = (TextView)itemView.findViewById(R.id.txt_emp_remarks);
 
+            this.txt_status = (TextView) itemView.findViewById(R.id.txt_status);
+            this.rv_status = (RelativeLayout)itemView.findViewById(R.id.rv_status);
 
            this.iv_edit = (ImageView)itemView.findViewById(R.id.iv_edit);
         }
@@ -133,7 +138,6 @@ public class AttendanceDeviationAdapter extends RecyclerView.Adapter<AttendanceD
         holder.txt_emp_remarks.setText(feedItems.getTable().get(position).getEmployeeRemarks());
 
 
-
         holder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +145,50 @@ public class AttendanceDeviationAdapter extends RecyclerView.Adapter<AttendanceD
                 itemListener.recyclerViewListClicked(v, position);
             }
         });
+
+
+        //set icons...
+        if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("A")){
+            holder.txt_status.setText("A");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("H")){
+            holder.txt_status.setText("H");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
+
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("WO")){
+            holder.txt_status.setText("WO");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
+
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("PL")){
+            holder.txt_status.setText("PL");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("P2")){
+            holder.txt_status.setText("P2");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
+
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("PE")){
+            holder.txt_status.setText("PE");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+
+
+        }else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("L")){
+            holder.txt_status.setText("L");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
+
+
+        }
+        else if(feedItems.getTable().get(position).getStatus().equalsIgnoreCase("P")){
+            holder.txt_status.setText("P");
+            holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
+
+
+        }
 
     }
 

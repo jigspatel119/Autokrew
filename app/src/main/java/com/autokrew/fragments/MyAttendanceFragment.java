@@ -1,12 +1,11 @@
 package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
-import android.icu.text.DateFormatSymbols;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.autokrew.R;
 import com.autokrew.adapter.AttendanceAdapter;
@@ -41,6 +39,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -51,14 +50,15 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
     private static final String TAG = "MyAttendanceFragment";
     View view;
-    TextView  txt_child_item,txt_workingdays, txt_presentdays ,txt_absent ,txt_weekoff ,txt_halfdays,txt_leave,txt_holiday,txt_punchlate,txt_punchearly;
+    TextView  txt_search,txt_child_item,txt_workingdays, txt_presentdays ,txt_absent ,txt_weekoff ,txt_halfdays,txt_leave,txt_holiday,txt_punchlate,txt_punchearly;
     ImageView iv_image;
     String str_name, str_disname, str_des, str_imagename;
 
     private RecyclerView rv_data_attendance;
+    CardView card_view;
     AttendanceAdapter mAdapter;
 
-    ImageView iv_month ,iv_year,iv_search;
+    ImageView iv_month ,iv_year;
     Spinner edt_month,edt_year;
     AttendanceDialog mDialog;
     AttendanceModel model;
@@ -67,6 +67,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     AddDeviationModel modelDeviationAdd;
     String mToken;
 
+    //LinearLayout ll_root;
     int position_dialog = 0;
     int mAddendancePK = 0;
 
@@ -107,7 +108,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
             txt_weekoff.setText(""+model.getTable1().get(0).getWeekOff());
             txt_halfdays.setText(""+model.getTable1().get(0).getHalfDays());
             txt_leave.setText(""+model.getTable1().get(0).getLeave());
-            txt_holiday.setText(""+model.getTable1().get(0).getHoliday());
+          //  txt_holiday.setText(""+model.getTable1().get(0).getHoliday());
             txt_punchlate.setText(""+model.getTable1().get(0).getPunchLate());
             txt_punchearly.setText(""+model.getTable1().get(0).getPunchEarly());
         }
@@ -118,11 +119,15 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
         iv_year.setOnClickListener(this);
         iv_month.setOnClickListener(this);
-        iv_search.setOnClickListener(this);
+        txt_search.setOnClickListener(this);
     }
 
     private void findView(View v) {
         rv_data_attendance = (RecyclerView) v.findViewById(R.id.rv_data_attendance);
+        card_view = (CardView)v.findViewById(R.id.card_view);
+
+        //ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
+       // ll_root.setVisibility(View.INVISIBLE);
 
         txt_workingdays = (TextView) v.findViewById(R.id.txt_workingdays);
         txt_presentdays = (TextView) v.findViewById(R.id.txt_presentdays);
@@ -130,14 +135,14 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         txt_weekoff = (TextView) v.findViewById(R.id.txt_weekoff);
         txt_halfdays = (TextView) v.findViewById(R.id.txt_halfdays);
         txt_leave = (TextView) v.findViewById(R.id.txt_leave);
-        txt_holiday = (TextView) v.findViewById(R.id.txt_holiday);
+       // txt_holiday = (TextView) v.findViewById(R.id.txt_holiday);
         txt_punchlate = (TextView) v.findViewById(R.id.txt_punchlate);
         txt_punchearly = (TextView) v.findViewById(R.id.txt_punchearly);
         txt_child_item = (TextView)v.findViewById(R.id.txt_child_item);
 
         iv_month = (ImageView)v.findViewById(R.id.iv_month);
         iv_year = (ImageView)v.findViewById(R.id.iv_year);
-        iv_search = (ImageView)v.findViewById(R.id.iv_search);
+        txt_search = (TextView) v.findViewById(R.id.txt_search);
 
         edt_month = (Spinner) v.findViewById(R.id.edt_month);
         edt_year = (Spinner)v.findViewById(R.id.edt_year);
@@ -182,6 +187,9 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         if (mObject instanceof String) {
             //LoginModel model = (LoginModel) mObject;
            // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
+
+           // ll_root.setVisibility(View.VISIBLE);
+
             try {
                 JSONObject jsonObj = new JSONObject(mObject.toString());
                 if(jsonObj.toString().contains("nationalPK")){
@@ -228,15 +236,27 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                     Log.e("", "onApiSuccess: original json >>  "+jsonObj);
                     Gson gson = new Gson();
                     model = gson.fromJson(mObject.toString(), AttendanceModel.class);
-                    mAdapter = new AttendanceAdapter(getActivity(), model,MyAttendanceFragment.this);
-                    rv_data_attendance.setAdapter(mAdapter);
-                    rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
-                    setData();
+                    if(model.getTable2().size()==0){
+                        card_view.setVisibility(View.VISIBLE);
+                        rv_data_attendance.setVisibility(View.GONE);
+                    }
+                    else{
+                        card_view.setVisibility(View.GONE);
+                        rv_data_attendance.setVisibility(View.VISIBLE);
+
+                        mAdapter = new AttendanceAdapter(getActivity(), model,MyAttendanceFragment.this);
+                        rv_data_attendance.setAdapter(mAdapter);
+                        rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
+                        setData();
+                    }
+
+
                 }
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
+
             }
 
         }
@@ -331,7 +351,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
             break;
 
-            case R.id.iv_search:
+            case R.id.txt_search:
 
                // CommonUtils.getInstance().displayToast(getActivity(),"search ..");
 

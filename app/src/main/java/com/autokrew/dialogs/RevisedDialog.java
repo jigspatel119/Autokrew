@@ -3,6 +3,7 @@ package com.autokrew.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
 import android.util.Log;
@@ -13,13 +14,10 @@ import android.widget.Button;
 
 import com.autokrew.R;
 import com.autokrew.interfaces.AttendanceDialogInterface;
-import com.autokrew.models.CancleLeaveModel;
-import com.autokrew.models.CancleLeaveParams;
 import com.autokrew.models.ManageLeaveDetailModel;
 import com.autokrew.models.ManageLeaveParams;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
-import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
@@ -59,6 +57,7 @@ public class RevisedDialog extends AppCompatDialog implements View.OnClickListen
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
     }
 
@@ -96,9 +95,9 @@ public class RevisedDialog extends AppCompatDialog implements View.OnClickListen
         btn_cancel = (Button) this.findViewById(R.id.btn_cancel);
 
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+       /* Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
         btn_ok.setTypeface(copperplateGothicLight);
-        btn_cancel.setTypeface(copperplateGothicLight);
+        btn_cancel.setTypeface(copperplateGothicLight);*/
 
     }
 

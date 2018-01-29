@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
     }
 
@@ -99,9 +101,9 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
 
         iv_dialog_cancel = (ImageView)this.findViewById(R.id.iv_dialog_cancel);
 
-        Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
+        /*Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
         btn_call.setTypeface(copperplateGothicLight);
-        btn_sms.setTypeface(copperplateGothicLight);
+        btn_sms.setTypeface(copperplateGothicLight);*/
 
 
 

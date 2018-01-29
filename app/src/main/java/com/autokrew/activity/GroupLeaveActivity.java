@@ -138,7 +138,7 @@ public class GroupLeaveActivity extends AppCompatActivity implements ApiListener
         card_view.setVisibility(View.GONE);
 
 
-        CommonUtils.setupCustomToolbar(toolbar);
+       // CommonUtils.setupCustomToolbar(toolbar);
 
     }
 

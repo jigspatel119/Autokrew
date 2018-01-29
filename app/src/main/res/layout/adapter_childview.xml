@@ -6,21 +6,36 @@
     android:paddingLeft="40dp"
     android:orientation="vertical">
 
-    <com.autokrew.customfonts.CustomFont_GillSansSemiBold
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="16dp"
+        android:visibility="gone"
+        android:background="@color/white"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:textSize="15dp"
         android:gravity="center_vertical"
         android:textColor="@color/white"
         android:layout_marginLeft="16dp"
-        android:id="@+id/tv_name"/>
+        android:layout_marginRight="10dp"
+        android:id="@+id/tv_name"
+        android:drawableRight="@mipmap/ic_keyboard_arrow_right_white_18dp"
+        android:drawablePadding="5dp"/>
+
+
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:layout_marginLeft="16dp"
-        android:background="@color/white">
+        android:background="@color/white"/>
 
-    </View>
+
+
 
 </LinearLayout>

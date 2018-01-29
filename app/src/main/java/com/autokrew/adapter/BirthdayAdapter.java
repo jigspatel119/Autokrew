@@ -2,6 +2,7 @@ package com.autokrew.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.autokrew.interfaces.RecyclerViewDashBoardListener;
 import com.autokrew.models.BirthdayModel;
 import com.autokrew.models.DashbordModel;
 import com.autokrew.models.LeaveModel;
+import com.autokrew.utils.Constant;
+import com.autokrew.utils.Pref;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -66,9 +69,14 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.ViewHo
 
             }
         });
+        String file_path = Pref.getValue(ctx, Constant.PREF_MOBILE_URL,"");
+        String url = feedItems.getTable4().get(position).getImageUrl();
+        url.replace("\\/", "/");
+        String img_path = file_path+"Upload/EmployeDocument/"+url;
+        Log.e(TAG, "onBindViewHolder: >>> "+img_path );
 
         Glide.with(ctx)
-                .load(feedItems.getTable4().get(position).getImageUrl()).dontAnimate()
+                .load(img_path).dontAnimate()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

@@ -1,46 +1,28 @@
 package com.autokrew.dialogs;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.autokrew.R;
-import com.autokrew.activity.AttendanceDeviationActivity;
-import com.autokrew.activity.GroupLeaveActivity;
-import com.autokrew.activity.WebViewActivity;
+import com.autokrew.activity.AttendanceActivity;
+import com.autokrew.activity.LeaveActivity;
 import com.autokrew.adapter.AttendanceDetailAdapter;
-import com.autokrew.adapter.BirthdayAdapter;
 import com.autokrew.adapter.LeaveDetailAdapter;
-import com.autokrew.fragments.DashboardFragment;
 import com.autokrew.listner.RecyclerItemClickListener;
 import com.autokrew.models.AttendanceDetailModel;
 import com.autokrew.models.LeaveDetailModel;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Pref;
-
-import java.util.ArrayList;
-
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class AttendanceDetailDialog extends AppCompatDialog implements View.OnClickListener {
@@ -80,6 +62,7 @@ public class AttendanceDetailDialog extends AppCompatDialog implements View.OnCl
         super.onStart();
         getWindow().setWindowAnimations(R.style.animation_slide_from_right);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
     }
 
@@ -149,7 +132,9 @@ public class AttendanceDetailDialog extends AppCompatDialog implements View.OnCl
                             Pref.setValue(mContext, "call_team_or_group", "team");
 
                             dismiss();
-                            CommonUtils.getInstance().startActivity(mActivity, GroupLeaveActivity.class);
+                           // CommonUtils.getInstance().startActivity(mActivity, GroupLeaveActivity.class);
+                            CommonUtils.getInstance().startActivity(mActivity, LeaveActivity.class);
+
                             mActivity.overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
                         } else {
@@ -161,7 +146,9 @@ public class AttendanceDetailDialog extends AppCompatDialog implements View.OnCl
                             Pref.setValue(mContext, "mMonthPK", String.valueOf(model.getTable().get(position).getPenMonth()));
                             Pref.setValue(mContext, "mEmployeePK", "-1"); //for please select
                             dismiss();
-                            CommonUtils.getInstance().startActivity(mActivity, AttendanceDeviationActivity.class);
+                            //CommonUtils.getInstance().startActivity(mActivity, AttendanceDeviaActivity.class);
+
+                            CommonUtils.getInstance().startActivity(mActivity, AttendanceActivity.class);
                             mActivity.overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
                         }
