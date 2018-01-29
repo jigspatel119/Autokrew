@@ -36,6 +36,7 @@ public class Pref {
 		prefsPrivateEditor.commit();
 		prefsPrivateEditor = null;
 		Pref.sharedPreferences = null;
+
 	}
 	
 	public static int getValue(Context context, String key,
