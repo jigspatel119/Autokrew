@@ -710,6 +710,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    cameraIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+
+            case MY_PERMISSION_REQUEST_READ_STORAGE_PROFILE_IMAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openGalleryForProfilePicture();
+                } else {
+                    //code for deny
+                }
+                break;
+        }
+    }
+
     private void cameraIntent() {
         currentImageUri = getImageFileUri();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

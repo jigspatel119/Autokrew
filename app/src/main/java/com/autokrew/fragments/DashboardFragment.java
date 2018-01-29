@@ -1,10 +1,12 @@
 package com.autokrew.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -249,6 +251,12 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     else{
                         //new GPSTracker(mActivity).showAlert();
                         CommonUtils.getInstance().displayToast(getActivity(),"Please enable your GPS");
+
+
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+
+
 
                     }
 

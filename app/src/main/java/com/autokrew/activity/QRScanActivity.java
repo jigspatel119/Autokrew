@@ -1,9 +1,11 @@
 package com.autokrew.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -59,6 +61,9 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
            }
            else{
                //new GPSTracker(mActivity).showAlert();
+
+               //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+              // startActivity(intent);
                CommonUtils.getInstance().displayToast(this,"Please enable your GPS");
                finish();
            }

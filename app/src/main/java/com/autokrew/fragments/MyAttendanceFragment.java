@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -67,7 +68,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     AddDeviationModel modelDeviationAdd;
     String mToken;
 
-    //LinearLayout ll_root;
+    LinearLayout ll_root;
     int position_dialog = 0;
     int mAddendancePK = 0;
 
@@ -126,8 +127,8 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         rv_data_attendance = (RecyclerView) v.findViewById(R.id.rv_data_attendance);
         card_view = (CardView)v.findViewById(R.id.card_view);
 
-        //ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
-       // ll_root.setVisibility(View.INVISIBLE);
+        ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
+        ll_root.setVisibility(View.INVISIBLE);
 
         txt_workingdays = (TextView) v.findViewById(R.id.txt_workingdays);
         txt_presentdays = (TextView) v.findViewById(R.id.txt_presentdays);
@@ -188,7 +189,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
             //LoginModel model = (LoginModel) mObject;
            // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
 
-           // ll_root.setVisibility(View.VISIBLE);
+            ll_root.setVisibility(View.VISIBLE);
 
             try {
                 JSONObject jsonObj = new JSONObject(mObject.toString());
