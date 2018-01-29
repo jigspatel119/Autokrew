@@ -381,6 +381,12 @@
                     android:layout_weight="1"
                     android:layout_gravity="start">
 
+                    <LinearLayout
+
+                        android:id="@+id/ll_managed_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
 
                     <ImageView
                         android:id="@+id/iv_cancel"
@@ -431,6 +437,8 @@
                         android:layout_gravity="center_vertical"
                         android:text="Manage Status"/>
 
+                        </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -439,33 +447,43 @@
                     android:layout_weight="1"
                     android:gravity="end">
 
+                    <LinearLayout
 
-                    <ImageView
-                        android:id="@+id/iv_lock_revised"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_lock" />
-
-                    <ImageView
-                        android:id="@+id/iv_revised"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_revised" />
-
-                    <TextView
+                        android:id="@+id/ll_revised"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Revise leave"
-                        android:layout_marginRight="5dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_lock_revised"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_lock" />
+
+                        <ImageView
+                            android:id="@+id/iv_revised"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_revised" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Revise leave"
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center_vertical"/>
+
+                    </LinearLayout>
+
+
+
 
 
                 </LinearLayout>

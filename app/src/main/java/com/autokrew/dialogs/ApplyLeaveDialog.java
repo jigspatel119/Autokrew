@@ -265,6 +265,9 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 edt_from_date.setText("From Date");
                 edt_to_date.setText("To Date");
+                txt_duration.setText("0");
+
+
             }
         });
 

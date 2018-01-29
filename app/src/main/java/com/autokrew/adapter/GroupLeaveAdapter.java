@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.autokrew.R;
@@ -89,6 +90,8 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
                 ,txt_leave_day_type,txt_duration;
         ImageView iv_edit ,iv_revised,iv_cancel,iv_lock,iv_approved,iv_lock_revised ;
 
+        LinearLayout ll_revised ,ll_managed_status;
+
         public ViewHolder(View itemView) {
             super(itemView);
            this.txt_name = (TextView)itemView.findViewById(R.id.txt_name);
@@ -110,6 +113,9 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
             this.txt_leave_day_type = (TextView)itemView.findViewById(R.id.txt_leave_day_type);
             this.txt_duration = (TextView)itemView.findViewById(R.id.txt_duration);
 
+            this.ll_revised = (LinearLayout)itemView.findViewById(R.id.ll_revised);
+            this.ll_managed_status =(LinearLayout)itemView.findViewById(R.id.ll_managed_status);
+
         }
     }
 
@@ -121,7 +127,7 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder,final int position) {
+    public void onBindViewHolder(final ViewHolder holder,final int position) {
 
 
         holder.txt_name.setText(feedItems.getTable().get(position).getName());
@@ -161,23 +167,44 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
 
 
 
-        holder.iv_edit.setOnClickListener(new View.OnClickListener() {
+       /* holder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Pref.setValue(ctx, Constant.PREF_LEAVE_BUTTON,"iv_edit");
                 itemListener.recyclerViewListClicked(v, position);
             }
-        });
+        });*/
 
-        holder.iv_revised.setOnClickListener(new View.OnClickListener() {
+    /*    holder.iv_revised.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Pref.setValue(ctx, Constant.PREF_LEAVE_BUTTON,"iv_revised");
                 itemListener.recyclerViewListClicked(v, position);
             }
+        });*/
+
+        holder.ll_revised.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(holder.iv_revised.getVisibility()== View.VISIBLE){
+                    Pref.setValue(ctx, Constant.PREF_LEAVE_BUTTON,"iv_revised");
+                    itemListener.recyclerViewListClicked(v, position);
+                }
+            }
         });
 
+        holder.ll_managed_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(holder.iv_edit.getVisibility()== View.VISIBLE){
+                    Pref.setValue(ctx, Constant.PREF_LEAVE_BUTTON,"iv_edit");
+                    itemListener.recyclerViewListClicked(v, position);
+                }
+            }
+        });
 
 
     }

@@ -179,7 +179,7 @@ public class AttendanceDialog extends AppCompatDialog implements View.OnClickLis
                    if(edt_remarks.getText().toString().length()>0 ){
                        AddDeviationParams params = new AddDeviationParams();
                        params.setAttendancePK(mAddendancePK);
-                       params.setDeviationFK(Integer.parseInt(modelCommon.getTable21().get(mySpinner.getSelectedItemPosition()).getDeviationPK()));
+                       params.setDeviationFK(Integer.parseInt(modelCommon.getTable21().get(mySpinner.getSelectedItemPosition()-1).getDeviationPK()));
                        params.setEmpRemarks(edt_remarks.getText().toString());
                        params.setMonth(_month); //monthFK
                        params.setYear(_year); //year name in string

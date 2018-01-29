@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.autokrew.ActionSheetDialog.ActionSheetDialog;
 import com.autokrew.ActionSheetDialog.OnOpenItemClickL;
@@ -988,6 +989,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     String file_path = Pref.getValue(this,Constant.PREF_MOBILE_URL,"")+ mObject.toString();
                     Pref.setValue(this,"profile_pic_server" ,file_path);
+
+                    Toast.makeText(this,"Profile picture changed!",Toast.LENGTH_LONG).show();
 
                     displayProfilePic(file_path);
                 }else{

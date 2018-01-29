@@ -239,6 +239,8 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                     if(model.getTable2().size()==0){
                         card_view.setVisibility(View.VISIBLE);
                         rv_data_attendance.setVisibility(View.GONE);
+
+                        setDefaultValue();
                     }
                     else{
                         card_view.setVisibility(View.GONE);
@@ -262,6 +264,18 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         }
 
     }
+
+    private void setDefaultValue() {
+        txt_workingdays.setText("0");
+        txt_presentdays.setText("0");
+        txt_absent.setText("0");
+        txt_weekoff.setText("0");
+        txt_halfdays.setText("0");
+        txt_leave.setText("0");
+        //  txt_holiday.setText(""+model.getTable1().get(0).getHoliday());
+        txt_punchlate.setText("0");
+        txt_punchearly.setText("0");
+}
 
     /**
      * On Api failure call
