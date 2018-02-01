@@ -143,24 +143,40 @@ public class GroupLeaveAdapter extends RecyclerView.Adapter<GroupLeaveAdapter.Vi
 //        iv_edit ,iv_revised,iv_cancel,iv_lock,iv_approved ;
         if(feedItems.getTable().get(position).get_$MobileManageStatus30().equalsIgnoreCase("Approved")){
             holder.iv_approved.setVisibility(View.VISIBLE);
+            holder.iv_edit.setVisibility(View.GONE);
+            holder.iv_lock.setVisibility(View.GONE);
+            holder.iv_cancel.setVisibility(View.GONE);
+
         }
         if(feedItems.getTable().get(position).get_$MobileManageStatus30().equalsIgnoreCase("Rejected")){
             holder.iv_cancel.setVisibility(View.VISIBLE);
-
+            holder.iv_edit.setVisibility(View.GONE);
+            holder.iv_approved.setVisibility(View.GONE);
+            holder.iv_lock.setVisibility(View.GONE);
         }
         if(feedItems.getTable().get(position).get_$MobileManageStatus30().equalsIgnoreCase("Open")){
             holder.iv_edit.setVisibility(View.VISIBLE);
+            holder.iv_approved.setVisibility(View.GONE);
+            holder.iv_lock.setVisibility(View.GONE);
+            holder.iv_cancel.setVisibility(View.GONE);
+
 
         }
         if(feedItems.getTable().get(position).get_$MobileManageStatus30().equalsIgnoreCase("Lock")){
             holder.iv_lock.setVisibility(View.VISIBLE);
+            holder.iv_edit.setVisibility(View.GONE);
+            holder.iv_approved.setVisibility(View.GONE);
+            holder.iv_cancel.setVisibility(View.GONE);
         }
 
         if(feedItems.getTable().get(position).get_$MobileReviseLeave160().equalsIgnoreCase("Open Revise")){
             holder.iv_revised.setVisibility(View.VISIBLE);
+            holder.iv_lock_revised.setVisibility(View.GONE);
         }
         if(feedItems.getTable().get(position).get_$MobileReviseLeave160().equalsIgnoreCase("Lock Revise")){
             holder.iv_lock_revised.setVisibility(View.VISIBLE);
+            holder.iv_revised.setVisibility(View.GONE);
+
         }
 
 

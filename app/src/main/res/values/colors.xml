@@ -53,6 +53,17 @@
     <color name="bg_card_punch_late">#E391F5</color>
 
 
+    <color name="bg_card_working_days2">#6888df</color>
+    <color name="bg_card_present_days2">#00A65A</color>
+    <color name="bg_card_absent2">#DD4B39</color>
+    <color name="bg_card_weekoff2">#737373</color>
+    <color name="bg_card_holiday2">#3C8DBC</color>
+    <color name="bg_card_leave2">#f39c12</color>
+    <color name="bg_card_halfday2">#00C0EF</color>
+    <color name="bg_card_punch_early2">#E391F5</color>
+    <color name="bg_card_punch_late2">#E391F5</color>
+
+
 
     <color name="dialogInfoBackgroundColor">#2866BF</color>
     <color name="dialogSuccessBackgroundColor">#00b576</color>

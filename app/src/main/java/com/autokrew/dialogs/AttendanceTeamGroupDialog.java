@@ -191,19 +191,19 @@ public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.O
 
                    // params.setAttendancePK(mAttendancePK);
 
-                    if(edt_remarks.getText().toString().equalsIgnoreCase("Approved Full Day")){
+                    if(edt_remarks.getText().toString().equalsIgnoreCase("Approved Full Day") || rb_fullday.isChecked()){
                        // params.setAppStatus("1");
                          params = new AddDeviationTeamParams(String.valueOf(mAttendancePK),"1",edt_remarks.getText().toString(),String.valueOf(Pref.getValue(mContext,Constant.PREF_SESSION_EMPLOYEE_FK,0)));//8816
 
                     }
-                    if(edt_remarks.getText().toString().equalsIgnoreCase("Approved Half Day")){
+                    if(edt_remarks.getText().toString().equalsIgnoreCase("Approved Half Day") || rb_halfday.isChecked()){
                        // params.setAppStatus("2");
                         params = new AddDeviationTeamParams(String.valueOf(mAttendancePK),"2",edt_remarks.getText().toString(),
                                 String.valueOf(Pref.getValue(mContext,Constant.PREF_SESSION_EMPLOYEE_FK,0)));
 
 
                     }
-                    if(edt_remarks.getText().toString().equalsIgnoreCase("Rejected")){
+                    if(edt_remarks.getText().toString().equalsIgnoreCase("Rejected") || rb_rejected.isChecked()){
                         //params.getmList().get(0).setAppStatus("3");
                         params = new AddDeviationTeamParams(String.valueOf(mAttendancePK),"3",edt_remarks.getText().toString(),
                                 String.valueOf(Pref.getValue(mContext,Constant.PREF_SESSION_EMPLOYEE_FK,0)));

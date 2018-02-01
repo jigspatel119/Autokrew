@@ -1,6 +1,7 @@
 package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,6 +73,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     LinearLayout ll_root;
     int position_dialog = 0;
     int mAddendancePK = 0;
+    Dialog dialog;
 
     ArrayList<DropdownModel> mYearList= new ArrayList<>();
     ArrayList<DropdownModel> mMonthList= new ArrayList<>();
@@ -158,6 +161,15 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
            // callAPI(getActivity());
           //  if (validate()) {
 
+            dialog = new Dialog(getActivity(), R.style.progressDialog);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.progress_dialog);
+            dialog.setCancelable(false);
+            //Show progress dialog
+            dialog.show();
+
+
+
 
             CommonDetailModelParams params = new CommonDetailModelParams();
             params.setFlag("common");
@@ -210,7 +222,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                     params.setYearFk(mYearList.get(edt_year.getSelectedItemPosition()).getYear());
 
                     new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                            true /* show progress dialog */,true).
+                            false /* show progress dialog */,true).
                             callGetAttendanceAPI(mToken,params,"MyAttendance"); //from_last = ""
 
                 }
@@ -253,13 +265,19 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                         setData();
                     }
 
+                    //dismiss dialog
+                    dialog.dismiss();
+
 
                 }
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
-
+                if(dialog!=null){
+                    if(dialog.isShowing())
+                        dialog.dismiss();
+                }
             }
 
         }

@@ -3,7 +3,6 @@ package com.autokrew.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -51,8 +50,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+//import android.icu.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -266,7 +268,7 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                 edt_from_date.setText("From Date");
                 edt_to_date.setText("To Date");
                 txt_duration.setText("0");
-
+                ll_duration.setVisibility(View.GONE);
 
             }
         });

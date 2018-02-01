@@ -1,6 +1,7 @@
 package com.autokrew.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -84,7 +86,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     //LinearLayout ll_birthday,ll_announcement;
 
-
+    Dialog dialog;
 
 
     FloatingActionMenu materialDesignFAM;
@@ -176,7 +178,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     private void setData(View v) {
 
-        checkVersionUpgrade();
+        //checkVersionUpgrade();
         setupRecyclerView();
 
 
@@ -251,13 +253,8 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     else{
                         //new GPSTracker(mActivity).showAlert();
                         CommonUtils.getInstance().displayToast(getActivity(),"Please enable your GPS");
-
-
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intent);
-
-
-
                     }
 
                 }
@@ -336,6 +333,14 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     }
                 })
         );
+
+        dialog = new Dialog(getActivity(), R.style.progressDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.progress_dialog);
+        dialog.setCancelable(false);
+        //Show progress dialog
+        dialog.show();
+
         callDashbordDetailAPI("Employee");
     }
 
@@ -533,8 +538,18 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
                 }*/
 
+
+                //dismiss dialog
+                dialog.dismiss();
+
             } catch (JSONException e) {
                 e.printStackTrace();
+                //dismiss dialog
+                if(dialog!=null){
+                    if(dialog.isShowing())
+                    dialog.dismiss();
+                }
+
             }
         }
 

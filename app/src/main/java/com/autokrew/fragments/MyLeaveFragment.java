@@ -1,6 +1,7 @@
 package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -88,6 +90,9 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
     String mLeaveTypeFK = "" ;
     CardView card_view;
 
+    Dialog dialog;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,13 +140,14 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
+                if(productList.get(position).getIsApplyLeave().length()>0){
+
+
+
+
                 String mLeaveType = ((TextView)view.findViewById(R.id.mLeaveType)).getText().toString(); //1
-
-
-
                 String mBalance = ((TextView)view.findViewById(R.id.mBalance)).getText().toString(); //1
                 int isCompoff = modelLeaveCard.getTable().get(position).getIscompoff();
-
 
                 String mApplyLeave =  modelLeaveCard.getTable().get(position).get_$ApplyLeave296();
                // Log.e("", "mApplyLeave >>  "+mApplyLeave);
@@ -170,6 +176,8 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                 mDialogLeave.setCancelable(false);
                 mDialogLeave.setCanceledOnTouchOutside(true);
                 mDialogLeave.show();
+
+                }
             }
         });
 
@@ -217,6 +225,13 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         rv_data_leave.setHasFixedSize(true);
 
 
+        dialog = new Dialog(getActivity(), R.style.progressDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.progress_dialog);
+        dialog.setCancelable(false);
+        //Show progress dialog
+        dialog.show();
+
 
         CommonDetailModelParams params = new CommonDetailModelParams();
         params.setFlag("common");
@@ -260,7 +275,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                     params.setYear(""+mYearList.get(edt_year.getSelectedItemPosition()).getYear());
                     params.setLeaveStatusFK("-1");
                     new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                            true /* show progress dialog */,true).
+                            false /* show progress dialog */,true).
                             callLeaveCardAPI(mToken,params); //from_last = ""
 
 
@@ -298,11 +313,18 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                         rv_data_leave.setNestedScrollingEnabled(false); //for smooth nested scroll
                     }
 
+                    //dismiss dialog
+                    dialog.dismiss();
+
 
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                if(dialog!=null){
+                    if(dialog.isShowing())
+                        dialog.dismiss();
+                }
             }
         }
 

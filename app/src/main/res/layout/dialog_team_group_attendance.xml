@@ -164,7 +164,6 @@
                 android:singleLine="true"
                 android:text="Approved Full Day"
                 android:paddingLeft="10dp"
-                android:editable="false"
                 android:textSize="16sp"
                 android:background="@drawable/bg_border_primary_dark"/>
 
