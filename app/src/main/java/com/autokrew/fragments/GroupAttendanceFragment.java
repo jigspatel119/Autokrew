@@ -525,14 +525,16 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         dialog.setContentView(R.layout.progress_dialog);
         dialog.show();
 
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dismiss();
+        if(call_team_or_group.equalsIgnoreCase("team")){
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
 
-            }
-        },3000);
+                }
+            }, 3000);
+        }
 
     }
 
@@ -636,6 +638,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
                 else if(jsonObj.toString().contains("EmployeePK")){
                     // parse team member json
+                    if(dialog!=null){
+                        if(dialog.isShowing()){
+                            dialog.dismiss();
+                        }
+                    }
+
                     Log.e("", "onApiSuccess: Team member json >>  "+jsonObj.toString());
                     Gson gson = new Gson();
                     modelTeam = gson.fromJson(mObject.toString(), TeamMemberModel.class);
@@ -644,6 +652,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                dialog.dismiss();
             }
 
         }
@@ -881,6 +890,8 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     }
 
     private void setTeamMember(TeamMemberModel model) {
+
+
 
       DropdownModel model2 ;
         mTeamMemberList.clear();

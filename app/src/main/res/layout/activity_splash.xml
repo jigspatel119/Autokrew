@@ -3,10 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/img"
     android:gravity="center">
 
-
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:src="@drawable/img2"
+    android:layout_centerInParent="true"
+    android:scaleType="fitXY"/>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="Name"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <TextView
@@ -69,7 +69,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="-"
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -116,7 +115,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Employee Code"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
 
@@ -128,7 +127,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -173,7 +171,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Email"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -184,7 +182,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="-"
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
 
@@ -252,7 +249,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Gender"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -265,7 +262,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -310,7 +306,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Date of Birth"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
 
@@ -322,7 +318,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -370,7 +365,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Address"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -383,7 +378,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -429,7 +423,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Mobile"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
 
                         />
@@ -442,7 +436,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -507,7 +500,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Marital Status"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -519,7 +512,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -567,7 +559,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Height"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -579,7 +571,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -628,7 +619,7 @@
                         android:layout_marginTop="5dp"
 
                         android:text="Weight"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <TextView
@@ -639,7 +630,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -688,7 +678,7 @@
                         android:layout_marginTop="5dp"
                         android:text="Blood Group"
 
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <TextView
@@ -699,7 +689,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -748,7 +737,7 @@
 
                         android:layout_marginTop="5dp"
                         android:text="Nationality"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/black"
 
                         android:textSize="14sp" />
 
@@ -760,7 +749,6 @@
                         android:layout_marginTop="5dp"
                         android:text="-"
 
-                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>

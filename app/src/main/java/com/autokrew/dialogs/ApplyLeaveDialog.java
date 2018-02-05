@@ -306,7 +306,7 @@ public class ApplyLeaveDialog extends AppCompatDialog implements View.OnClickLis
                         params.setLeaveTypeFK(Integer.parseInt(mLeaveTypeFK));
                         params.setLeaveFromDate(edt_from_date.getText().toString());
                         params.setLeaveToDate(edt_to_date.getText().toString());
-                        params.setRemarks("APITest");
+                        params.setRemarks(edt_reason.getText().toString());
                         params.setContactNo(edt_contact.getText().toString());
                         params.setDocumentUrl("");
 

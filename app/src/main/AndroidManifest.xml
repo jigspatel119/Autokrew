@@ -27,11 +27,12 @@
     <application
         android:allowBackup="true"
         android:name=".utils.AppController"
-        android:icon="@drawable/autokrew_final"
+        android:icon="@drawable/ak_updated"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"

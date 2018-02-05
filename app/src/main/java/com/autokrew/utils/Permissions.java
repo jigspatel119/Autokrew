@@ -43,7 +43,7 @@ public class Permissions {
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            CommonUtils.getInstance().displayToast(mActivity, "Please allow location permission.");
+          //  CommonUtils.getInstance().displayToast(mActivity, "Please allow location permission.");
 
             ActivityCompat.requestPermissions(mActivity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -142,7 +142,7 @@ public class Permissions {
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            CommonUtils.getInstance().displayToast(mActivity, "Please allow camera permission.");
+          //  CommonUtils.getInstance().displayToast(mActivity, "Please allow camera permission.");
 
             ActivityCompat.requestPermissions(mActivity,
                     new String[]{Manifest.permission.CAMERA},

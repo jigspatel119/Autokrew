@@ -525,14 +525,17 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
         dialog.setContentView(R.layout.progress_dialog);
         dialog.show();
 
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dismiss();
+        if(call_team_or_group.equalsIgnoreCase("team")){
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
 
-            }
-        }, 3000);
+                }
+            }, 3000);
+        }
+
 
 
     }
@@ -626,6 +629,11 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
 
                 } else if (jsonObj.toString().contains("EmployeePK")) {
                     // parse team member json
+                    if(dialog!=null){
+                        if(dialog.isShowing()){
+                            dialog.dismiss();
+                        }
+                    }
                     Log.e("", "onApiSuccess: Team member json >>  " + jsonObj.toString());
                     Gson gson = new Gson();
                     modelTeam = gson.fromJson(mObject.toString(), TeamMemberModel.class);
@@ -633,6 +641,7 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
                 }
 
             } catch (JSONException e) {
+                dialog.dismiss();
                 e.printStackTrace();
             }
         }
