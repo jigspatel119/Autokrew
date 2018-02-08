@@ -25,7 +25,6 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class RevisedDialog extends AppCompatDialog implements View.OnClickListener,ApiListener {

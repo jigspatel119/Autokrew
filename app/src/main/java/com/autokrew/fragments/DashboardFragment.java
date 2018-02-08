@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.autokrew.R;
 import com.autokrew.activity.MainActivity;
@@ -62,10 +61,8 @@ import org.jsoup.Jsoup;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
-/**
- * Created by kumarpalsinh on 27/1/17.
- */
 
 public class DashboardFragment extends Fragment implements RecyclerViewDashBoardListener, ApiListener {
 
@@ -135,6 +132,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         setListner();
 
 
+
         return root_view;
     }
 
@@ -143,7 +141,52 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     }
 
+    protected void displayTuto() {
+
+        // single example
+        new MaterialShowcaseView.Builder(getActivity())
+                .setTarget(materialDesignFAM)
+                .setDismissText("GOT IT!")
+                .setContentText("You can apply attendance from here.")
+                .setDelay(1000) // optional but starting animations immediately in onCreate can make them choppy
+                .singleUse("fab") // provide a unique ID used to ensure it is only shown once
+                .show();
+
+
+       /* new ShowcaseView.Builder(getActivity())
+                .setTarget(new ActionViewTarget(getActivity(), ActionViewTarget.Type.HOME))
+                .setContentTitle("ShowcaseView")
+                .setContentText("This is highlighting the Home button")
+                .hideOnTouchOutside()
+                .build();*/
+       /* TutoShowcase.from(getActivity())
+                .setListener(new TutoShowcase.Listener() {
+                    @Override
+                    public void onDismissed() {
+                        Toast.makeText(getActivity(), "dismissed", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setContentView(R.layout.tuto_showcase_tuto_sample)
+                .setFitsSystemWindows(true)
+                .on(R.id.frame_layout)
+                .addCircle()
+                .withBorder()
+                .onClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+
+                //.on(R.id.swipable)
+                //.displaySwipableLeft()
+                //.delayed(399)
+                //.animated(true)
+                .show();*/
+    }
+
     private void findView(View v) {
+
 
         rv_birthday_today = (RecyclerView) v.findViewById(R.id.rv_birthday_today);
         rv_announcements = (RecyclerView) v.findViewById(R.id.rv_announcements);
@@ -185,7 +228,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         is_outside_allow = Pref.getValue(getActivity(),"is_outside_allow" ,0);
         setupFAB(v);
 
-
+        displayTuto();
 
 
 
@@ -218,6 +261,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         materialDesignFAM = (FloatingActionMenu) v.findViewById(R.id.material_design_android_floating_action_menu);
         fab_attendance = (FloatingActionButton) v.findViewById(R.id.fab_attendance);
         fab_qrcode = (FloatingActionButton) v.findViewById(R.id.fab_qrcode);
+
 
         if(is_outside_allow == 0){
             fab_attendance.setVisibility(View.GONE);

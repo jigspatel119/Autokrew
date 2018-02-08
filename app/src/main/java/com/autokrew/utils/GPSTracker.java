@@ -48,7 +48,7 @@ public class GPSTracker {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 100; // 1 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 20 * 60 * 1000;// 20 minutes
+    private static final long MIN_TIME_BW_UPDATES = 60 * 1000;// 1 minutes
 
     public GPSTracker(Context mContext) {
         this.mContext = mContext;

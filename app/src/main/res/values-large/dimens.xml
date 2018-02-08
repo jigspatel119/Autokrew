@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="navigation_header_height">152dp</dimen>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="card_padding">38dp</dimen>
+    <dimen name="textview_padding">48dp</dimen>
+    <dimen name="about_card_margin">64dp</dimen>
+
+    <dimen name="card_padding_bottom">0dp</dimen>
+    <dimen name="card_padding_top">0dp</dimen>
+
+
+    <dimen name="about_text">18sp</dimen>
+
+    <dimen name="about_version">14sp</dimen>
+
+</resources>

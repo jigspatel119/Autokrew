@@ -25,6 +25,7 @@ import com.autokrew.adapter.AttendanceAdapter;
 import com.autokrew.dialogs.AttendanceDialog;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.interfaces.RecyclerViewClickListener;
+import com.autokrew.listner.RecyclerItemClickListener;
 import com.autokrew.models.AddDeviationModel;
 import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AttendanceModel;
@@ -263,6 +264,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                         rv_data_attendance.setAdapter(mAdapter);
                         rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
                         setData();
+
                     }
 
                     //dismiss dialog

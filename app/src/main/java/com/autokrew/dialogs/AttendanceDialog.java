@@ -2,7 +2,6 @@ package com.autokrew.dialogs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
@@ -22,7 +21,6 @@ import com.autokrew.R;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.models.AddDeviationModel;
 import com.autokrew.models.AddDeviationParams;
-import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.CommonDetailModel;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
@@ -35,8 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class AttendanceDialog extends AppCompatDialog implements View.OnClickListener ,ApiListener {

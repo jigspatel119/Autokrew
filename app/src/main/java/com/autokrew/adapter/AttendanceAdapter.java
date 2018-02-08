@@ -2,11 +2,15 @@ package com.autokrew.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +26,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
     String TAG = "AttendanceAdapter ::";
     Context ctx;
     private static RecyclerViewClickListener itemListener;
-
+    private SparseBooleanArray itemStateArray= new SparseBooleanArray();
 
 
     public AttendanceAdapter(Context ctx, AttendanceModel feedItems, RecyclerViewClickListener itemListener) {
@@ -41,7 +45,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
         RelativeLayout rv_status;
 
-        ImageView iv_edit ;
+        LinearLayout ll_header_card ,ll_bottom_views;
+        ImageView iv_edit ,img_hide_show;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -59,12 +64,17 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
             this.rv_status = (RelativeLayout)itemView.findViewById(R.id.rv_status);
 
             this.iv_edit = (ImageView)itemView.findViewById(R.id.iv_edit);
+            this.img_hide_show = (ImageView)itemView.findViewById(R.id.img_hide_show);
+
+            this.ll_header_card = (LinearLayout)itemView.findViewById(R.id.ll_header_card);
+            this.ll_bottom_views = (LinearLayout)itemView.findViewById(R.id.ll_bottom_views);
+
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_attendance_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_attendance_item2, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -75,7 +85,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
         holder.txt_intime.setText(""+feedItems.getTable2().get(position).getFirstIn());
         holder.txt_outtime.setText(""+feedItems.getTable2().get(position).getLastOut());
         holder.txt_workinghrs.setText(""+feedItems.getTable2().get(position).getWorkingHours());
-        holder.date_time.setText(""+feedItems.getTable2().get(position).getDate());
+        String[] parts = feedItems.getTable2().get(position).getDate().split(", ");
+
+        //holder.date_time.setText(""+feedItems.getTable2().get(position).getDate());
+        holder.date_time.setText(""+parts[1]);
 
 
         holder.txt_deviation.setText(""+feedItems.getTable2().get(position).getDeviation());
@@ -123,6 +136,33 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
             }
         });
 
+        holder.img_hide_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               //itemListener.recyclerViewListClicked(v, position);
+               // holder.ll_bottom_views.setVisibility(View.VISIBLE);
+                //int adapterPosition = getAdapterPosition();
+                if (!itemStateArray.get(position, false)) {
+                   // holder.ll_bottom_views.animate().translationY(holder.ll_bottom_views.getHeight());
+                    //holder.ll_bottom_views.setVisibility(View.VISIBLE);
+                    itemStateArray.put(position, true);
+                    holder.img_hide_show.setImageResource(R.mipmap.ic_keyboard_arrow_up_white_24dp);
+                    expand(holder.ll_bottom_views);
+
+                }
+                else  {
+                    //holder.ll_bottom_views.animate().translationY(0);
+                   // holder.ll_bottom_views.setVisibility(View.GONE);
+                    itemStateArray.put(position, false);
+                    holder.img_hide_show.setImageResource(R.mipmap.ic_keyboard_arrow_down_white_24dp);
+                    collapse(holder.ll_bottom_views);
+
+                }
+
+            }
+        });
+
        /* Typeface copperplateGothicLight = Typeface.createFromAsset(ctx.getAssets(), "GillSans-SemiBold.ttf");
         holder.btn_book.setTypeface(copperplateGothicLight);*/
 
@@ -130,42 +170,49 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
         if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("A")){
             holder.txt_status.setText("A");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("H")){
             holder.txt_status.setText("H");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
 
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("WO")){
             holder.txt_status.setText("WO");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
 
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PL")){
             holder.txt_status.setText("PL");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
 
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P2")){
             holder.txt_status.setText("P2");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
 
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PE")){
             holder.txt_status.setText("PE");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
 
 
         }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("L")){
             holder.txt_status.setText("L");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
 
 
         }
         else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P")){
             holder.txt_status.setText("P");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
-
+            holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
 
         }
 
@@ -194,5 +241,58 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
         return i;
     }
+
+
+    public static void expand(final View v) {
+        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targtetHeight = v.getMeasuredHeight();
+
+        v.getLayoutParams().height = 0;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? LinearLayout.LayoutParams.WRAP_CONTENT
+                        : (int)(targtetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration((int)(targtetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
 
 }

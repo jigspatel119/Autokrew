@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class GroupLeaveFragment extends Fragment implements ApiListener, RecyclerViewClickListener, View.OnClickListener {

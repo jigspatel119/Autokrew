@@ -27,7 +27,6 @@ import com.autokrew.utils.CommonUtils;
 
 import java.util.ArrayList;
 
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class GreetingsDialog extends AppCompatDialog implements View.OnClickListener {

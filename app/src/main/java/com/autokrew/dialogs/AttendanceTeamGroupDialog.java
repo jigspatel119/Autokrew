@@ -2,13 +2,10 @@ package com.autokrew.dialogs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
 import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,38 +20,16 @@ import android.widget.TextView;
 import com.autokrew.R;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.models.AddDeviationModel;
-import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AddDeviationTeamParams;
-import com.autokrew.models.TempParams;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.autokrew.utils.AppController.getAppContext;
 
 
 public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.OnClickListener,ApiListener {

@@ -118,11 +118,19 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
 */
 
         qrScan = new IntentIntegrator(this);
+        //qrScan.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        qrScan.setPrompt("Scan QR Code");
+        qrScan.setOrientationLocked(false);
+
+        //qrScan.setCameraId(0);  // Use a specific camera of the device
+        //qrScan.setBeepEnabled(false);
+        //qrScan.setBarcodeImageEnabled(true);
 
         //intializing scan object
         btn_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 if (Permissions.getInstance().isLocationPermissionGranted(mActivity)) {
 
@@ -237,7 +245,8 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
                     //that means the encoded format not matches
                     //in this case you can display whatever data is available on the qrcode
                     //to a toast
-                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                   // Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
                 }
             }
         } else {

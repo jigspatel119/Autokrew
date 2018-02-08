@@ -1,35 +1,24 @@
 package com.autokrew.activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.autokrew.R;
-import com.autokrew.adapter.AttendanceAdapter;
 import com.autokrew.adapter.AttendanceDeviationAdapter;
 import com.autokrew.dialogs.AttendanceTeamGroupDialog;
-import com.autokrew.fragments.GroupAttendanceFragment;
-import com.autokrew.fragments.MyAttendanceFragment;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.interfaces.RecyclerViewClickListener;
 import com.autokrew.models.AttendanceDeviationTGModel;
-import com.autokrew.models.AttendanceModel;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.AttendanceTeamGroupModel;
 import com.autokrew.network.ApiListener;
-import com.autokrew.dialogs.AttendanceDialog;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
@@ -39,10 +28,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.autokrew.utils.AppController.getAppContext;
 
 public class AttendanceDeviationActivity extends AppCompatActivity implements ApiListener, View.OnClickListener,
         RecyclerViewClickListener,AttendanceDialogInterface {
