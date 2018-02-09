@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "673384899761",
+    "firebase_url": "https://autokrew-1506344197477.firebaseio.com",
+    "project_id": "autokrew-1506344197477",
+    "storage_bucket": "autokrew-1506344197477.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673384899761:android:70af0f10ed3e1f19",
+        "android_client_info": {
+          "package_name": "com.autokrew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673384899761-s4ap9c2i6f1c0mofd662qhdbdd3llsaj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autokrew",
+            "certificate_hash": "da89c0761032c1bb73aa0be0c4321ea26a408b2a"
+          }
+        },
+        {
+          "client_id": "673384899761-8507q44jqksjffthsc4af9fc8g6rr3gq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOHPtosk_MNpaCDb-RME7BrIyX5Q1si6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673384899761-8507q44jqksjffthsc4af9fc8g6rr3gq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

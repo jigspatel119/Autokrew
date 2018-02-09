@@ -1,10 +1,16 @@
 apply plugin: 'com.android.application'
+// ADD THIS
+//apply plugin: 'com.google.firebase.firebase-crash'
+/* Add the Fabric plugin: */
+apply plugin: 'io.fabric'
+
+
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
 
-    useLibrary  'org.apache.http.legacy'
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.autokrew"
         minSdkVersion 19
@@ -34,65 +40,48 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-   /* androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })*/
+
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
 
     //compile project
     compile project(':rackmonthPicker')
 
-
-    //Android Dependencies
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support:cardview-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
-
-    //FAB
     compile 'com.github.clans:fab:1.6.2'
-    //MultiDex
     compile 'com.android.support:multidex:1.0.1'
-
-    //Retrofit Dependencies
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:support-annotations:24.2.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-
-    //video caching
     compile 'com.danikula:videocache:2.7.0'
-
-    //datepicker dialog
     compile 'com.wdullaer:materialdatetimepicker:2.5.0'
-
     compile 'com.github.mmin18:realtimeblurview:1.0.4'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-
-
- /*   compile 'org.apache.httpcomponents:httpcore:4.4.1'
-    compile 'org.apache.httpcomponents:httpclient:4.5'*/
-
-    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.0'
-
-
-    //circular loader
+    compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.mikhaellopez:circularfillableloaders:1.2.0'
-
-    //progress bar
-    //compile 'com.gmail.samehadar:iosdialog:1.0'
-
     compile 'com.wang.avi:library:2.1.3'
-
     compile 'org.jsoup:jsoup:1.8.3'
+    compile 'com.github.deano2390:MaterialShowcaseView:1.2.0'
+    //compile 'com.google.firebase:firebase-crash:10.0.1'
 
 
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
+        transitive = true
+    }
+    compile 'com.google.firebase:firebase-core:11.8.0'
+
+
+    testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

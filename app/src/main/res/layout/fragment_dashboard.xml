@@ -455,6 +455,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 fab:menu_animationDelayPerItem="55"
+                android:layout_marginBottom="2dp"
                 fab:menu_backgroundColor="@android:color/transparent"
                 fab:menu_buttonSpacing="0dp"
                 fab:menu_colorNormal="@color/colorPrimaryDark"
@@ -506,8 +507,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fill Attendance"
-                android:padding="2dp"
+                android:text="Add Attendance"
+                android:padding="1dp"
                 android:layout_gravity="bottom|end"/>
 
         </FrameLayout>

@@ -50,6 +50,7 @@ import com.autokrew.utils.GPSTracker;
 import com.autokrew.utils.Permissions;
 import com.autokrew.utils.Pref;
 import com.autokrew.utils.PreferenceHelper;
+import com.crashlytics.android.Crashlytics;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
@@ -147,42 +148,11 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         new MaterialShowcaseView.Builder(getActivity())
                 .setTarget(materialDesignFAM)
                 .setDismissText("GOT IT!")
-                .setContentText("You can apply attendance from here.")
+                .setContentText("You can add attendance from here.")
                 .setDelay(1000) // optional but starting animations immediately in onCreate can make them choppy
                 .singleUse("fab") // provide a unique ID used to ensure it is only shown once
                 .show();
 
-
-       /* new ShowcaseView.Builder(getActivity())
-                .setTarget(new ActionViewTarget(getActivity(), ActionViewTarget.Type.HOME))
-                .setContentTitle("ShowcaseView")
-                .setContentText("This is highlighting the Home button")
-                .hideOnTouchOutside()
-                .build();*/
-       /* TutoShowcase.from(getActivity())
-                .setListener(new TutoShowcase.Listener() {
-                    @Override
-                    public void onDismissed() {
-                        Toast.makeText(getActivity(), "dismissed", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setContentView(R.layout.tuto_showcase_tuto_sample)
-                .setFitsSystemWindows(true)
-                .on(R.id.frame_layout)
-                .addCircle()
-                .withBorder()
-                .onClick(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                })
-
-                //.on(R.id.swipable)
-                //.displaySwipableLeft()
-                //.delayed(399)
-                //.animated(true)
-                .show();*/
     }
 
     private void findView(View v) {
@@ -314,6 +284,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         fab_qrcode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
+               // Crashlytics.getInstance().crash(); // Force a crash
 
                 if (Permissions.getInstance().isCameraPermissionGranted(getActivity()) ) {
                     //open camera and api calls for qrcode..
