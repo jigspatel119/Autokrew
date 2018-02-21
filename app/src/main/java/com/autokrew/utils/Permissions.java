@@ -49,7 +49,6 @@ public class Permissions {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_FINE_LOCATION_PERMISSION);
 
-
             return false;
 
         } else {

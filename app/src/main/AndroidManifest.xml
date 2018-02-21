@@ -25,10 +25,19 @@
     <uses-feature android:name="android.hardware.camera.flash" />
 
 
+    <supports-screens android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true"
+        android:resizeable="true"/>
+
+
+
     <application
         android:allowBackup="false"
         android:name=".utils.AppController"
-        android:icon="@drawable/ak_updated2"
+        android:icon="@drawable/ak_updated3"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"

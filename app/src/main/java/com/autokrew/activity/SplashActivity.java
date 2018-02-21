@@ -87,33 +87,7 @@ public class SplashActivity extends BaseActivity implements ApiListener ,DialogL
         mDialog =  new AwesomeProgressDialog(this ,SplashActivity.this);
         mDialog.show();
 
-       /* AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Enter Company Code"); //Set Alert dialog title here
-       // alert.setMessage("Enter Your Name Here"); //Message here
 
-        final EditText input = new EditText(this);
-        input.setMaxLines(1);
-        input.setLines(1);
-        input.setSingleLine(true);
-        alert.setView(input);
-        alert.setCancelable(false);
-
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                String OTP = input.getEditableText().toString().trim();
-
-                if(OTP.length()>0){
-                    apiCalls(OTP);
-                }
-                else{
-                    CommonUtils.getInstance().displayToast(SplashActivity.this,"Please Insert OTP!");
-                }
-            }
-        });
-        AlertDialog alertDialog = alert.create();
-        alertDialog.show();
-        alertDialog.setCancelable(false);*/
 
     }
 
@@ -122,7 +96,6 @@ public class SplashActivity extends BaseActivity implements ApiListener ,DialogL
             new WebServices(this/* ActivityContext */, this /* ApiListener */, false /* show progress dialog */,
                     false /*for new retrofitclient*/).
                     callGetPointingUrlAPI(OTP);
-
     }
 
 

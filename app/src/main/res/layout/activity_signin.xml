@@ -3,22 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/img2">
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/img3"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
         android:orientation="vertical"
+        android:weightSum="2"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:gravity="center"
             >
-
-
 
         <LinearLayout
             android:id="@+id/circle"
@@ -26,7 +36,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circleangle"
             android:padding="10dp"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:orientation="horizontal"
             android:layout_above="@+id/linearLayout"
@@ -69,7 +78,15 @@
 
 
         </LinearLayout>
+
+
         </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:visibility="invisible"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +103,7 @@
                 android:layout_marginTop="20dp"
                 android:textSize="16dp"
                 android:textColorHint="@color/white"
-                android:textColor="#ADCCE2"
+                android:textColor="@color/white"
                 android:layout_marginLeft="22dp"
                 android:inputType="text"
                 android:background="#0000"
@@ -109,7 +126,7 @@
                 android:textColorHint="@color/white"
                 android:layout_marginLeft="22dp"
                 android:inputType="textPassword"
-                android:textColor="#ADCCE2"
+                android:textColor="@color/white"
                 android:maxLength="50"
                 android:background="#0000"
                 android:padding="16dp"
@@ -141,4 +158,5 @@
                 />
         </LinearLayout>
     </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

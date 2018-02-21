@@ -178,8 +178,16 @@ public class WebServices {
         //Dismiss progress dialog
         dialog.dismiss();
 
-        //Display message
-        CommonUtils.getInstance().displayAlert(mContext, mContext.getResources().getString(R.string.alert_server_not_responding));
+
+        if(mThrowable==null){
+            //case 401:
+            //nothing to display
+           // CommonUtils.getInstance().displayToast(mContext,"its me");
+        }
+        else{
+            //Display message
+            CommonUtils.getInstance().displayAlert(mContext, mContext.getResources().getString(R.string.alert_server_not_responding));
+        }
 
         //Call on failure method of ApiListener Interface
         mApiListener.onApiFailure(mThrowable);

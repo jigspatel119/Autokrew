@@ -199,9 +199,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         setupFAB(v);
 
         displayTuto();
-
-
-
     }
 
     private void checkVersionUpgrade() {
@@ -356,6 +353,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         //Show progress dialog
         dialog.show();
 
+        //1st api calls
         callDashbordDetailAPI("Employee");
     }
 
@@ -521,37 +519,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
                     CommonUtils.getInstance().displayToast(getActivity(),""+mOutsideSideAttendanceModel.getTable().get(0).getResult());
                 }
-
-               /* else if(from_last.equalsIgnoreCase("LatestVersion")){
-
-                    try {
-                        mLetestVersionModel =  gson.fromJson(mObject.toString(), LetestVersionModel.class);
-                    Log.e(TAG, "onApiSuccess:  >>>> " +mLetestVersionModel.getData().getVersion() );
-
-                        PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                        int verCode = pInfo.versionCode;
-
-                    if(Integer.parseInt(mLetestVersionModel.getData().getVersion())> verCode){
-                        //show popup
-                        mVersionDialog = new VersionUpgradeDialog(getActivity());
-                        mVersionDialog.setCancelable(false);
-                        mVersionDialog.setCanceledOnTouchOutside(true);
-                        mVersionDialog.show();
-
-                    }else{
-                        //nothing
-                        //show popup
-                        mVersionDialog = new VersionUpgradeDialog(getActivity());
-                        mVersionDialog.setCancelable(false);
-                        mVersionDialog.setCanceledOnTouchOutside(true);
-                        mVersionDialog.show();
-                    }
-
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                }*/
 
 
                 //dismiss dialog

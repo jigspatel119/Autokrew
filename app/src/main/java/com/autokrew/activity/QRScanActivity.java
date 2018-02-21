@@ -52,14 +52,14 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
     String mLat2 ,mLong2 ,mAddress;
     private PreferenceHelper mPreferenceHelper;
     Location location;
+    // Google client to interact with Google API
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscan);
         mPreferenceHelper = new PreferenceHelper(this);
-
-
 
 
         //Initialize Views
@@ -130,6 +130,8 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
         btn_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+              //  showAlert();
 
 
                 if (Permissions.getInstance().isLocationPermissionGranted(mActivity)) {
@@ -293,35 +295,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
 
     public void showAlert() {
 
-        try {
-            final AlertDialog.Builder builder = new
-                    AlertDialog.Builder(QRScanActivity.this);
-            builder.setCancelable(false);
-            builder.setPositiveButton("Settings", new
-                    DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
 
-                            Intent intent = new Intent(
-                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                            return;
-                        }
-                    });
-            builder.setNegativeButton("Cancel", new
-                    DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-
-                            return;
-                        }
-                    });
-            builder.setMessage("Please enable your GPS");
-            builder.create().getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            builder.create().show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 }
