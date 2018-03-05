@@ -711,6 +711,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
                 //clear below pref....
                 Pref.setValue(getActivity(),"mApprovalStatus",mApprovalStatus);
                 Pref.setValue(getActivity(),"mYear",edt_year.getSelectedItem().toString());
+                Pref.setValue(getActivity(),"mYearPK",mYearList.get(edt_year.getSelectedItemPosition()).getYearPk());
                 Pref.setValue(getActivity(),"mMonthPK",mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
 
 
@@ -819,7 +820,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
     }
 
-    private void setMonth(CommonDetailModel modelCommon ) {
+    private void setMonth(CommonDetailModel modelCommon) {
 
         DropdownModel model;
         mMonthList.clear();

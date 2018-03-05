@@ -85,6 +85,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_p"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -128,6 +129,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_p2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -171,6 +173,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_a"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -214,6 +217,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_l"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -282,6 +286,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_h"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -325,6 +330,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_wo"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -368,6 +374,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_pl"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -411,6 +418,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rv_pe"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">

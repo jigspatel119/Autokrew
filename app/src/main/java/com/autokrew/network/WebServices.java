@@ -9,6 +9,7 @@ import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AddDeviationTeamParams;
 import com.autokrew.models.ApplyAttendanceParam;
 import com.autokrew.models.ApplyLeaveParams;
+import com.autokrew.models.AttendanceInDetailModelParams;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.BindWeekOffParams;
 import com.autokrew.models.CancleLeaveParams;
@@ -470,6 +471,40 @@ public class WebServices {
             }
 
 
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+    /** //for attendance in detail
+     * //===========================( get Attendance API )==============================//
+     */
+    public void callGetAttendanceInDetailAPI(String mToken , AttendanceInDetailModelParams params) {
+
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+            // Call Webservice
+            Call<String> call = null;
+
+            call = mApiInterface.getAttendanceInDetail(mToken,
+                        Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),params);
 
             call.enqueue(new Callback<String>() {
                 @Override

@@ -5,6 +5,7 @@ import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AddDeviationTeamParams;
 import com.autokrew.models.ApplyAttendanceParam;
 import com.autokrew.models.ApplyLeaveParams;
+import com.autokrew.models.AttendanceInDetailModelParams;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.BindWeekOffParams;
 import com.autokrew.models.CancleLeaveParams;
@@ -100,6 +101,16 @@ public interface ApiInterface {
             @Body AttendanceModelParams body
     );
 
+
+
+    //get Attendance in detail
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/Attendance/AttDetail")
+    Call<String> getAttendanceInDetail(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body AttendanceInDetailModelParams body
+    );
 
 
     //dashboard

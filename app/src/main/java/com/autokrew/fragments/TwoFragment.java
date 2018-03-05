@@ -125,6 +125,7 @@ public class TwoFragment extends Fragment implements ApiListener {
         params.setFlag("Employee_Attendance_Status");
         _flag = "Employee_Attendance_Status";
         params.setEmployeeFK(Integer.parseInt(mEmployeePK)); //team member fk
+        //{ EmployeeFK: "AN10000015", MonthFK: 3, YearFk: 49, ApprovalStatus: "P" }
 
         if(Pref.getValue(getActivity(),"call_team_or_group","").equalsIgnoreCase("group")){
             params.setCompanyFK(Integer.parseInt(CompanyFK));

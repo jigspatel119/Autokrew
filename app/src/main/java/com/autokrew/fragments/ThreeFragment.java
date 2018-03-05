@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 
 import com.autokrew.R;
 import com.autokrew.adapter.AttendanceRegisterAdapter;
-import com.autokrew.adapter.AttendanceStatusAdapter;
 import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.AttendanceRegisterModel;
-import com.autokrew.models.AttendanceStatusModel;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.Constant;

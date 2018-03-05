@@ -2,8 +2,11 @@ package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -22,6 +25,10 @@ import android.widget.TextView;
 
 import com.autokrew.R;
 import com.autokrew.adapter.AttendanceAdapter;
+import com.autokrew.decorators.EventDecorator;
+import com.autokrew.decorators.HighlightWeekendsDecorator;
+import com.autokrew.decorators.MySelectorDecorator;
+import com.autokrew.decorators.OneDayDecorator;
 import com.autokrew.dialogs.AttendanceDialog;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.interfaces.RecyclerViewClickListener;
@@ -39,14 +46,23 @@ import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.Executors;
 
 
 public class MyAttendanceFragment extends Fragment implements ApiListener,RecyclerViewClickListener ,View.OnClickListener ,AttendanceDialogInterface {
@@ -78,6 +94,9 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
     ArrayList<DropdownModel> mYearList= new ArrayList<>();
     ArrayList<DropdownModel> mMonthList= new ArrayList<>();
+    MaterialCalendarView widget;
+    OneDayDecorator oneDayDecorator = new OneDayDecorator();
+    ArrayList<Date> mList = new ArrayList<>();
 
 
     @Nullable
@@ -130,6 +149,8 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     private void findView(View v) {
         rv_data_attendance = (RecyclerView) v.findViewById(R.id.rv_data_attendance);
         card_view = (CardView)v.findViewById(R.id.card_view);
+
+        widget = (MaterialCalendarView)v.findViewById(R.id.calendarView);
 
         ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
         ll_root.setVisibility(View.INVISIBLE);
@@ -263,6 +284,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                         mAdapter = new AttendanceAdapter(getActivity(), model,MyAttendanceFragment.this);
                         rv_data_attendance.setAdapter(mAdapter);
                         rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
+                        //setCalender(model);
                         setData();
 
                     }
@@ -285,6 +307,87 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         }
 
     }
+
+    private void setCalender(AttendanceModel model) {
+      /*  widget.addDecorators(
+                new MySelectorDecorator(getActivity()),
+                new HighlightWeekendsDecorator(),
+                oneDayDecorator
+        );*/
+
+      /*  widget.state().edit()
+                //.setFirstDayOfWeek(Calendar.WEDNESDAY)
+                .setMinimumDate(CalendarDay.from(2018, 1, 1)) // pass from date
+                .setMaximumDate(CalendarDay.from(2018, 1, 28)) // pass to date
+                .setCalendarDisplayMode(CalendarMode.MONTHS)
+                .commit();*/
+        Calendar calendar = Calendar.getInstance();
+        ArrayList<CalendarDay> dates = new ArrayList<>();
+        try {
+
+            //DND ============
+          /*  Date D1 = funx("2018-02-01");
+            Date D2 = funx("2018-02-02");
+            Date D3 = funx("2018-02-03");
+            Date D4 = funx("2018-02-04");
+            Date D5 = funx("2018-02-05");
+
+            mList.add(D1);
+            mList.add(D2);
+            mList.add(D3);
+            mList.add(D4);
+            mList.add(D5);
+
+            for (int i = 0; i <mList.size() ; i++) {
+                CalendarDay day = CalendarDay.from(mList.get(i));
+                dates.add(day);
+                calendar.add(Calendar.DAY_OF_MONTH,1);
+            }*/
+
+          //====================
+
+        for (int i = 0; i <model.getTable2().size() ; i++) {
+          if(model.getTable2().get(i).getStatus().equalsIgnoreCase("P")){
+              Date d = funx(model.getTable2().get(i).getDate());
+              mList.add(d);
+           }
+        }
+
+        for (int i = 0; i <mList.size() ; i++) {
+                CalendarDay day = CalendarDay.from(mList.get(i));
+                dates.add(day);
+                calendar.add(Calendar.DAY_OF_MONTH,1);
+            }
+         widget.addDecorator(new EventDecorator(Color.RED, dates));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "setCalender: 1 >> "+ e.toString());
+        }
+
+       // widget.setShowOtherDates(MaterialCalendarView.SHOW_DEFAULTS);
+
+        //new ApiSimulator().executeOnExecutor(Executors.newSingleThreadExecutor());
+    }
+
+    public static Date funx(String S) {
+
+        String[] s2 = S.split(", ");
+
+        String DateStr = s2[1].trim(); //S =>s2[1]
+
+        Date d = null;
+        try {
+            d = new SimpleDateFormat("dd MMM YYYY").parse(DateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "setCalender: 2 >> "+ e.toString());
+        }
+        Date d1 = new Date(d.getTime());
+
+        return d1;
+    }
+
 
     private void setDefaultValue() {
         txt_workingdays.setText("0");
@@ -501,6 +604,51 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                 true /* show progress dialog */,true).
                 callGetAttendanceAPI(mToken,params,"MyAttendance"); //from_last = ""
 
+    }
+
+
+
+
+    /**
+     * Simulate an API call to show how to add decorators
+     */
+    private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
+
+        @Override
+        protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MONTH, -2);
+            ArrayList<CalendarDay> dates = new ArrayList<>();
+         /*   for (int i = 0; i < 30; i++) {
+                CalendarDay day = CalendarDay.from(calendar);
+                dates.add(day);
+                calendar.add(Calendar.DATE, 0);
+            }*/
+
+           /* for (int i = 0; i <model.getTable2().size() ; i++) {
+                CalendarDay day = CalendarDay.from(calendar);
+                dates.add(day);
+                calendar.add(Calendar.DATE, i);
+            }
+*/
+            return dates;
+        }
+
+        @Override
+        protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
+            super.onPostExecute(calendarDays);
+
+            /*if (isFinishing()) {
+                return;
+            }*/
+
+            widget.addDecorator(new EventDecorator(Color.RED, calendarDays));
+        }
     }
 
 }
