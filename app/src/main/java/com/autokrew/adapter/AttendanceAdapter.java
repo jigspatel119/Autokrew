@@ -21,19 +21,20 @@ import com.autokrew.models.AttendanceModel;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.ViewHolder> {
 
-    public AttendanceModel feedItems;
+    public AttendanceModel.Table2 feedItems;
 
     String TAG = "AttendanceAdapter ::";
     Context ctx;
     private static RecyclerViewClickListener itemListener;
     private SparseBooleanArray itemStateArray= new SparseBooleanArray();
+   
 
-
-    public AttendanceAdapter(Context ctx, AttendanceModel feedItems, RecyclerViewClickListener itemListener) {
+    public AttendanceAdapter(Context ctx, AttendanceModel.Table2 feedItems, RecyclerViewClickListener itemListener) {
 
         this.feedItems = feedItems;
         this.ctx=ctx;
         this.itemListener = itemListener;
+       
 
     }
 
@@ -82,28 +83,31 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder,final int position) {
 
-        holder.txt_intime.setText(""+feedItems.getTable2().get(position).getFirstIn());
-        holder.txt_outtime.setText(""+feedItems.getTable2().get(position).getLastOut());
-        holder.txt_workinghrs.setText(""+feedItems.getTable2().get(position).getWorkingHours());
-        String[] parts = feedItems.getTable2().get(position).getDate().split(", ");
+        //old
+       // holder.txt_intime.setText(""+feedItems.getFirstIn());
+       // holder.txt_outtime.setText(""+feedItems.getLastOut());
 
-        //holder.date_time.setText(""+feedItems.getTable2().get(position).getDate());
+        //new 
+        holder.txt_intime.setText(""+feedItems.getFirstIn());
+        holder.txt_outtime.setText(""+feedItems.getLastOut());
+        holder.txt_workinghrs.setText(""+feedItems.getWorkingHours());
+        String[] parts = feedItems.getDate().split(", ");
+
+        //holder.date_time.setText(""+feedItems.getDate());
         holder.date_time.setText(""+parts[1]);
 
-
-        holder.txt_deviation.setText(""+feedItems.getTable2().get(position).getDeviation());
-        holder.txt_emp_remarks.setText(""+feedItems.getTable2().get(position).getEmployeeRemarks());
-        holder.txt_rep_person_status.setText(""+feedItems.getTable2().get(position).getReportingPersonStatus());
-        holder.txt_rep_person_remarks.setText(""+feedItems.getTable2().get(position).getReportingPersonRemarks());
-
+        holder.txt_deviation.setText(""+feedItems.getDeviation());
+        holder.txt_emp_remarks.setText(""+feedItems.getEmployeeRemarks());
+        holder.txt_rep_person_status.setText(""+feedItems.getReportingPersonStatus());
+        holder.txt_rep_person_remarks.setText(""+feedItems.getReportingPersonRemarks());
 
 
-        if(feedItems.getTable2().get(position).getLockAttendance().equalsIgnoreCase("Lock")){
+        if(feedItems.getLockAttendance().equalsIgnoreCase("Lock")){
             holder.iv_edit.setVisibility(View.INVISIBLE);
         }
-        else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("L")){
+        else if(feedItems.getStatus().equalsIgnoreCase("L")){
 
-            if(feedItems.getTable2().get(position).getLeaveDayType().equals(1)){
+            if(feedItems.getLeaveDayType().equals(1)){
                 holder.iv_edit.setVisibility(View.VISIBLE);
             }else{
                 holder.iv_edit.setVisibility(View.INVISIBLE);
@@ -111,14 +115,14 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
         }
 
-        else if((feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PL") ||
-                feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PE") ||
-                feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P2") ||
-                feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("A") ||
-                feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("WO") ||
-                feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("H"))&&(
-                        feedItems.getTable2().get(position).getReportingPersonStatus().equalsIgnoreCase("-")||
-                        feedItems.getTable2().get(position).getReportingPersonStatus().equalsIgnoreCase("Rejected"))
+        else if((feedItems.getStatus().equalsIgnoreCase("PL") ||
+                feedItems.getStatus().equalsIgnoreCase("PE") ||
+                feedItems.getStatus().equalsIgnoreCase("P2") ||
+                feedItems.getStatus().equalsIgnoreCase("A") ||
+                feedItems.getStatus().equalsIgnoreCase("WO") ||
+                feedItems.getStatus().equalsIgnoreCase("H"))&&(
+                        feedItems.getReportingPersonStatus().equalsIgnoreCase("-")||
+                        feedItems.getReportingPersonStatus().equalsIgnoreCase("Rejected"))
                 ){
             holder.iv_edit.setVisibility(View.VISIBLE);
 
@@ -135,14 +139,21 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
                 itemListener.recyclerViewListClicked(v, position);
             }
         });
+        if (!itemStateArray.get(position, false)) {
+            // holder.ll_bottom_views.animate().translationY(holder.ll_bottom_views.getHeight());
+            //holder.ll_bottom_views.setVisibility(View.VISIBLE);
+            //itemStateArray.put(position, true);
+            holder.img_hide_show.setImageResource(R.mipmap.ic_keyboard_arrow_up_white_24dp);
+            expand(holder.ll_bottom_views);
 
-        holder.img_hide_show.setOnClickListener(new View.OnClickListener() {
+        }
+
+
+      /*  holder.img_hide_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-               //itemListener.recyclerViewListClicked(v, position);
-               // holder.ll_bottom_views.setVisibility(View.VISIBLE);
-                //int adapterPosition = getAdapterPosition();
+
                 if (!itemStateArray.get(position, false)) {
                    // holder.ll_bottom_views.animate().translationY(holder.ll_bottom_views.getHeight());
                     //holder.ll_bottom_views.setVisibility(View.VISIBLE);
@@ -161,75 +172,73 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
                 }
 
             }
-        });
+        });*/
 
-       /* Typeface copperplateGothicLight = Typeface.createFromAsset(ctx.getAssets(), "GillSans-SemiBold.ttf");
-        holder.btn_book.setTypeface(copperplateGothicLight);*/
 
        //set icons...
-        if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("A")){
+        if(feedItems.getStatus().equalsIgnoreCase("A")){
             holder.txt_status.setText("A");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular3));
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("H")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("H")){
             holder.txt_status.setText("H");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular5));
 
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("WO")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("WO")){
             holder.txt_status.setText("WO");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular6));
 
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PL")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("PL")){
             holder.txt_status.setText("PL");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
 
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P2")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("P2")){
             holder.txt_status.setText("P2");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular2));
 
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("PE")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("PE")){
             holder.txt_status.setText("PE");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular7));
 
 
-        }else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("L")){
+        }else if(feedItems.getStatus().equalsIgnoreCase("L")){
             holder.txt_status.setText("L");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular4));
 
 
         }
-        else if(feedItems.getTable2().get(position).getStatus().equalsIgnoreCase("P")){
+        else if(feedItems.getStatus().equalsIgnoreCase("P")){
             holder.txt_status.setText("P");
             holder.rv_status.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
             holder.ll_header_card.setBackground(ctx.getResources().getDrawable(R.drawable.bg_circular1));
 
         }
-
-
+        
     }
 
     @Override
     public int getItemCount() {
 
-        return feedItems.getTable2().size();
+        return 1;
+       //return feedItems.getTable2().size();
         //return feedItems.size();
     }
 
-    public int getCount() {
+   /* public int getCount() {
 
         return feedItems.getTable2().size();
-    }
+    }*/
 
     /*public AttendanceModel getItem(int i) {
 

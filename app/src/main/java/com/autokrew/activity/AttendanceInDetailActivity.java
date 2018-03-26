@@ -1,6 +1,5 @@
 package com.autokrew.activity;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -8,17 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.autokrew.R;
-import com.autokrew.adapter.AttendanceAdapter;
 import com.autokrew.adapter.AttendanceInDetailAdapter;
 import com.autokrew.dialogs.EmployeeDetailDialog;
-import com.autokrew.dialogs.LeaveRequestDialog;
-import com.autokrew.fragments.LeaveRequestFragment;
-import com.autokrew.fragments.MyAttendanceFragment;
 import com.autokrew.models.AttendanceInDetailModel;
 import com.autokrew.models.AttendanceInDetailModelParams;
 import com.autokrew.network.ApiListener;

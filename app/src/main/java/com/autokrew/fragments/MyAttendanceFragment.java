@@ -2,13 +2,13 @@ package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.graphics.Color;
-import android.os.AsyncTask;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,21 +18,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.autokrew.R;
 import com.autokrew.adapter.AttendanceAdapter;
-import com.autokrew.decorators.EventDecorator;
-import com.autokrew.decorators.HighlightWeekendsDecorator;
-import com.autokrew.decorators.MySelectorDecorator;
-import com.autokrew.decorators.OneDayDecorator;
 import com.autokrew.dialogs.AttendanceDialog;
 import com.autokrew.interfaces.AttendanceDialogInterface;
 import com.autokrew.interfaces.RecyclerViewClickListener;
-import com.autokrew.listner.RecyclerItemClickListener;
 import com.autokrew.models.AddDeviationModel;
 import com.autokrew.models.AddDeviationParams;
 import com.autokrew.models.AttendanceModel;
@@ -46,9 +44,9 @@ import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,10 +57,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
 
 
 public class MyAttendanceFragment extends Fragment implements ApiListener,RecyclerViewClickListener ,View.OnClickListener ,AttendanceDialogInterface {
@@ -83,6 +80,10 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     AttendanceDialog mDialog;
     AttendanceModel model;
 
+    AttendanceModel.Table2 mTable2;
+
+
+    NestedScrollView root_view;
     CommonDetailModel modelCommon;
     AddDeviationModel modelDeviationAdd;
     String mToken;
@@ -95,9 +96,20 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     ArrayList<DropdownModel> mYearList= new ArrayList<>();
     ArrayList<DropdownModel> mMonthList= new ArrayList<>();
     MaterialCalendarView widget;
-    OneDayDecorator oneDayDecorator = new OneDayDecorator();
-    ArrayList<Date> mList = new ArrayList<>();
+    ArrayList<Date> mListP = new ArrayList<>();
+    ArrayList<Date> mListA = new ArrayList<>();
+    ArrayList<Date> mListWO = new ArrayList<>();
+    ArrayList<Date> mListPL = new ArrayList<>();
+    ArrayList<Date> mListPE = new ArrayList<>();
+    ArrayList<Date> mListP2 = new ArrayList<>();
+    ArrayList<Date> mListL= new ArrayList<>();
+    ArrayList<Date> mListH = new ArrayList<>();
 
+    SimpleDateFormat formatter;
+    Calendar cal;
+
+    private CaldroidFragment caldroidFragment;
+    FragmentTransaction t;
 
     @Nullable
     @Override
@@ -150,6 +162,10 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         rv_data_attendance = (RecyclerView) v.findViewById(R.id.rv_data_attendance);
         card_view = (CardView)v.findViewById(R.id.card_view);
 
+        formatter = new SimpleDateFormat("dd MMM yyyy");
+
+        root_view = (NestedScrollView) v.findViewById(R.id.root_view);
+
         widget = (MaterialCalendarView)v.findViewById(R.id.calendarView);
 
         ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
@@ -172,6 +188,95 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
         edt_month = (Spinner) v.findViewById(R.id.edt_month);
         edt_year = (Spinner)v.findViewById(R.id.edt_year);
+
+    }
+
+    private void setCalender1Data() {
+        Map<Date, Drawable> successMap = new HashMap<>();
+       // Map<Date, Drawable> failureMap = new HashMap<>();
+        successMap.clear();
+        //For success days
+        for(int i=0; i<mListP.size(); i++){
+            successMap.put(mListP.get(i), getResources().getDrawable(R.drawable.bg_circular1));
+        }
+
+        for(int i=0; i<mListA.size(); i++){
+            successMap.put(mListA.get(i), getResources().getDrawable(R.drawable.bg_circular3));
+        }
+        for(int i=0; i<mListH.size(); i++){
+            successMap.put(mListH.get(i), getResources().getDrawable(R.drawable.bg_circular5));
+        }
+        for(int i=0; i<mListWO.size(); i++){
+            successMap.put(mListWO.get(i), getResources().getDrawable(R.drawable.bg_circular6));
+        }
+        for(int i=0; i<mListPL.size(); i++){
+            successMap.put(mListPL.get(i), getResources().getDrawable(R.drawable.bg_circular7));
+        }
+        for(int i=0; i<mListP2.size(); i++){
+            successMap.put(mListP2.get(i), getResources().getDrawable(R.drawable.bg_circular2));
+        }
+        for(int i=0; i<mListPE.size(); i++){
+            successMap.put(mListPE.get(i), getResources().getDrawable(R.drawable.bg_circular7));
+        }
+        for(int i=0; i<mListL.size(); i++){
+            successMap.put(mListL.get(i), getResources().getDrawable(R.drawable.bg_circular4));
+        }
+
+      //  successMap.putAll(failureMap);
+        caldroidFragment.setBackgroundDrawableForDates(successMap);
+        caldroidFragment.refreshView();
+
+    }
+
+    private void setTestData(AttendanceModel model) {
+
+        for (int i = 0; i <model.getTable2().size() ; i++) {
+            if(model.getTable2().get(i).getStatus().equalsIgnoreCase("P")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListP.add(d);
+            }
+            else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("A")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListA.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("H")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListH.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("WO")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListWO.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("PL")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListPL.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("P2")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListP2.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("PE")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListPE.add(d);
+            }else if(model.getTable2().get(i).getStatus().equalsIgnoreCase("L")){
+                Date d = funx(model.getTable2().get(i).getDate());
+                mListL.add(d);
+            }
+        }
+
+    }
+
+    private void setCalender1() {
+        Bundle args = new Bundle();
+       // desableDate();
+        args.putInt(CaldroidFragment.MONTH,Integer.parseInt(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk()));// cal.get(Calendar.MONTH) + 1 (Month is not in the range 1..12. Value is:0)
+        args.putInt(CaldroidFragment.YEAR,mYearList.get(edt_year.getSelectedItemPosition()).getYear()); //cal.get(Calendar.YEAR)
+
+        args.putBoolean(CaldroidFragment.ENABLE_SWIPE, false);
+       // args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
+        args.putBoolean(CaldroidFragment.SHOW_NAVIGATION_ARROWS, false);
+
+
+
+
+        caldroidFragment.setArguments(args);
+        CommonUtils.getInstance().displayToast(getActivity(),""+Integer.parseInt(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk()));
+
     }
 
     private void setupRecyclerView(){
@@ -281,20 +386,38 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                         card_view.setVisibility(View.GONE);
                         rv_data_attendance.setVisibility(View.VISIBLE);
 
-                        mAdapter = new AttendanceAdapter(getActivity(), model,MyAttendanceFragment.this);
+
+                      /*  mAdapter = new AttendanceAdapter(getActivity(), model,MyAttendanceFragment.this);
                         rv_data_attendance.setAdapter(mAdapter);
-                        rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
-                        //setCalender(model);
+                        rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll*/
+                       // setCalender(model);
+
+
+
+                        // Setup caldroid fragment
+                        // **** If you want normal CaldroidFragment, use below line ****
+                        //init every time...
+                        caldroidFragment = new CaldroidFragment();
+                        caldroidFragment.setCaldroidListener(listener);
+
+                        setCalender1();
+
+                        // Attach to the activity
+                        t = getActivity().getSupportFragmentManager().beginTransaction();
+                        t.add(R.id.calendar1, caldroidFragment);
+                        t.commit();
+
+                        setTestData(model);
+
+                        setCalender1Data();
+                        //uncomment below
                         setData();
 
                     }
-
                     //dismiss dialog
                     dialog.dismiss();
 
-
                 }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -308,66 +431,28 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
     }
 
-    private void setCalender(AttendanceModel model) {
-      /*  widget.addDecorators(
-                new MySelectorDecorator(getActivity()),
-                new HighlightWeekendsDecorator(),
-                oneDayDecorator
-        );*/
-
-      /*  widget.state().edit()
-                //.setFirstDayOfWeek(Calendar.WEDNESDAY)
-                .setMinimumDate(CalendarDay.from(2018, 1, 1)) // pass from date
-                .setMaximumDate(CalendarDay.from(2018, 1, 28)) // pass to date
-                .setCalendarDisplayMode(CalendarMode.MONTHS)
-                .commit();*/
-        Calendar calendar = Calendar.getInstance();
-        ArrayList<CalendarDay> dates = new ArrayList<>();
-        try {
-
-            //DND ============
-          /*  Date D1 = funx("2018-02-01");
-            Date D2 = funx("2018-02-02");
-            Date D3 = funx("2018-02-03");
-            Date D4 = funx("2018-02-04");
-            Date D5 = funx("2018-02-05");
-
-            mList.add(D1);
-            mList.add(D2);
-            mList.add(D3);
-            mList.add(D4);
-            mList.add(D5);
-
-            for (int i = 0; i <mList.size() ; i++) {
-                CalendarDay day = CalendarDay.from(mList.get(i));
-                dates.add(day);
-                calendar.add(Calendar.DAY_OF_MONTH,1);
-            }*/
-
-          //====================
-
-        for (int i = 0; i <model.getTable2().size() ; i++) {
-          if(model.getTable2().get(i).getStatus().equalsIgnoreCase("P")){
-              Date d = funx(model.getTable2().get(i).getDate());
-              mList.add(d);
-           }
+    private void desableDate() {
+        // Set disabled dates
+        //Calendar cal = Calendar.getInstance();
+        ArrayList<Date> disabledDates = new ArrayList<Date>();
+        for (int i = 5; i < 8; i++) {
+            cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, i);
+            disabledDates.add(cal.getTime());
         }
+        caldroidFragment.setDisableDates(disabledDates);
 
-        for (int i = 0; i <mList.size() ; i++) {
-                CalendarDay day = CalendarDay.from(mList.get(i));
-                dates.add(day);
-                calendar.add(Calendar.DAY_OF_MONTH,1);
-            }
-         widget.addDecorator(new EventDecorator(Color.RED, dates));
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "setCalender: 1 >> "+ e.toString());
-        }
-
-       // widget.setShowOtherDates(MaterialCalendarView.SHOW_DEFAULTS);
-
-        //new ApiSimulator().executeOnExecutor(Executors.newSingleThreadExecutor());
+    private void clearList() {
+        mListP.clear();
+        mListA.clear();
+        mListWO.clear();
+        mListPL.clear();
+        mListPE.clear();
+        mListP2.clear();
+        mListL.clear();
+        mListH.clear();
     }
 
     public static Date funx(String S) {
@@ -375,17 +460,18 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         String[] s2 = S.split(", ");
 
         String DateStr = s2[1].trim(); //S =>s2[1]
-
+        DateStr = DateStr.replace(" ","-");
         Date d = null;
         try {
-            d = new SimpleDateFormat("dd MMM YYYY").parse(DateStr);
+            d = new SimpleDateFormat("dd-MMM-yyyy").parse(DateStr);
+            //YYYY is the week-year, not the calendar year. You want yyyy instead.
         } catch (ParseException e) {
             e.printStackTrace();
             Log.e(TAG, "setCalender: 2 >> "+ e.toString());
         }
-        Date d1 = new Date(d.getTime());
+        //java.sql.Date d1 = new java.sql.Date(d.getTime());
 
-        return d1;
+        return d;
     }
 
 
@@ -440,8 +526,11 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
            // }
 
              //no need to check for  attendenc ----------------
-            mAddendancePK = model.getTable2().get(position).getAttendancePK();
-            params.setAttendancePK(model.getTable2().get(position).getAttendancePK());
+            //@kns : old model.getTable2().get(position) = > mTable2.get
+           // mAddendancePK = model.getTable2().get(position).getAttendancePK();
+
+            mAddendancePK = mTable2.getAttendancePK();
+            params.setAttendancePK(mTable2.getAttendancePK());
 
 
             //check for remarks -------------
@@ -449,7 +538,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                 params.setEmpRemarks(""); //please select in inner popup
             }
             else{
-                params.setEmpRemarks(model.getTable2().get(position).getEmployeeRemarks());
+                params.setEmpRemarks(mTable2.getEmployeeRemarks());
             }
 
 
@@ -492,6 +581,13 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
             case R.id.txt_search:
 
                // CommonUtils.getInstance().displayToast(getActivity(),"search ..");
+
+                //clear list before search
+                clearList();
+
+                //remove calender fragment
+                getActivity().getSupportFragmentManager().beginTransaction().remove(caldroidFragment).commit();
+
 
                 AttendanceModelParams params = new AttendanceModelParams();
                 //int monthFK = CommonUtils.setMonthFK(edt_month.getSelectedItem().toString());
@@ -607,48 +703,60 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     }
 
 
-
-
-    /**
-     * Simulate an API call to show how to add decorators
-     */
-    private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
+    // Setup listener
+    final CaldroidListener listener = new CaldroidListener() {
 
         @Override
-        protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MONTH, -2);
-            ArrayList<CalendarDay> dates = new ArrayList<>();
-         /*   for (int i = 0; i < 30; i++) {
-                CalendarDay day = CalendarDay.from(calendar);
-                dates.add(day);
-                calendar.add(Calendar.DATE, 0);
-            }*/
+        public void onSelectDate(Date date, View view) {
 
-           /* for (int i = 0; i <model.getTable2().size() ; i++) {
-                CalendarDay day = CalendarDay.from(calendar);
-                dates.add(day);
-                calendar.add(Calendar.DATE, i);
+
+            for (int i = 0; i <model.getTable2().size() ; i++) {
+                String[] parts = model.getTable2().get(i).getDate().split(", ");
+                if(parts[1].equalsIgnoreCase(formatter.format(date))){
+                    Toast.makeText(getActivity(), formatter.format(date),
+                            Toast.LENGTH_SHORT).show();
+
+                     mTable2 = model.getTable2().get(i);
+                    //set adapter with one obj
+                     mAdapter = new AttendanceAdapter(getActivity(), mTable2,MyAttendanceFragment.this);
+                     rv_data_attendance.setAdapter(mAdapter);
+                     rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
+
+
+                    root_view.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            root_view.fullScroll(ScrollView.FOCUS_DOWN);
+                        }
+                    });
+                }
             }
-*/
-            return dates;
+          //  mListmodel
         }
 
         @Override
-        protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
-            super.onPostExecute(calendarDays);
+        public void onChangeMonth(int month, int year) {
+          /*  String text = "month: " + month + " year: " + year;
 
-            /*if (isFinishing()) {
-                return;
-            }*/
-
-            widget.addDecorator(new EventDecorator(Color.RED, calendarDays));
+            Toast.makeText(getActivity(), text,
+                    Toast.LENGTH_SHORT).show();*/
         }
-    }
 
+        @Override
+        public void onLongClickDate(Date date, View view) {
+            /*Toast.makeText(getActivity(),
+                    "Long click " + formatter.format(date),
+                    Toast.LENGTH_SHORT).show();*/
+        }
+
+        @Override
+        public void onCaldroidViewCreated() {
+           /* if (caldroidFragment.getLeftArrowButton() != null) {
+                Toast.makeText(getActivity(),
+                        "Caldroid view is created", Toast.LENGTH_SHORT)
+                        .show();
+            }*/
+        }
+
+    };
 }

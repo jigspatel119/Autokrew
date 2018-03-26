@@ -24,6 +24,7 @@
 
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -722,7 +723,12 @@
 
             </LinearLayout>
 
-
+            <LinearLayout
+                android:id="@+id/calendar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendarView"
