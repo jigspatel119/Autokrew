@@ -12,6 +12,7 @@ import com.autokrew.models.CancleLeaveParams;
 import com.autokrew.models.CommonDetailModelParams;
 import com.autokrew.models.CompoffLeaveParams;
 import com.autokrew.models.DashbordModelParam;
+import com.autokrew.models.DeviceTokenParam;
 import com.autokrew.models.IsDocumentRequireParams;
 import com.autokrew.models.IsLeaveAppliedParams;
 import com.autokrew.models.LeaveCardParams;
@@ -26,15 +27,24 @@ import com.autokrew.models.ProfileImageParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
+import com.autokrew.models.UpdateUserProfileParams;
+import com.autokrew.models.UploadDocsParams;
 import com.autokrew.models.UserProfileParams;
 import com.autokrew.utils.Constant;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -53,7 +63,6 @@ public interface ApiInterface {
     public static String BASE_URL = "http://79.143.188.202:94/";
 
 
-
     //APIs List
     String Login_URL = "/api/Login/CheckLoginFromMobileApp";
     String Signup_URL = "api/sign-up";
@@ -67,8 +76,6 @@ public interface ApiInterface {
     Call<LoginModel> login(
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body LoginModelParams body);
-
-
 
 
     //get profile data...
@@ -102,7 +109,6 @@ public interface ApiInterface {
     );
 
 
-
     //get Attendance in detail
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Attendance/AttDetail")
@@ -122,6 +128,15 @@ public interface ApiInterface {
             @Body DashbordModelParam body);
 
 
+    //device token
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}api/Profile/InsertUpdateEmployeeDeviceID\n")
+    Call<String> sendDeviceToken(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body DeviceTokenParam body);
+
+
     //dashboard
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}api/Attendance/OutSideAttendanceFromMobileApp")
@@ -131,10 +146,6 @@ public interface ApiInterface {
             @Body ApplyAttendanceParam body);
 
 
-
-
-
-
     //announcement preview
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}api/CompanyConfig/InsertOrgNewsGrid")
@@ -142,7 +153,6 @@ public interface ApiInterface {
             @Header("Authorization") String token,
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body PreviewAnnouncementParam body);
-
 
 
     //get Team member
@@ -193,6 +203,54 @@ public interface ApiInterface {
             @Body CommonDetailModelParams body
     );
 
+
+    //update my profile
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/Profile/UpdateBasicDetail")
+    Call<String> updateMyProfile(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body UpdateUserProfileParams body
+    );
+
+
+    //get document uplod from server
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/CompanyConfig/InsertJoiningDocument")
+    Call<String> getDocumentUpload(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body UploadDocsParams body
+    );
+
+
+    //upload document to server
+
+    @Multipart
+  //  @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/Profile/UploadEmployeeDocument")
+    Call<String> uploadDocument(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            //@Body UploadDocsParams body
+           // @Query("Flag") String Flag,
+            @Query("EmployeeFK") String EmployeeFK,
+           // @Query("LoginEployeeFk") String LoginEployeeFk,
+           // @Query("ImageAsString") String ImageAsString,
+           // @Query("FileName") String FileName,
+           // @Query("DocumentDetailPK") String DocumentDetailPK,
+          //  @Query("EmpDocument") String EmpDocument,
+            @Part MultipartBody.Part file
+    );
+
+
+    @Multipart
+    //@Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/Profile/InsertUpdateEmpJoinDocDetailForMobileApp")
+    Call<String> submitDocument(@Header("Authorization") String token,
+                                @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+                                @PartMap Map<String, RequestBody> map);
+
     //get WO
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Leave/GetEmployeeWODaysForMobileApp")
@@ -232,7 +290,6 @@ public interface ApiInterface {
     );
 
 
-
     //is doc require or not
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Leave/IsDocumentRequired")
@@ -243,7 +300,6 @@ public interface ApiInterface {
     );
 
 
-
     //is leave apply or not
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Leave/isLeaveAlreadyApply")
@@ -252,7 +308,6 @@ public interface ApiInterface {
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body IsLeaveAppliedParams body
     );
-
 
 
     //check form sandwhich leave
@@ -351,8 +406,6 @@ public interface ApiInterface {
     );
 
 
-
-
     //get Common detail
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Leave/EmpLeaveCard")
@@ -363,7 +416,6 @@ public interface ApiInterface {
     );
 
 
-
     //manage leave
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Leave/ManageLeaveStatus")
@@ -372,7 +424,6 @@ public interface ApiInterface {
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body ManageLeaveParams body
     );
-
 
 
     //get getPointingUrl

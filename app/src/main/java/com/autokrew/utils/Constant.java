@@ -3,6 +3,8 @@ package com.autokrew.utils;
 import com.autokrew.models.AttendanceRegisterModel;
 import com.autokrew.models.AttendanceStatusModel;
 import com.autokrew.models.CompoffLeaveModel;
+import com.autokrew.models.GetDocumentResponse;
+import com.autokrew.models.UploadDocsParams;
 
 import java.util.ArrayList;
 
@@ -40,10 +42,13 @@ public class Constant {
     public static final String PREF_ROLE_FK = "roleFK";
 
     public static String LAST_ACTIVITY = "";
+    public  static  final int GPS_SETTINGS = 105;
 
 
     public static  AttendanceStatusModel mStatusModel = new AttendanceStatusModel();
     public static  AttendanceRegisterModel mRegisterModel = new AttendanceRegisterModel();
+    public static  ArrayList<GetDocumentResponse.TableBean> mList = new ArrayList<>();
+
 
 
 }

@@ -52,6 +52,7 @@ public class Permissions {
             return false;
 
         } else {
+
             return true;
         }
     }

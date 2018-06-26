@@ -161,7 +161,6 @@ public class AttendanceTeamGroupDialog extends AppCompatDialog implements View.O
                     // [{"AttendancePK":306021,"AppStatus":"3","Remarks":"Rejected","SessionEmployeeFK":"8816"}]
 
                    // ArrayList<AddDeviationTeamParams> mList = new ArrayList();
-                  //  TempParams params2 = new TempParams();
                     AddDeviationTeamParams params = null;
 
                    // params.setAttendancePK(mAttendancePK);

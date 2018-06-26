@@ -18,13 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.autokrew.R;
 import com.autokrew.adapter.AttendanceAdapter;
@@ -275,7 +273,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
 
         caldroidFragment.setArguments(args);
-        CommonUtils.getInstance().displayToast(getActivity(),""+Integer.parseInt(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk()));
+      //  CommonUtils.getInstance().displayToast(getActivity(),""+Integer.parseInt(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk()));
 
     }
 
@@ -585,8 +583,11 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                 //clear list before search
                 clearList();
 
-                //remove calender fragment
-                getActivity().getSupportFragmentManager().beginTransaction().remove(caldroidFragment).commit();
+                if(caldroidFragment!=null){
+                    //remove calender fragment
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(caldroidFragment).commit();
+                }
+
 
 
                 AttendanceModelParams params = new AttendanceModelParams();
@@ -713,8 +714,9 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
             for (int i = 0; i <model.getTable2().size() ; i++) {
                 String[] parts = model.getTable2().get(i).getDate().split(", ");
                 if(parts[1].equalsIgnoreCase(formatter.format(date))){
-                    Toast.makeText(getActivity(), formatter.format(date),
-                            Toast.LENGTH_SHORT).show();
+
+                 /*   Toast.makeText(getActivity(), formatter.format(date),
+                            Toast.LENGTH_SHORT).show();*/
 
                      mTable2 = model.getTable2().get(i);
                     //set adapter with one obj

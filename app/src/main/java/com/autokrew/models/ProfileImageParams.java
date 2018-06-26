@@ -8,7 +8,7 @@ public class ProfileImageParams {
 
     /**
      * EmployeeFK : 8816
-     * ImageAsString :
+     * ImageAsString : "asdasdsadz"
      * FileName :
      */
 

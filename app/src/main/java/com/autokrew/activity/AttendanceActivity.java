@@ -14,7 +14,6 @@ import com.autokrew.R;
 import com.autokrew.fragments.AttendanceDeviationFragment;
 import com.autokrew.fragments.ThreeFragment;
 import com.autokrew.fragments.TwoFragment;
-import com.autokrew.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;

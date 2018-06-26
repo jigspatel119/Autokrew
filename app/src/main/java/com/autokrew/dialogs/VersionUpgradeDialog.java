@@ -86,7 +86,7 @@ public class VersionUpgradeDialog extends AppCompatDialog implements View.OnClic
                 //open playstore
                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
                 //Copy App URL from Google Play Store.
-                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.youtube"));
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.autokrew"));
                 mContext.startActivity(intent);
 
               break;

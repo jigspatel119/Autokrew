@@ -16,6 +16,7 @@ import com.autokrew.models.CancleLeaveParams;
 import com.autokrew.models.CommonDetailModelParams;
 import com.autokrew.models.CompoffLeaveParams;
 import com.autokrew.models.DashbordModelParam;
+import com.autokrew.models.DeviceTokenParam;
 import com.autokrew.models.IsDocumentRequireParams;
 import com.autokrew.models.IsLeaveAppliedParams;
 import com.autokrew.models.LeaveCardParams;
@@ -30,14 +31,21 @@ import com.autokrew.models.ProfileImageParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
+import com.autokrew.models.UpdateUserProfileParams;
+import com.autokrew.models.UploadDocsParams;
 import com.autokrew.models.UserProfileParams;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
 
+import java.io.File;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -275,7 +283,7 @@ public class WebServices {
 
 
     /**
-     * //===========================( Login API )==============================//
+     * //===========================( DashboardDetail API )==============================//
      */
     public void callDashboardDetailAPI(String mToken,DashbordModelParam parms) {
 
@@ -312,6 +320,48 @@ public class WebServices {
             onNoInternetConnection();
         }
     }
+
+
+    /**
+     * //===========================( SendDeviceTocken API )==============================//
+     */
+    public void callSendDeviceTockenAPI(String mToken,DeviceTokenParam parms) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+            Call<String> call = mApiInterface.sendDeviceToken(mToken,Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),parms);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    switch (response.code()) {
+                        case 401:
+                            onFailureResponse(null);
+                            break;
+                        case 200:
+                            Object mObject = response.body();
+                            if (mObject != null) {
+                                onSuccessResponse(mObject);
+                            }
+                            break;
+                    }
+                    /*else{
+                        onFailureResponse();
+                    }*/
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    onFailureResponse(t)
+                    ;
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
 
 
 
@@ -746,6 +796,161 @@ public class WebServices {
             onNoInternetConnection();
         }
     }
+
+    /**
+     * //===========================( getdocument from server API )==============================//
+     */
+    public void callGetDocumentAPI(String mToken , UploadDocsParams params) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+
+            Call<String> call = null;
+            call = mApiInterface.getDocumentUpload(mToken,
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),params);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+
+
+
+    /**
+     * //===========================( document upload API )==============================//
+     */
+    public void callUploafDocumentAPI(String mToken ,  Map<String, RequestBody> map) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+
+         /*   RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), params.getFileName());
+            MultipartBody.Part multipartBody = MultipartBody.Part.createFormData
+                    (params.getFileName().substring(params.getFileName().lastIndexOf("/") + 1),   //file name
+                    params.getFileName(),requestFile); //actual file path*/
+
+
+            Call<String> call = null;
+            call = mApiInterface.submitDocument(mToken,
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),map
+
+                 /*   //params
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),
+                   // params.getFlag(),
+                    params.getEmployeeFK(),
+                   // params.getLoginEployeeFk(),
+                   // params.getImageAsString(),
+                   // params.getFileName().substring(params.getFileName().lastIndexOf("/") + 1),
+                   // params.getDocumentDetailPK(),
+                   // params.getEmpDocument(), //doc name aadhar, pan, id etc
+
+                    multipartBody  */
+
+            );
+
+
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * //===========================( update profile API )==============================//
+     */
+    public void callUpdateMyProfileAPI(String mToken , UpdateUserProfileParams params) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+
+            Call<String> call = null;
+            call = mApiInterface.updateMyProfile(mToken,
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),params);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

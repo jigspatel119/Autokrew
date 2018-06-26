@@ -575,6 +575,11 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
 
                 if(jsonObj.getJSONArray("Table").length()==0){
                     setTeamMemberForEmptydata();
+                    if(dialog!=null){
+                        if(dialog.isShowing()){
+                            dialog.dismiss();
+                        }
+                    }
                 }
 
                 //for very first time

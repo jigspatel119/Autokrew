@@ -14,6 +14,7 @@
     <string name="dialog_yes_button">Yes</string>
     <string name="dialog_no_button">No</string>
     <string name="dialog_neutral_button">Neutral</string>
+    <string name="version_name">versionName</string>
 
 
     <!-- Empty Data Alerts  -->
@@ -33,6 +34,9 @@
     <string name="alert_invalid_password">Please enter valid password</string>
     <string name="alert_invalid_mobile_number">Please enter valid mobile number</string>
     <string name="alert_passwords_not_match">Passwords not match !!</string>
+
+        <string name="location_permission">Location Permission needed</string>
+
 
     <!-- ******************** labels ******************** -->
 

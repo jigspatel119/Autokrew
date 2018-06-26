@@ -37,7 +37,8 @@
     <application
         android:allowBackup="false"
         android:name=".utils.AppController"
-        android:icon="@drawable/ak_updated3"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
@@ -69,6 +70,13 @@
 
         </activity>
 
+
+
+        <activity android:name=".activity.UploadDocumentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
 
         <activity android:name=".activity.AttendanceDeviationActivity"
             android:screenOrientation="portrait"
@@ -118,15 +126,7 @@
             android:windowSoftInputMode="stateHidden">
 
         </activity>
-     <!--   <provider
-            android:name="com.autokrew.utils.GenericFileProvider"
-            android:authorities="${applicationId}.com.autokrew.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>-->
+
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -139,6 +139,23 @@
         </provider>
 
 
+        <service android:name=".fcm.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".fcm.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+
+
+        <service
+            android:name="com.autokrew.utils.FusedLocationAPIService"
+            android:enabled="true" />
 
     </application>
 

@@ -1,14 +1,19 @@
 package com.autokrew.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -29,12 +34,23 @@ import android.widget.Toast;
 
 
 import com.autokrew.R;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.List;
+import java.util.Locale;
 
 import static com.autokrew.utils.AppController.getAppContext;
 
@@ -43,8 +59,15 @@ import static com.autokrew.utils.AppController.getAppContext;
  */
 public class CommonUtils {
 
-    private String TAG = CommonUtils.class.getSimpleName();
+    private static String TAG = CommonUtils.class.getSimpleName();
     private static CommonUtils singleton;
+
+
+    public static double lattitude = 0.0;
+    public static double logitude = 0.0;
+
+
+    private static PreferenceHelper mPreferenceHelper;
 
     /**
      * This function is used to get instance of CommonUtils class
@@ -55,6 +78,18 @@ public class CommonUtils {
         }
         return singleton;
     }
+
+
+    public static boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * This function is used for hiding soft keyboard
@@ -257,7 +292,7 @@ public class CommonUtils {
                 HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                 urlc.setRequestProperty("User-Agent", "test");
                 urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(500); // mTimeout is in seconds
+                urlc.setConnectTimeout(5000); // mTimeout is in seconds
                 urlc.connect();
                 if (urlc.getResponseCode() == 200) {
                     return true;
@@ -430,37 +465,123 @@ public class CommonUtils {
     }
 
 
-   /* public static int setMonthFK(String month) {
+    /**
+     * check for gps
+     *
+     * @param mContext
+     * @return
+     */
+    public static boolean isGpsEnabled(Context mContext) {
+        LocationManager lm = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsEnabled = false;
+        boolean networkEnabled = false;
 
-        int monthFK = 0;
-
-        if(month.equalsIgnoreCase("January")){
-            monthFK = 1;
-        } if(month.equalsIgnoreCase("February")){
-            monthFK = 2;
-        } if(month.equalsIgnoreCase("March")){
-            monthFK = 3;
-        } if(month.equalsIgnoreCase("April")){
-            monthFK = 4;
-        } if(month.equalsIgnoreCase("May")){
-            monthFK = 5;
-        } if(month.equalsIgnoreCase("June")){
-            monthFK = 6;
-        } if(month.equalsIgnoreCase("July")){
-            monthFK = 7;
-        } if(month.equalsIgnoreCase("August")){
-            monthFK = 8;
-        } if(month.equalsIgnoreCase("September")){
-            monthFK = 9;
-        } if(month.equalsIgnoreCase("October")){
-            monthFK = 10;
-        } if(month.equalsIgnoreCase("November")){
-            monthFK = 11;
-        } if(month.equalsIgnoreCase("December")){
-            monthFK = 12;
+        try {
+            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+            Log.e(TAG, "isGpsEnabled >> " + ex);
         }
 
-        return monthFK;
-    }*/
+        try {
+            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+            Log.e(TAG, "showGPSDisabledAlertToUser >> " + ex);
+        }
+        Log.d(TAG, "isGpsEnabled >> " + gpsEnabled + "," + networkEnabled);
+        return gpsEnabled;
+    }
+
+    public static void displayLocationSettingsRequest(final Context context) {
+
+        final Activity act = (Activity) context;
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
+                .addApi(LocationServices.API).build();
+        googleApiClient.connect();
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(10000 / 2);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
+
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Log.i(TAG, "All location settings are satisfied.");
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
+
+                        try {
+                            // Show the dialog by calling startResolutionForResult(), and check the result
+                            // in onActivityResult().
+                            status.startResolutionForResult(act, Constant.GPS_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.i(TAG, "PendingIntent unable to execute request.");
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
+                        break;
+                    case LocationSettingsStatusCodes.CANCELED:
+                        Log.i(TAG, "Location settings canceled.");
+                        break;
+                }
+            }
+        });
+    }
+
+
+
+
+    public static void getAddressFromLatLong(Context mContext, double latitude, double longitude) {
+
+        mPreferenceHelper = new PreferenceHelper(mContext);
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+            try {
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(mContext, Locale.getDefault());
+
+                addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+
+
+                mPreferenceHelper.setCity(city);
+                mPreferenceHelper.setState(state);
+                mPreferenceHelper.setCountry(country);
+                mPreferenceHelper.setAddress(address);
+
+                AppLog.debugE("address >>>>  " + address);
+                AppLog.debugD("city : " + city);
+                AppLog.debugD("state : " + state);
+                AppLog.debugD("country : " + country);
+                AppLog.debugD("postalCode : " + postalCode);
+                AppLog.debugD("knownName : " + knownName);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
 
 }

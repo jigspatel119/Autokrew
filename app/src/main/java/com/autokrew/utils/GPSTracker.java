@@ -1,8 +1,6 @@
 package com.autokrew.utils;
 
-/**
- * Created by dhwanik-android on 9/1/2016.
- */
+
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,13 +43,14 @@ public class GPSTracker {
     private PreferenceHelper mPreferenceHelper;
 
     // The minimum distance to change updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 100; // 1 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 1 meters
 
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 60 * 1000;// 1 minutes
 
     public GPSTracker(Context mContext) {
         this.mContext = mContext;
+        getLocation();
 
     }
 
@@ -119,6 +118,7 @@ public class GPSTracker {
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
@@ -167,10 +167,14 @@ public class GPSTracker {
                                             mPreferenceHelper.setLongitude(longitude + "");
                                         }
                                     });
-                            AppLog.debugD("GPS", "GPS Enabled");
+                            AppLog.debugE("GPS", "GPS Enabled");
+
+
                             if (locationManager != null) {
+
                                 location = locationManager
                                         .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
                                 if (location != null) {
                                     latitude = location.getLatitude();
                                     longitude = location.getLongitude();
@@ -189,6 +193,10 @@ public class GPSTracker {
 
                         }
                     }
+
+
+
+
                 }
             }
         } catch (Exception e) {
@@ -197,6 +205,7 @@ public class GPSTracker {
 
         return location;
     }
+
 
     public void showAlert() {
 
@@ -232,8 +241,6 @@ public class GPSTracker {
 
     }
 
-
-
     public void getAddressFromLatLong(Context mContext, double latitude, double longitude) {
 
         // Check for internet connection
@@ -256,10 +263,9 @@ public class GPSTracker {
                 mPreferenceHelper.setCity(city);
                 mPreferenceHelper.setState(state);
                 mPreferenceHelper.setCountry(country);
-
                 mPreferenceHelper.setAddress(address);
 
-                AppLog.debugE("address >>>>  " + address);
+               // AppLog.debugE("address >>>>  " + address);
                 AppLog.debugD("city : " + city);
                 AppLog.debugD("state : " + state);
                 AppLog.debugD("country : " + country);

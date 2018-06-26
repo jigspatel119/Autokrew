@@ -66,6 +66,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String TAG_FRAGMENT ;
 
     TextView tv_name ,txt_user_name ,txt_dashboard ,txt_employee_code;
+    ImageView img_upload_doc;
     LinearLayout ll_user_profile;
     TextView txt_view_profile;
     RelativeLayout rl_menu;
@@ -125,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Pref.setValue(this, "auto_login","true");
 
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+
+        //Displaying token on logcat
+        Log.e(TAG, "Refreshed token: " + refreshedToken);
+
         getData();
         init();
         setData();
@@ -153,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        // txt_dashboard = (TextView) findViewById(R.id.txt_dashboard);
         ev_list = (ExpandableListView) findViewById(R.id.ev_menu);
         tv_name = (TextView) findViewById(R.id.tv_name);
+        img_upload_doc = (ImageView) findViewById(R.id.img_upload_doc);
         rl_menu = (RelativeLayout) findViewById(R.id.rl_menu);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         obj_adapter = new CountryAdapter(MainActivity.this, al_main);
@@ -214,6 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setListViewHeight(parent, groupPosition);
 
                 if(groupPosition == 0){
+
+                    img_upload_doc.setVisibility(View.INVISIBLE);
+
                     fragment = new DashboardFragment();
                     tv_name.setText("Dashboard");
                     getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard")
@@ -255,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //default fragment load..
-
+        img_upload_doc.setVisibility(View.INVISIBLE);
         fragment = new DashboardFragment();
         tv_name.setText(al_main.get(0).getStr_country()); // "name": "Dashboard" form json file
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard")
@@ -267,6 +278,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
                 mDrawerLayout.openDrawer(Gravity.LEFT);
             }
+        });
+
+        img_upload_doc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CommonUtils.getInstance().startActivity(MainActivity.this, UploadDocumentActivity.class);
+                MainActivity.this.overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
+
+           }
         });
     }
 
@@ -281,16 +302,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            //progressLoadImage.setVisibility(View.GONE);
-                           // progressBar.setVisibility(View.GONE);
+
                             Log.e(TAG, "onException: TRUE");
                             return false;
                         }
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            // progressLoadImage.setVisibility(View.GONE);
-                            //progressBar.setVisibility(View.GONE);
+
                             Log.e(TAG, "onResourceReady: TRUE");
                             return false;
                         }
@@ -471,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
 
-        Log.e(TAG, "Json response " + json);
+        //Log.e(TAG, "Json response " + json);
         return json;
 
     }
@@ -561,6 +580,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+        img_upload_doc.setVisibility(View.INVISIBLE);
+
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.content_frame, fragment, TAG_FRAGMENT).
                 addToBackStack("null").
@@ -588,6 +609,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 else{
+                    img_upload_doc.setVisibility(View.INVISIBLE);
+
                     fragment = new DashboardFragment();
                     tv_name.setText("Dashboard");
                     getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard").addToBackStack("null").commit();
@@ -609,6 +632,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.txt_view_profile:
 
 
+                img_upload_doc.setVisibility(View.VISIBLE);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
 
                 fragment = new ProfileFragment();
@@ -728,6 +752,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //code for deny
                 }
                 break;
+
+
+
         }
     }
 

@@ -1,14 +1,20 @@
 package com.autokrew.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +43,7 @@ import com.autokrew.models.AttendanceDetailModel;
 import com.autokrew.models.DashboardModuleModel;
 import com.autokrew.models.DashbordModel;
 import com.autokrew.models.DashbordModelParam;
+import com.autokrew.models.DeviceTokenParam;
 import com.autokrew.models.LeaveDetailModel;
 import com.autokrew.models.LetestVersionModel;
 import com.autokrew.models.LoginModel;
@@ -46,13 +53,18 @@ import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
+import com.autokrew.utils.FusedLocationAPIService;
 import com.autokrew.utils.GPSTracker;
 import com.autokrew.utils.Permissions;
 import com.autokrew.utils.Pref;
 import com.autokrew.utils.PreferenceHelper;
-import com.crashlytics.android.Crashlytics;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -115,8 +127,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     String currentVersion;
     int is_outside_allow;
+    private static final int LOCATION_REQUEST_CODE = 1;
 
-
+    FirebaseRemoteConfig firebaseRemoteConfig;
+    long cacheExpiration = 3600;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -191,7 +205,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     private void setData(View v) {
 
-        //checkVersionUpgrade();
+        checkVersionUpgrade();
         setupRecyclerView();
 
 
@@ -207,6 +221,53 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                 false*//*for new retrofitclient*//*).
                 callLetestVersionAPI();*/
 
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(true)
+                .build();
+        firebaseRemoteConfig.setConfigSettings(remoteConfigSettings);
+        firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+
+
+        //expire the cache immediately for development mode.
+        if (firebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+
+        firebaseRemoteConfig.fetch(0).addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // Once the config is successfully fetched it must be activated before newly fetched
+                    // values are returned.
+                    firebaseRemoteConfig.activateFetched();
+
+                    String version_name = firebaseRemoteConfig.getString(getString(R.string.version_name));
+
+                    try {
+                        PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                        String version = pInfo.versionName;
+                        if(!version_name.equalsIgnoreCase(version)){
+                            //display version upgrade dialog
+                            mVersionDialog = new VersionUpgradeDialog(getActivity());
+                            mVersionDialog.setCancelable(false);
+                            mVersionDialog.setCanceledOnTouchOutside(true);
+                            mVersionDialog.show();
+                        }
+                        else{
+
+                        }
+
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("TAG", "Fetch failed");
+                }
+            }
+        });
 
 
     }
@@ -246,27 +307,28 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
                 if (Permissions.getInstance().isLocationPermissionGranted(getActivity())) {
 
-                    Location location =  new GPSTracker(getActivity()).getLocation();
+                    /*Location location =  new GPSTracker(getActivity()).getLocation();
 
                     if(location!=null){
-                        //  CommonUtils.getInstance().displayToast(QRScanActivity.this,"lat >> "+location.getLatitude());
                         mLat = String.valueOf(location.getLatitude());
                         mLong= String.valueOf(location.getLongitude());
-
-                        //CommonUtils.getInstance().displayToast(getActivity(),">>> "+mLat);
                         mAddress = mPreferenceHelper.getAddress();
-
                         callOutSideAttendanceFromMobileAppAPI("",mLat,mLong ,mAddress);
-
                         materialDesignFAM.close(true);
-
                     }
                     else{
                         //new GPSTracker(mActivity).showAlert();
                         CommonUtils.getInstance().displayToast(getActivity(),"Please enable your GPS");
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intent);
+                    }*/
+                    if (!CommonUtils.isGpsEnabled(getActivity())) {
+                        CommonUtils.displayLocationSettingsRequest(getActivity());
                     }
+                    else{
+                        requestPermissionForLocation();
+                    }
+
 
                 }
 
@@ -278,24 +340,81 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         });
 
 
+
+
         fab_qrcode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
                // Crashlytics.getInstance().crash(); // Force a crash
 
-                if (Permissions.getInstance().isCameraPermissionGranted(getActivity()) ) {
+                if (Permissions.getInstance().isCameraPermissionGranted(getActivity())) {
                     //open camera and api calls for qrcode..
                     CommonUtils.getInstance().startActivity(getActivity(), QRScanActivity.class);
                     getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
                     materialDesignFAM.close(true);
                 }
+
             }
         });
 
     }
 
 
-    private void callOutSideAttendanceFromMobileAppAPI(String QR_text  ,String mLat ,String mLong ,String mAddress) {
+    private void requestPermissionForLocation() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                startLocationService();
+
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_REQUEST_CODE);
+            }
+        } else {
+            startLocationService();
+        }
+    }
+
+    private void startLocationService() {
+
+        if (!CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
+            Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
+            getActivity().startService(intent);
+        }
+        // location = new GPSTracker(mActivity).getLocation();
+        if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
+
+                mLat = String.valueOf(CommonUtils.lattitude);
+                mLong= String.valueOf(CommonUtils.logitude);
+                mAddress = mPreferenceHelper.getAddress();
+                callOutSideAttendanceFromMobileAppAPI("",mLat,mLong ,mAddress);
+                materialDesignFAM.close(true);
+
+        }
+       /* else{
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 123);
+        }*/
+
+
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
+            Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
+            getActivity().stopService(intent);
+            Log.e(TAG, "onStop: **********stopService**********" );
+        }
+    }
+
+    private void callOutSideAttendanceFromMobileAppAPI(String QR_text  , String mLat , String mLong , String mAddress) {
 
         ApplyAttendanceParam params = new ApplyAttendanceParam();
         params.setAtt_Lat(mLat);
@@ -353,8 +472,25 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         //Show progress dialog
         dialog.show();
 
+        //check device tocken and send it to server
+        //String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        sendDeviceTocken("refreshedToken");
+
+
         //1st api calls
         callDashbordDetailAPI("Employee");
+    }
+
+    private void sendDeviceTocken(String flag) {
+
+        DeviceTokenParam params = new DeviceTokenParam();
+        params.setFlag(flag);
+        params.setDeviceId(FirebaseInstanceId.getInstance().getToken());
+        params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
+
+        new WebServices(getActivity()/* ActivityContext */, DashboardFragment.this /* ApiListener */, false /* show progress dialog */,
+                true/*for new retrofitclient*/).
+                callSendDeviceTockenAPI(mToken, params);
     }
 
     private void setListner() {
@@ -598,7 +734,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         if(Constant.LAST_ACTIVITY.equalsIgnoreCase("AttendanceDeviationActivity") || Constant.LAST_ACTIVITY.equalsIgnoreCase("GroupLeaveActivity")){
 
             Constant.LAST_ACTIVITY = "";
-            callDashbordDetailAPI("Employee");
+           // callDashbordDetailAPI("Employee");
         }
 
     }

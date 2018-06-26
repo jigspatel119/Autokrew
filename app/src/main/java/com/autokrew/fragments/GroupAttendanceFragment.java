@@ -2,7 +2,6 @@ package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 
 import com.autokrew.R;
 import com.autokrew.activity.AttendanceActivity;
-import com.autokrew.activity.AttendanceDeviationActivity;
 import com.autokrew.interfaces.RecyclerViewClickListener;
 import com.autokrew.models.CommonDetailModel;
 import com.autokrew.models.CommonDetailModelParams;
@@ -575,6 +572,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
                 if(jsonObj.getJSONArray("Table").length()==0){
                     setTeamMemberForEmptydata();
+                    if(dialog!=null){
+                        if(dialog.isShowing()){
+                            dialog.dismiss();
+                        }
+                    }
+
                 }
 
                 //for very first time
