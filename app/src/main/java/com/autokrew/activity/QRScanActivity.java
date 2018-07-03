@@ -327,11 +327,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
 
                         callOutSideAttendanceFromMobileAppAPI(obj.getString("QR"),mLat2,mLong2 ,mAddress);
                     }else{
-
-
-
                         Toast.makeText(this, "Wrong Location.", Toast.LENGTH_LONG).show();
-
                     }
                     //api calls
 
@@ -368,10 +364,9 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         double dist = earthRadius * c;
-
-
-        return dist ; // output distance, in MILES
+        return dist ; // output distance, in MILES // 100 meters
        // return round(dist, 2); // output distance, in MILES
+
     }
 
 

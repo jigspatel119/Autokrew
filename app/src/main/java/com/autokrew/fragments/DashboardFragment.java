@@ -69,7 +69,6 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,13 +188,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         btn_date = (Button) v.findViewById(R.id.btn_date);
         btn_announcement = (Button) v.findViewById(R.id.btn_announcement);
 
-        try{
-            currentVersion = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-            new GetVersionCode().execute();
-        }
-        catch (Exception e){
 
-        }
 
         /*Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
         btn_date.setTypeface(copperplateGothicLight);
@@ -737,45 +730,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
            // callDashbordDetailAPI("Employee");
         }
 
-    }
-
-
-
-    private class GetVersionCode extends AsyncTask<Void, String, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            String newVersion = null;
-            try {
-                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + getActivity().getPackageName() + "&hl=en")
-                        .timeout(30000)
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get()
-                        .select("div[itemprop=softwareVersion]")
-                        .first()
-                        .ownText();
-                return newVersion;
-            } catch (Exception e) {
-                return newVersion;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String onlineVersion) {
-            super.onPostExecute(onlineVersion);
-            if (onlineVersion != null && !onlineVersion.isEmpty()) {
-                if (Float.valueOf(currentVersion) < Float.valueOf(onlineVersion)) {
-                    //show dialog
-                    mVersionDialog = new VersionUpgradeDialog(getActivity());
-                    mVersionDialog.setCancelable(false);
-                    mVersionDialog.setCanceledOnTouchOutside(true);
-                    mVersionDialog.show();
-                }
-            }
-            //Toast.makeText(MainActivity.this,"playstore version >> " +onlineVersion,Toast.LENGTH_LONG).show();
-            // Log.e("update", "Current version " + currentVersion + "playstore version " + onlineVersion);
-        }
     }
 
 }

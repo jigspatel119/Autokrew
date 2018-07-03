@@ -146,7 +146,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
                         Manifest.permission.CALL_PHONE)
                         == PackageManager.PERMISSION_GRANTED){
 
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "9276505372"));
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ""));  //number
                     mContext.startActivity(intent);
 
                     dismiss();
@@ -166,7 +166,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
 
                     if(edt_msg.getText().toString().length()>0){
                         //send sms here
-                        sendMessage("Hi");
+                        sendMessage(edt_msg.getText().toString());
                         dismiss();
                     }
                     else{
@@ -186,7 +186,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
 
         } else {
             if(from_last.equalsIgnoreCase("call")){
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "9276505372"));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "")); //number
                 mContext.startActivity(intent);
                 dismiss();
             }
@@ -194,7 +194,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
 
                 if(edt_msg.getText().toString().length()>0){
                     //send sms here
-                    sendMessage("Hi");
+                    sendMessage(edt_msg.getText().toString());
                     dismiss();
                 }
                 else{
@@ -206,7 +206,7 @@ public class GreetingsDialog extends AppCompatDialog implements View.OnClickList
 
     private void sendMessage(String message){
 
-        String number = "9276505372";
+        String number = "";  //9276505372
 
 
         try {
