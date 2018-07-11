@@ -115,6 +115,11 @@ public class SigninActivity extends AppCompatActivity implements  View.OnClickLi
                 Pref.setValue(this,Constant.PREF_SESSION_EMPLOYEE_FK,model.getEmployeeFK());
 
                 Pref.setValue(this,Constant.PREF_ROLE_FK,model.getRoleFK());
+
+                Pref.setValue(this,Constant.PREF_RESPONSE_CODE,model.getResponseCode());
+
+
+                Pref.setValue(this,Constant.PREF_LOGIN_PK,model.getLoginPK());
                 //api calls for get user profile
 
                 getUserProfile(model.getEmployeeFK());

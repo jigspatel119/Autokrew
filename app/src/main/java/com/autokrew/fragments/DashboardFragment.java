@@ -35,6 +35,7 @@ import com.autokrew.adapter.BirthdayAdapter;
 import com.autokrew.adapter.DashbordModuleAdapter;
 import com.autokrew.dialogs.AttendanceDetailDialog;
 import com.autokrew.dialogs.GreetingsDialog;
+import com.autokrew.dialogs.ResetPasswordDialog;
 import com.autokrew.dialogs.VersionUpgradeDialog;
 import com.autokrew.interfaces.RecyclerViewDashBoardListener;
 import com.autokrew.listner.RecyclerItemClickListener;
@@ -91,7 +92,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     AnnouncementAdapter mAnnocumentAdapter;
     DashbordModuleAdapter mDashbordModuleAdapter;
 
-    CardView card_view2,card_view1 ,card_view_birthday,card_view_announcement;
+    CardView card_view2, card_view1, card_view_birthday, card_view_announcement;
 
     //LinearLayout ll_birthday,ll_announcement;
 
@@ -109,7 +110,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     VersionUpgradeDialog mVersionDialog;
 
     AttendanceDetailDialog mAttendanceDetailDialog;
-    String mLat ,mLong,mAddress;
+    String mLat, mLong, mAddress;
 
 
     DashbordModel model;
@@ -131,6 +132,8 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     FirebaseRemoteConfig firebaseRemoteConfig;
     long cacheExpiration = 3600;
 
+    String IMEINumber = "";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -139,12 +142,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         mPreferenceHelper = new PreferenceHelper(getActivity());
 
 
-
         getData();
         findView(root_view);
         setData(root_view);
         setListner();
-
 
 
         return root_view;
@@ -176,14 +177,14 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         rv_top_modules = (RecyclerView) v.findViewById(R.id.rv_top_modules);
 
 
-        card_view2 = (CardView)v.findViewById(R.id.card_view2);
-        card_view1 = (CardView)v.findViewById(R.id.card_view1);
+        card_view2 = (CardView) v.findViewById(R.id.card_view2);
+        card_view1 = (CardView) v.findViewById(R.id.card_view1);
 
-       // ll_birthday = (LinearLayout)v.findViewById(R.id.ll_birthday);
-       // ll_announcement = (LinearLayout)v.findViewById(R.id.ll_announcement);
+        // ll_birthday = (LinearLayout)v.findViewById(R.id.ll_birthday);
+        // ll_announcement = (LinearLayout)v.findViewById(R.id.ll_announcement);
 
-        card_view_birthday = (CardView)v.findViewById(R.id.card_view_birthday);
-        card_view_announcement = (CardView)v.findViewById(R.id.card_view_announcement);
+        card_view_birthday = (CardView) v.findViewById(R.id.card_view_birthday);
+        card_view_announcement = (CardView) v.findViewById(R.id.card_view_announcement);
 
         btn_date = (Button) v.findViewById(R.id.btn_date);
         btn_announcement = (Button) v.findViewById(R.id.btn_announcement);
@@ -200,12 +201,19 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
         checkVersionUpgrade();
         setupRecyclerView();
-
-
-        is_outside_allow = Pref.getValue(getActivity(),"is_outside_allow" ,0);
+        is_outside_allow = Pref.getValue(getActivity(), "is_outside_allow", 0);
         setupFAB(v);
-
         displayTuto();
+
+        //check for very first time reset password
+
+        if(String.valueOf(Pref.getValue(getActivity(),Constant.PREF_RESPONSE_CODE ,0)).equalsIgnoreCase("7")){
+            ResetPasswordDialog mDialog = new ResetPasswordDialog(getActivity(),"dashbord_frag");
+            mDialog.setCancelable(false);
+            mDialog.setCanceledOnTouchOutside(false);
+            mDialog.show();
+        }
+
     }
 
     private void checkVersionUpgrade() {
@@ -221,7 +229,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                 .build();
         firebaseRemoteConfig.setConfigSettings(remoteConfigSettings);
         firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
-
 
 
         //expire the cache immediately for development mode.
@@ -242,14 +249,13 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     try {
                         PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
                         String version = pInfo.versionName;
-                        if(!version_name.equalsIgnoreCase(version)){
+                        if (!version_name.equalsIgnoreCase(version)) {
                             //display version upgrade dialog
                             mVersionDialog = new VersionUpgradeDialog(getActivity());
                             mVersionDialog.setCancelable(false);
                             mVersionDialog.setCanceledOnTouchOutside(true);
                             mVersionDialog.show();
-                        }
-                        else{
+                        } else {
 
                         }
 
@@ -284,13 +290,11 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         fab_qrcode = (FloatingActionButton) v.findViewById(R.id.fab_qrcode);
 
 
-        if(is_outside_allow == 0){
+        if (is_outside_allow == 0) {
             fab_attendance.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             fab_attendance.setVisibility(View.VISIBLE);
         }
-
 
 
         //materialDesignFAM.setVisibility(View.GONE);
@@ -298,55 +302,41 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
 
-                if (Permissions.getInstance().isLocationPermissionGranted(getActivity())) {
+                if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
 
-                    /*Location location =  new GPSTracker(getActivity()).getLocation();
+                    if (Permissions.getInstance().isLocationPermissionGranted(getActivity())) {
 
-                    if(location!=null){
-                        mLat = String.valueOf(location.getLatitude());
-                        mLong= String.valueOf(location.getLongitude());
-                        mAddress = mPreferenceHelper.getAddress();
-                        callOutSideAttendanceFromMobileAppAPI("",mLat,mLong ,mAddress);
-                        materialDesignFAM.close(true);
+                        if (!CommonUtils.isGpsEnabled(getActivity())) {
+                            CommonUtils.displayLocationSettingsRequest(getActivity());
+                        } else {
+                            requestPermissionForLocation();
+                        }
                     }
-                    else{
-                        //new GPSTracker(mActivity).showAlert();
-                        CommonUtils.getInstance().displayToast(getActivity(),"Please enable your GPS");
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);
-                    }*/
-                    if (!CommonUtils.isGpsEnabled(getActivity())) {
-                        CommonUtils.displayLocationSettingsRequest(getActivity());
-                    }
-                    else{
-                        requestPermissionForLocation();
-                    }
-
-
                 }
 
 
                 // Fragment fragment = new TempFragment();
-               //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "TEMP").addToBackStack("null").commit();
+                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "TEMP").addToBackStack("null").commit();
 
             }
         });
 
 
-
-
         fab_qrcode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
-               // Crashlytics.getInstance().crash(); // Force a crash
+                // Crashlytics.getInstance().crash(); // Force a crash
 
                 if (Permissions.getInstance().isCameraPermissionGranted(getActivity())) {
-                    //open camera and api calls for qrcode..
-                    CommonUtils.getInstance().startActivity(getActivity(), QRScanActivity.class);
-                    getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
-                    materialDesignFAM.close(true);
-                }
 
+                    if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
+                        //open camera and api calls for qrcode..
+                        CommonUtils.getInstance().startActivity(getActivity(), QRScanActivity.class);
+                        getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
+                        materialDesignFAM.close(true);
+                    }
+
+                }
             }
         });
 
@@ -379,11 +369,16 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         // location = new GPSTracker(mActivity).getLocation();
         if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
 
-                mLat = String.valueOf(CommonUtils.lattitude);
-                mLong= String.valueOf(CommonUtils.logitude);
-                mAddress = mPreferenceHelper.getAddress();
-                callOutSideAttendanceFromMobileAppAPI("",mLat,mLong ,mAddress);
+            mLat = String.valueOf(CommonUtils.lattitude);
+            mLong = String.valueOf(CommonUtils.logitude);
+            mAddress = mPreferenceHelper.getAddress();
+            IMEINumber = CommonUtils.getInstance().getIMEI(getActivity());
+
+            if(IMEINumber!=null && IMEINumber.length()>0){
+                callOutSideAttendanceFromMobileAppAPI("", mLat, mLong, mAddress ,IMEINumber);
                 materialDesignFAM.close(true);
+            }
+
 
         }
        /* else{
@@ -403,11 +398,11 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         if (CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
             Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
             getActivity().stopService(intent);
-            Log.e(TAG, "onStop: **********stopService**********" );
+            Log.e(TAG, "onStop: **********stopService**********");
         }
     }
 
-    private void callOutSideAttendanceFromMobileAppAPI(String QR_text  , String mLat , String mLong , String mAddress) {
+    private void callOutSideAttendanceFromMobileAppAPI(String QR_text, String mLat, String mLong, String mAddress ,String IMEINumber) {
 
         ApplyAttendanceParam params = new ApplyAttendanceParam();
         params.setAtt_Lat(mLat);
@@ -417,8 +412,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         params.setAtt_PhisicalAddress(mAddress);
         params.setEmployeePk(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
 
+        params.setIMEINumber(IMEINumber);
+
         from_last = "OutSideAttendance";
-       // String mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
+        // String mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
 
         new WebServices(getActivity()/* ActivityContext */, DashboardFragment.this /* ApiListener */, true /* show progress dialog */,
                 true/*for new retrofitclient*/).
@@ -449,10 +446,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                         //Create the bundle
                         Bundle bundle = new Bundle();
                         bundle.putString("title", title);
-                        bundle.putInt("mNewsPk",mNewsPk);
+                        bundle.putInt("mNewsPk", mNewsPk);
 
-                        CommonUtils.getInstance().startActivity(getActivity(), WebViewActivity.class,bundle);
-                        getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
+                        CommonUtils.getInstance().startActivity(getActivity(), WebViewActivity.class, bundle);
+                        getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
                     }
                 })
@@ -509,10 +506,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     @Override
     public void recyclerViewModuleClicked(View v, int position) {
 
-        if(mModuleList.get(position).getTitle().equalsIgnoreCase("Pending Attendance \nApproval")){
+        if (mModuleList.get(position).getTitle().equalsIgnoreCase("Pending Attendance \nApproval")) {
             //CommonUtils.getInstance().displayToast(getActivity(), mModuleList.get(position).getTitle());
             callDashbordDetailAPI("AttendanceDetail");
-        }else if(mModuleList.get(position).getTitle().equalsIgnoreCase("Pending Leave \nApproval")){
+        } else if (mModuleList.get(position).getTitle().equalsIgnoreCase("Pending Leave \nApproval")) {
             //CommonUtils.getInstance().displayToast(getActivity(), mModuleList.get(position).getTitle());
             callDashbordDetailAPI("LeaveDetail");
         }
@@ -525,26 +522,24 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         //for token expired
         if (mObject instanceof LoginModel) {
             LoginModel model = (LoginModel) mObject;
-            Log.e("", "onApiSuccess: token >>  "+model.getToken() );
-            if(model.getResponse().equalsIgnoreCase("Invalid Username or Password, Please try again.")){
+            Log.e("", "onApiSuccess: token >>  " + model.getToken());
+            if (model.getResponse().equalsIgnoreCase("Invalid Username or Password, Please try again.")) {
                 //redirect to login screen
-                Pref.setValue(getActivity(), "auto_login","false");
+                Pref.setValue(getActivity(), "auto_login", "false");
                 CommonUtils.getInstance().startActivityWithoutStack(getActivity(), SigninActivity.class);
-            }
-            else{
+            } else {
                 //success response..
-                if(model.getToken()!=null){
+                if (model.getToken() != null) {
                     //add bearer_ (space before token....)
-                    Pref.setValue(getActivity(),Constant.PREF_TOKEN,"bearer "+model.getToken());
-                    Pref.setValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,model.getEmployeeFK());
+                    Pref.setValue(getActivity(), Constant.PREF_TOKEN, "bearer " + model.getToken());
+                    Pref.setValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, model.getEmployeeFK());
 
-                    Pref.setValue(getActivity(),Constant.PREF_ROLE_FK,model.getRoleFK());
+                    Pref.setValue(getActivity(), Constant.PREF_ROLE_FK, model.getRoleFK());
                     //api calls for get user profile
                     //getUserProfile(model.getEmployeeFK());
 
                     CommonUtils.getInstance().startActivityWithoutStack(getActivity(), MainActivity.class);
-                }
-                else{
+                } else {
                     //
                     CommonUtils.getInstance().displayToast(getActivity(), model.getResponse());
                 }
@@ -554,50 +549,47 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
 
         //for existing token..
-       else if (mObject instanceof String) {
+        else if (mObject instanceof String) {
             try {
                 JSONObject jsonObj = new JSONObject(mObject.toString());
                 //parse original data
                 Log.e("", "onApiSuccess: dashboard json >>  " + jsonObj.toString());
                 Gson gson = new Gson();
 
-                if(from_last.equalsIgnoreCase("Employee")){
+                if (from_last.equalsIgnoreCase("Employee")) {
                     model = gson.fromJson(mObject.toString(), DashbordModel.class);
 
-                   // ll_announcement.setVisibility(View.VISIBLE);
-                   // ll_birthday.setVisibility(View.VISIBLE);
+                    // ll_announcement.setVisibility(View.VISIBLE);
+                    // ll_birthday.setVisibility(View.VISIBLE);
 
                     card_view_birthday.setVisibility(View.VISIBLE);
                     card_view_announcement.setVisibility(View.VISIBLE);
 
                     //set announcement adapter
-                    if(model.getTable12().size()>0){
+                    if (model.getTable12().size() > 0) {
                         rv_announcements.setVisibility(View.VISIBLE);
                         card_view2.setVisibility(View.GONE);
                         mAnnocumentAdapter = new AnnouncementAdapter(getActivity(), model, DashboardFragment.this);
                         rv_announcements.setAdapter(mAnnocumentAdapter);
                         rv_announcements.setNestedScrollingEnabled(false);
-                    }
-                    else{
+                    } else {
                         rv_announcements.setVisibility(View.GONE);
                         card_view2.setVisibility(View.VISIBLE);
                     }
 
-                    if(model.getTable4().size()>0){
+                    if (model.getTable4().size() > 0) {
                         rv_birthday_today.setVisibility(View.VISIBLE);
                         card_view1.setVisibility(View.GONE);
                         mBirthdateAdapter = new BirthdayAdapter(getActivity(), model, DashboardFragment.this);
                         rv_birthday_today.setAdapter(mBirthdateAdapter);
                         rv_birthday_today.setNestedScrollingEnabled(false); //for smooth nested scroll
-                    }else{
+                    } else {
                         rv_birthday_today.setVisibility(View.GONE);
                         card_view1.setVisibility(View.VISIBLE);
                     }
 
 
-
-
-                    if(model.getTable11().get(0).getHRRights()==1){
+                    if (model.getTable11().get(0).getHRRights() == 1) {
                         //show
                         rv_top_modules.setVisibility(View.VISIBLE);
                         mModuleList = new ArrayList<>();
@@ -619,34 +611,33 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                         rv_top_modules.setAdapter(mDashbordModuleAdapter);
                         rv_top_modules.setNestedScrollingEnabled(false); //for smooth nested scroll
 
-                    }else{
+                    } else {
                         //hide
                         rv_top_modules.setVisibility(View.GONE);
                     }
 
-                }else if(from_last.equalsIgnoreCase("AttendanceDetail")){
+                } else if (from_last.equalsIgnoreCase("AttendanceDetail")) {
 
                     attendanceDetailModel = gson.fromJson(mObject.toString(), AttendanceDetailModel.class);
-                    mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(),attendanceDetailModel,null,"Pending Attendance Approval","Pending Attendance");
+                    mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(), attendanceDetailModel, null, "Pending Attendance Approval", "Pending Attendance");
                     mAttendanceDetailDialog.setCancelable(false);
                     mAttendanceDetailDialog.setCanceledOnTouchOutside(true);
                     mAttendanceDetailDialog.show();
 
-                }else if(from_last.equalsIgnoreCase("LeaveDetail")){
+                } else if (from_last.equalsIgnoreCase("LeaveDetail")) {
 
                     leaveDetailModel = gson.fromJson(mObject.toString(), LeaveDetailModel.class);
-                    mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(),null,leaveDetailModel,"Pending Leave Approval","Pending Leave");
+                    mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(), null, leaveDetailModel, "Pending Leave Approval", "Pending Leave");
                     mAttendanceDetailDialog.setCancelable(false);
                     mAttendanceDetailDialog.setCanceledOnTouchOutside(true);
                     mAttendanceDetailDialog.show();
 
 
-                }
-                else if(from_last.equalsIgnoreCase("OutSideAttendance")){
+                } else if (from_last.equalsIgnoreCase("OutSideAttendance")) {
 
                     mOutsideSideAttendanceModel = gson.fromJson(mObject.toString(), OutSideAttendanceModel.class);
 
-                    CommonUtils.getInstance().displayToast(getActivity(),""+mOutsideSideAttendanceModel.getTable().get(0).getResult());
+                    CommonUtils.getInstance().displayToast(getActivity(), "" + mOutsideSideAttendanceModel.getTable().get(0).getResult());
                 }
 
 
@@ -656,47 +647,43 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
             } catch (JSONException e) {
                 e.printStackTrace();
                 //dismiss dialog
-                if(dialog!=null){
-                    if(dialog.isShowing())
-                    dialog.dismiss();
+                if (dialog != null) {
+                    if (dialog.isShowing())
+                        dialog.dismiss();
                 }
 
+            }
+        } else if (mObject instanceof LetestVersionModel) {
+            LetestVersionModel model = (LetestVersionModel) mObject;
+
+            try {
+
+                Log.e(TAG, "onApiSuccess:  >>>> " + model.getData().getVersion());
+
+                PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                int verCode = pInfo.versionCode;
+
+                if (model.getStatus().equals("Success")) {
+                    if (Integer.parseInt(model.getData().getVersion()) > verCode) {
+                        //show popup
+                        mVersionDialog = new VersionUpgradeDialog(getActivity());
+                        mVersionDialog.setCancelable(false);
+                        mVersionDialog.setCanceledOnTouchOutside(false);
+                        mVersionDialog.show();
+
+
+                    } else {
+                        //nothing to do
+
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        else if(mObject instanceof LetestVersionModel ){
-            LetestVersionModel model = (LetestVersionModel) mObject;
-
-                try {
-
-                    Log.e(TAG, "onApiSuccess:  >>>> " +model.getData().getVersion() );
-
-                    PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                    int verCode = pInfo.versionCode;
-
-                    if (model.getStatus().equals("Success")) {
-                        if(Integer.parseInt(model.getData().getVersion())> verCode){
-                            //show popup
-                            mVersionDialog = new VersionUpgradeDialog(getActivity());
-                            mVersionDialog.setCancelable(false);
-                            mVersionDialog.setCanceledOnTouchOutside(false);
-                            mVersionDialog.show();
-
-
-                        }else{
-                            //nothing to do
-
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                }
-
-            }
-
-
+    }
 
 
     @Override
@@ -710,24 +697,24 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     }
 
     private void loginAPICalls() {
-            LoginModelParams params = new LoginModelParams();
-            params.setUsername(Pref.getValue(getActivity(),"user_id",""));
-            params.setPassword(Pref.getValue(getActivity(),"user_password",""));
-                     params.setMobileURL(Pref.getValue(getActivity(),Constant.PREF_MOBILE_URL,""));
+        LoginModelParams params = new LoginModelParams();
+        params.setUsername(Pref.getValue(getActivity(), "user_id", ""));
+        params.setPassword(Pref.getValue(getActivity(), "user_password", ""));
+        params.setMobileURL(Pref.getValue(getActivity(), Constant.PREF_MOBILE_URL, ""));
 
-            new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */, false /* show progress dialog */,
-                    true/*for new retrofitclient*/ ).
-                    callLoginAPI(params);
+        new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */, false /* show progress dialog */,
+                true/*for new retrofitclient*/).
+                callLoginAPI(params);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if(Constant.LAST_ACTIVITY.equalsIgnoreCase("AttendanceDeviationActivity") || Constant.LAST_ACTIVITY.equalsIgnoreCase("GroupLeaveActivity")){
+        if (Constant.LAST_ACTIVITY.equalsIgnoreCase("AttendanceDeviationActivity") || Constant.LAST_ACTIVITY.equalsIgnoreCase("GroupLeaveActivity")) {
 
             Constant.LAST_ACTIVITY = "";
-           // callDashbordDetailAPI("Employee");
+            // callDashbordDetailAPI("Employee");
         }
 
     }

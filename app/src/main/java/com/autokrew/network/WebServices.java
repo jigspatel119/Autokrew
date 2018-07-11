@@ -28,6 +28,7 @@ import com.autokrew.models.MyprofileParams;
 import com.autokrew.models.PointingUrlModel;
 import com.autokrew.models.PreviewAnnouncementParam;
 import com.autokrew.models.ProfileImageParams;
+import com.autokrew.models.ResetPasswordParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
@@ -692,6 +693,48 @@ public class WebServices {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+
+
+
+
+    /** //
+     * //===========================( manage leave API )==============================//
+     */
+    public void callResetPasswordAPI(String mToken , ResetPasswordParams params ) {
+
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+
+            Call<String> call = null;
+
+            call = mApiInterface.resetPassword(mToken,
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),params);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t)
+                {
                     onFailureResponse(t);
                 }
             });

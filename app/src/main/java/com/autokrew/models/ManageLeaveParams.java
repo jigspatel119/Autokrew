@@ -5,13 +5,9 @@ package com.autokrew.models;
  */
 public class ManageLeaveParams {
 
-    /**
-     * Flag : Detail
-     * SessionEmployeeFk : 8816
-     * LeaveDetailPK : 6719
-     * ApprovalStatus : null
-     * ApprovalRemarks : null
-     */
+ /*   oldPassword : string
+    newPassword : string
+    LoginFK: string*/
 
     private String Flag;
     private int SessionEmployeeFk;

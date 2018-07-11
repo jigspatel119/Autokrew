@@ -45,6 +45,8 @@ import com.autokrew.ActionSheetDialog.ActionSheetDialog;
 import com.autokrew.ActionSheetDialog.OnOpenItemClickL;
 import com.autokrew.R;
 import com.autokrew.adapter.CountryAdapter;
+import com.autokrew.dialogs.LeaveRequestDialog;
+import com.autokrew.dialogs.ResetPasswordDialog;
 import com.autokrew.fragments.DashboardFragment;
 import com.autokrew.fragments.GroupAttendanceFragment;
 import com.autokrew.fragments.GroupLeaveFragment;
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String TAG_FRAGMENT ;
 
     TextView tv_name ,txt_user_name ,txt_dashboard ,txt_employee_code;
-    ImageView img_upload_doc;
+    ImageView img_upload_doc,img_reset_password;
     LinearLayout ll_user_profile;
     TextView txt_view_profile;
     RelativeLayout rl_menu;
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ev_list = (ExpandableListView) findViewById(R.id.ev_menu);
         tv_name = (TextView) findViewById(R.id.tv_name);
         img_upload_doc = (ImageView) findViewById(R.id.img_upload_doc);
+        img_reset_password = (ImageView) findViewById(R.id.img_reset_password);
         rl_menu = (RelativeLayout) findViewById(R.id.rl_menu);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         obj_adapter = new CountryAdapter(MainActivity.this, al_main);
@@ -224,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(groupPosition == 0){
 
                     img_upload_doc.setVisibility(View.INVISIBLE);
+                    img_reset_password.setVisibility(View.INVISIBLE);
 
                     fragment = new DashboardFragment();
                     tv_name.setText("Dashboard");
@@ -267,6 +271,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //default fragment load..
         img_upload_doc.setVisibility(View.INVISIBLE);
+        img_reset_password.setVisibility(View.INVISIBLE);
+
         fragment = new DashboardFragment();
         tv_name.setText(al_main.get(0).getStr_country()); // "name": "Dashboard" form json file
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "Dashboard")
@@ -288,6 +294,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MainActivity.this.overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
 
            }
+        });
+
+        img_reset_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ResetPasswordDialog mDialog = new ResetPasswordDialog(MainActivity.this ,"main_activity");
+                mDialog.setCancelable(false);
+                mDialog.setCanceledOnTouchOutside(true);
+                mDialog.show();
+            }
         });
     }
 
@@ -633,6 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 img_upload_doc.setVisibility(View.VISIBLE);
+                img_reset_password.setVisibility(View.VISIBLE);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
 
                 fragment = new ProfileFragment();
@@ -975,12 +993,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Pref.setValue(MainActivity.this,"mEmployeePK","");
 
                CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
-
-                /*Intent startMain = new Intent(Intent.ACTION_MAIN);
-                startMain.addCategory(Intent.CATEGORY_HOME);
-                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(startMain);
-                finish();*/
 
 
             }

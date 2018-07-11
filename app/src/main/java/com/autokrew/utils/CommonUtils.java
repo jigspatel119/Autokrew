@@ -21,6 +21,7 @@ import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -581,6 +582,13 @@ public class CommonUtils {
     }
 
 
+
+    public String getIMEI(Context mContext){
+
+        TelephonyManager telephonyManager = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        return telephonyManager.getDeviceId();
+    }
 
 
 

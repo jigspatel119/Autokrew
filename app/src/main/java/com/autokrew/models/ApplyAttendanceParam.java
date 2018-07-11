@@ -12,6 +12,7 @@ public class ApplyAttendanceParam {
      * QrCode : 123456
      * Att_Lat :
      * Att_Long :
+     * IMEINumber :
      */
 
     private String EmployeePk;
@@ -20,6 +21,15 @@ public class ApplyAttendanceParam {
     private String Att_Lat;
     private String Att_Long;
     private String Att_PhisicalAddress;
+    private String IMEINumber;
+
+    public String getIMEINumber() {
+        return IMEINumber;
+    }
+
+    public void setIMEINumber(String IMEINumber) {
+        this.IMEINumber = IMEINumber;
+    }
 
     public String getAtt_PhisicalAddress() {
         return Att_PhisicalAddress;

@@ -40,6 +40,12 @@ public class Constant {
     public static final String PREF_LEAVE_BUTTON = "leave_item_button";
 
     public static final String PREF_ROLE_FK = "roleFK";
+    public static final String PREF_LOGIN_PK = "loginPK";
+    public static final String PREF_RESPONSE_CODE = "responseCode";
+
+
+
+
 
     public static String LAST_ACTIVITY = "";
     public  static  final int GPS_SETTINGS = 105;

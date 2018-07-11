@@ -60,13 +60,16 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
 
     // GPSTracker class
     GPSTracker2 gps;
+    String IMEINumber = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscan);
         mPreferenceHelper = new PreferenceHelper(this);
+        IMEINumber = CommonUtils.getInstance().getIMEI(this);
 
+        Log.e(TAG, "IMEINumber ::"+CommonUtils.getInstance().getIMEI(this));
 
         //Initialize Views
         initializeViews();
@@ -224,6 +227,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
         params.setQrCode(QR_text);
         params.setAtt_PhisicalAddress(mAddress);
         params.setEmployeePk(String.valueOf(Pref.getValue(this, Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
+        params.setIMEINumber(IMEINumber);
 
         String mToken = Pref.getValue(this, Constant.PREF_TOKEN, "");
 
@@ -320,7 +324,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener {
                     if(distance(Double.parseDouble(obj.getString("lat"))
                             , Double.parseDouble(obj.getString("long"))
                             , CommonUtils.lattitude
-                            , CommonUtils.logitude) < 0.1){
+                            , CommonUtils.logitude) <= 0.01){  // <=10 miter
 
                         //0.045411597019411123
                        // Toast.makeText(this, "API calls!", Toast.LENGTH_LONG).show();

@@ -24,6 +24,7 @@ import com.autokrew.models.MyprofileParams;
 import com.autokrew.models.PointingUrlModel;
 import com.autokrew.models.PreviewAnnouncementParam;
 import com.autokrew.models.ProfileImageParams;
+import com.autokrew.models.ResetPasswordParams;
 import com.autokrew.models.SandwichParams;
 import com.autokrew.models.TeamMemberModelParams;
 import com.autokrew.models.TeamOrGroupLeaveModelParams;
@@ -62,11 +63,6 @@ public interface ApiInterface {
 
     public static String BASE_URL = "http://79.143.188.202:94/";
 
-
-    //APIs List
-    String Login_URL = "/api/Login/CheckLoginFromMobileApp";
-    String Signup_URL = "api/sign-up";
-    String Sync_Contacts_URL = "http://192.168.1.231/Social_App/api/web/users/sync-phone-book";
 
 
     //Login
@@ -137,7 +133,7 @@ public interface ApiInterface {
             @Body DeviceTokenParam body);
 
 
-    //dashboard
+    //dashboard 123
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}api/Attendance/OutSideAttendanceFromMobileApp")
     Call<String> applyAttendance(
@@ -424,6 +420,17 @@ public interface ApiInterface {
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body ManageLeaveParams body
     );
+
+
+    //ResetPasswordForMobile
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/Login/ResetPasswordForMobile")
+    Call<String> resetPassword(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body ResetPasswordParams body
+    );
+
 
 
     //get getPointingUrl
