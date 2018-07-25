@@ -4,12 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,11 +26,7 @@ import com.autokrew.utils.FusedLocationAPIService;
 import com.autokrew.utils.GPSTracker2;
 import com.autokrew.utils.Pref;
 import com.autokrew.utils.PreferenceHelper;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -43,15 +35,13 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+//@kns.p : OLD code.....................................
 
-
-public class QRScanActivity extends AppCompatActivity implements ApiListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class QRScanActivity2 extends AppCompatActivity implements ApiListener {
 
     //General Variables
-    private static final String TAG = QRScanActivity.class.getSimpleName();
-    Activity mActivity = QRScanActivity.this;
+    private static final String TAG = QRScanActivity2.class.getSimpleName();
+    Activity mActivity = QRScanActivity2.this;
 
     Toolbar mToolbar;
     //QRCodeReaderView mQrCodeReaderView;
@@ -73,14 +63,6 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
     // GPSTracker class
     GPSTracker2 gps;
     String IMEINumber = "";
-
-
-    //=========================
-    private LocationRequest mLocationRequest;
-    private long LOCATION_UPDATE_INTERVAL = 2000;// 2 sec  [60000 = 1 min]
-    private GoogleApiClient mGoogleApiClient;
-
-    //==========================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,25 +103,24 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
             @Override
             public void onClick(View v) {
                 //What to do on back clicked
-           /*     if (CommonUtils.isMyServiceRunning(mActivity, FusedLocationAPIService.class)) {
+                if (CommonUtils.isMyServiceRunning(mActivity, FusedLocationAPIService.class)) {
                     Intent intent = new Intent(mActivity, FusedLocationAPIService.class);
-                    QRScanActivity.this.stopService(intent);
+                    QRScanActivity2.this.stopService(intent);
 
-                    GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(QRScanActivity.this)
+                    GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(QRScanActivity2.this)
                             .addApi(LocationServices.API)
                             .build();
+                    if (mGoogleApiClient != null) {
+                        mGoogleApiClient.disconnect();
+                    }
 
                     // CommonUtils.turnOffGPS(QRScanActivity.this);
 
                     Log.e(TAG, "FusedLocationAPIService :onBackPressed: **********stopService**********" );
-                }*/
-
-                if (mGoogleApiClient != null) {
-                    mGoogleApiClient.disconnect();
                 }
 
                 finish();
-                QRScanActivity.this.overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
+                QRScanActivity2.this.overridePendingTransition(R.anim.activity_open_scale,R.anim.activity_close_translate);
 
             }
         });
@@ -160,8 +141,8 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
             @Override
             public void onClick(View v) {
 
-                if (!CommonUtils.isGpsEnabled(QRScanActivity.this)) {
-                    CommonUtils.displayLocationSettingsRequest(QRScanActivity.this);
+                if (!CommonUtils.isGpsEnabled(QRScanActivity2.this)) {
+                    CommonUtils.displayLocationSettingsRequest(QRScanActivity2.this);
                 }
                 else{
                     requestPermissionForLocation();
@@ -177,11 +158,11 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
     public void onBackPressed() {
         //super.onBackPressed();
 
-        if (CommonUtils.isMyServiceRunning(QRScanActivity.this, FusedLocationAPIService.class)) {
-            Intent intent = new Intent(QRScanActivity.this, FusedLocationAPIService.class);
-            QRScanActivity.this.stopService(intent);
+        if (CommonUtils.isMyServiceRunning(QRScanActivity2.this, FusedLocationAPIService.class)) {
+            Intent intent = new Intent(QRScanActivity2.this, FusedLocationAPIService.class);
+            QRScanActivity2.this.stopService(intent);
 
-            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(QRScanActivity.this)
+            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(QRScanActivity2.this)
                     .addApi(LocationServices.API)
                     .build();
             if (mGoogleApiClient != null) {
@@ -215,21 +196,10 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
 
     private void startLocationService() {
 
-        /*if (!CommonUtils.isMyServiceRunning(mActivity, FusedLocationAPIService.class)) {
+        if (!CommonUtils.isMyServiceRunning(mActivity, FusedLocationAPIService.class)) {
                 Intent intent = new Intent(mActivity, FusedLocationAPIService.class);
                 this.startService(intent);
-            }*/
-
-        buildGoogleApiClient();
-        createLocationRequest();
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
             }
-        }
-        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, locationCallback,
-                Looper.myLooper());
-
        // location = new GPSTracker(mActivity).getLocation();
         if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
             mLat2 = String.valueOf(CommonUtils.lattitude);
@@ -256,7 +226,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
 
         String mToken = Pref.getValue(this, Constant.PREF_TOKEN, "");
 
-        new WebServices(this/* ActivityContext */, QRScanActivity.this /* ApiListener */, true /* show progress dialog */,
+        new WebServices(this/* ActivityContext */, QRScanActivity2.this /* ApiListener */, true /* show progress dialog */,
                 true/*for new retrofitclient*/).
                 callOutSideAttendanceFromMobileAppAPI(mToken, params);
         //  }
@@ -333,7 +303,6 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
                 try {
                     //converting the data to json
                     JSONObject obj = new JSONObject(result.getContents());
-
                     //setting values to textviews
                     //textViewName.setText(obj.getString("name"));
                    // textViewAddress.setText(obj.getString("address"));
@@ -350,7 +319,7 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
                     if(distance(Double.parseDouble(obj.getString("lat"))
                             , Double.parseDouble(obj.getString("long"))
                             , CommonUtils.lattitude
-                            , CommonUtils.logitude) <= Double.parseDouble(obj.getString("Radius"))){  //  {0.01<=10 miter}  //
+                            , CommonUtils.logitude) <= 0.005){  //  {0.01<=10 miter}
 
                         //0.045411597019411123
                        // Toast.makeText(this, "API calls!", Toast.LENGTH_LONG).show();
@@ -418,104 +387,6 @@ public class QRScanActivity extends AppCompatActivity implements ApiListener,
         else {
 
         }
-
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-     /*   buildGoogleApiClient();
-
-        createLocationRequest();
-
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-        }
-        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, locationCallback,
-                Looper.myLooper());*/
-
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed: Called");
-        buildGoogleApiClient();
-
-    }
-    synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-
-
-        }
-       // LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
-        Log.e(TAG, "FusedLocationAPIService: onDestroy : *****client disconnect***" );
-
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-//            Location location = locationResult.getLastLocation();
-
-//            super.onLocationResult(locationResult);
-            for (Location location : locationResult.getLocations()) {
-                Log.e(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude() + " " + location.getBearing());
-                Log.e(TAG, "onCreate: lat-->" + location.getLatitude());
-                Log.e(TAG, "onCreate: lon-->" + location.getLongitude());
-                CommonUtils.lattitude = location.getLatitude();
-                CommonUtils.logitude = location.getLongitude();
-                CommonUtils.getAddressFromLatLong(QRScanActivity.this, location.getLatitude(), location.getLongitude());
-
-            }
-        }
-    };
-
-    private void createLocationRequest() {
-
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL); // Update location every 19 minute
-        mLocationRequest.setFastestInterval(LOCATION_UPDATE_INTERVAL);
-        /**
-         * To get location information consistently
-         * mLocationRequest.setNumUpdates(1) Commented out
-         * Uncomment the code below
-         */
-        // mLocationRequest.setNumUpdates(1);
-        //mLocationRequest.setSmallestDisplacement()
 
     }
 

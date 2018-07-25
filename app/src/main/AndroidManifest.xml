@@ -153,11 +153,10 @@
             </intent-filter>
         </service>
 
-
-
+<!--
         <service
             android:name="com.autokrew.utils.FusedLocationAPIService"
-            android:enabled="true" />
+            android:enabled="true" />-->
 
     </application>
 

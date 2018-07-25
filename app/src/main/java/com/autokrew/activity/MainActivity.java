@@ -300,10 +300,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
 
-                ResetPasswordDialog mDialog = new ResetPasswordDialog(MainActivity.this ,"main_activity");
+                CommonUtils.getInstance().displayToast(MainActivity.this,"Under development!");
+
+              /*  ResetPasswordDialog mDialog = new ResetPasswordDialog(MainActivity.this ,"main_activity");
                 mDialog.setCancelable(false);
                 mDialog.setCanceledOnTouchOutside(true);
-                mDialog.show();
+                mDialog.show();*/
             }
         });
     }

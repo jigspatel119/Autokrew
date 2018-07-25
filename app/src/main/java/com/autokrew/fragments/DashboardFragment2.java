@@ -6,14 +6,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -37,7 +32,6 @@ import com.autokrew.adapter.BirthdayAdapter;
 import com.autokrew.adapter.DashbordModuleAdapter;
 import com.autokrew.dialogs.AttendanceDetailDialog;
 import com.autokrew.dialogs.GreetingsDialog;
-import com.autokrew.dialogs.ResetPasswordDialog;
 import com.autokrew.dialogs.VersionUpgradeDialog;
 import com.autokrew.interfaces.RecyclerViewDashBoardListener;
 import com.autokrew.listner.RecyclerItemClickListener;
@@ -56,19 +50,12 @@ import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
-//import com.autokrew.utils.FusedLocationAPIService;
-import com.autokrew.utils.GPSTracker;
+import com.autokrew.utils.FusedLocationAPIService;
 import com.autokrew.utils.Permissions;
 import com.autokrew.utils.Pref;
 import com.autokrew.utils.PreferenceHelper;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -85,12 +72,14 @@ import java.util.List;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 
-public class DashboardFragment extends Fragment implements RecyclerViewDashBoardListener, ApiListener
-        , GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+
+
+//@kns.p : OLD code.....................................
+
+public class DashboardFragment2 extends Fragment implements RecyclerViewDashBoardListener, ApiListener {
 
     //General Variables
-    private static final String TAG = DashboardFragment.class.getSimpleName();
+    private static final String TAG = DashboardFragment2.class.getSimpleName();
     Activity mActivity = getActivity();
 
 
@@ -143,14 +132,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     long cacheExpiration = 3600;
 
     String IMEINumber = "";
-
-
-    //=========================
-    private LocationRequest mLocationRequest;
-    private long LOCATION_UPDATE_INTERVAL = 2000;// 2 sec  [60000 = 1 min]
-    private GoogleApiClient mGoogleApiClient;
-
-    //==========================
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -295,7 +276,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
 
         from_last = flag;
-        new WebServices(getActivity()/* ActivityContext */, DashboardFragment.this /* ApiListener */, false /* show progress dialog */,
+        new WebServices(getActivity()/* ActivityContext */, DashboardFragment2.this /* ApiListener */, false /* show progress dialog */,
                 true/*for new retrofitclient*/).
                 callDashboardDetailAPI(mToken, params);
         //  }
@@ -314,7 +295,6 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
             fab_attendance.setVisibility(View.VISIBLE);
         }
 
-       // fab_attendance.setVisibility(View.VISIBLE);
 
         //materialDesignFAM.setVisibility(View.GONE);
         fab_attendance.setOnClickListener(new View.OnClickListener() {
@@ -381,23 +361,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     private void startLocationService() {
 
-   /*     if (!CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
+        if (!CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
             Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
             getActivity().startService(intent);
-        }*/
-
-        buildGoogleApiClient();
-        createLocationRequest();
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
         }
-        LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, locationCallback,
-                Looper.myLooper());
-
-
         // location = new GPSTracker(mActivity).getLocation();
         if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
 
@@ -406,69 +373,26 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
             mAddress = mPreferenceHelper.getAddress();
             IMEINumber = CommonUtils.getInstance().getIMEI(getActivity());
 
-            if (IMEINumber != null && IMEINumber.length() > 0) {
-                callOutSideAttendanceFromMobileAppAPI("", mLat, mLong, mAddress, IMEINumber);
+            if(IMEINumber!=null && IMEINumber.length()>0){
+                callOutSideAttendanceFromMobileAppAPI("", mLat, mLong, mAddress ,IMEINumber);
                 materialDesignFAM.close(true);
             }
         }
     }
-
-    synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-    private void createLocationRequest() {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL); // Update location every 19 minute
-        mLocationRequest.setFastestInterval(LOCATION_UPDATE_INTERVAL);
-        /**
-         * To get location information consistently
-         * mLocationRequest.setNumUpdates(1) Commented out
-         * Uncomment the code below
-         */
-        // mLocationRequest.setNumUpdates(1);
-        //mLocationRequest.setSmallestDisplacement()
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-//            Location location = locationResult.getLastLocation();
-
-//            super.onLocationResult(locationResult);
-            for (Location location : locationResult.getLocations()) {
-                Log.e(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude() + " " + location.getBearing());
-                Log.e(TAG, "onCreate: lat-->" + location.getLatitude());
-                Log.e(TAG, "onCreate: lon-->" + location.getLongitude());
-                CommonUtils.lattitude = location.getLatitude();
-                CommonUtils.logitude = location.getLongitude();
-                CommonUtils.getAddressFromLatLong(getActivity(), location.getLatitude(), location.getLongitude());
-
-            }
-        }
-    };
 
 
     @Override
     public void onStop() {
         super.onStop();
         //if (CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
-       /* Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
-        getActivity().stopService(intent);*/
-        Log.e(TAG, "onStop: **********stopService**********");
-        // }
+            Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
+            getActivity().stopService(intent);
+            //CommonUtils.turnOffGPS(getActivity());
+            Log.e(TAG, "onStop: **********stopService**********");
+       // }
     }
 
-    private void callOutSideAttendanceFromMobileAppAPI(String QR_text, String mLat, String mLong, String mAddress, String IMEINumber) {
+    private void callOutSideAttendanceFromMobileAppAPI(String QR_text, String mLat, String mLong, String mAddress ,String IMEINumber) {
 
         ApplyAttendanceParam params = new ApplyAttendanceParam();
         params.setAtt_Lat(mLat);
@@ -483,7 +407,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         from_last = "OutSideAttendance";
         // String mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
 
-        new WebServices(getActivity()/* ActivityContext */, DashboardFragment.this /* ApiListener */, true /* show progress dialog */,
+        new WebServices(getActivity()/* ActivityContext */, DashboardFragment2.this /* ApiListener */, true /* show progress dialog */,
                 true/*for new retrofitclient*/).
                 callOutSideAttendanceFromMobileAppAPI(mToken, params);
         //  }
@@ -544,7 +468,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         params.setDeviceId(FirebaseInstanceId.getInstance().getToken());
         params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
 
-        new WebServices(getActivity()/* ActivityContext */, DashboardFragment.this /* ApiListener */, false /* show progress dialog */,
+        new WebServices(getActivity()/* ActivityContext */, DashboardFragment2.this /* ApiListener */, false /* show progress dialog */,
                 true/*for new retrofitclient*/).
                 callSendDeviceTockenAPI(mToken, params);
     }
@@ -555,8 +479,8 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     }
 
 
-    public static DashboardFragment newInstance() {
-        return new DashboardFragment();
+    public static DashboardFragment2 newInstance() {
+        return new DashboardFragment2();
     }
 
     @Override
@@ -635,7 +559,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     if (model.getTable12().size() > 0) {
                         rv_announcements.setVisibility(View.VISIBLE);
                         card_view2.setVisibility(View.GONE);
-                        mAnnocumentAdapter = new AnnouncementAdapter(getActivity(), model, DashboardFragment.this);
+                        mAnnocumentAdapter = new AnnouncementAdapter(getActivity(), model, DashboardFragment2.this);
                         rv_announcements.setAdapter(mAnnocumentAdapter);
                         rv_announcements.setNestedScrollingEnabled(false);
                     } else {
@@ -646,7 +570,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                     if (model.getTable4().size() > 0) {
                         rv_birthday_today.setVisibility(View.VISIBLE);
                         card_view1.setVisibility(View.GONE);
-                        mBirthdateAdapter = new BirthdayAdapter(getActivity(), model, DashboardFragment.this);
+                        mBirthdateAdapter = new BirthdayAdapter(getActivity(), model, DashboardFragment2.this);
                         rv_birthday_today.setAdapter(mBirthdateAdapter);
                         rv_birthday_today.setNestedScrollingEnabled(false); //for smooth nested scroll
                     } else {
@@ -672,7 +596,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
                             mModuleList.add(mModel);
                         }
-                        mDashbordModuleAdapter = new DashbordModuleAdapter(getActivity(), mModuleList, DashboardFragment.this);
+                        mDashbordModuleAdapter = new DashbordModuleAdapter(getActivity(), mModuleList, DashboardFragment2.this);
 
                         rv_top_modules.setAdapter(mDashbordModuleAdapter);
                         rv_top_modules.setNestedScrollingEnabled(false); //for smooth nested scroll
@@ -785,36 +709,4 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     }
 
-
-
-
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed: Called");
-        buildGoogleApiClient();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        // LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
-        Log.e(TAG, "mGoogleApiClient: onDestroy : *****client disconnect***" );
-
-    }
 }

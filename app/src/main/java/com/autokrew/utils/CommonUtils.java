@@ -91,6 +91,15 @@ public class CommonUtils {
         return false;
     }
 
+    public static void turnOffGPS(Context context){
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", false);
+        context.sendBroadcast(intent);
+    }
+
+
+
+
 
     /**
      * This function is used for hiding soft keyboard
