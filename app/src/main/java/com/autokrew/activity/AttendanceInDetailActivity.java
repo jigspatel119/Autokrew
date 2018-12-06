@@ -53,6 +53,8 @@ public class AttendanceInDetailActivity extends AppCompatActivity  implements Ap
                 public void onClick(View v) {
 
 
+
+
                  //   Util.shareUrl(NewsWebViewActivity.this, url);
                     EmployeeDetailDialog mDialog = new EmployeeDetailDialog(AttendanceInDetailActivity.this,
                             model.getTable().get(0).getEmployeeCode(),
@@ -64,9 +66,15 @@ public class AttendanceInDetailActivity extends AppCompatActivity  implements Ap
                             model.getTable().get(0).getLocation(),
                             model.getTable().get(0).getSubLocation()
                             );
-                    mDialog.setCancelable(false);
-                    mDialog.setCanceledOnTouchOutside(true);
-                    mDialog.show();
+
+                    if(mDialog!=null && mDialog.isShowing()){
+                        //check for multiple dialogs open
+                    }
+                    else {
+                        mDialog.setCancelable(false);
+                        mDialog.setCanceledOnTouchOutside(true);
+                        mDialog.show();
+                    }
 
                 }
             });

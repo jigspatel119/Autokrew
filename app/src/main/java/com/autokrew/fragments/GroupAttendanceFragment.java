@@ -2,11 +2,21 @@ package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
+import android.support.v4.content.FileProvider;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +32,7 @@ import android.widget.TextView;
 import com.autokrew.R;
 import com.autokrew.activity.AttendanceActivity;
 import com.autokrew.interfaces.RecyclerViewClickListener;
+import com.autokrew.models.AttendanceModelParams;
 import com.autokrew.models.CommonDetailModel;
 import com.autokrew.models.CommonDetailModelParams;
 import com.autokrew.models.DepartmentModel;
@@ -35,59 +46,66 @@ import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
+import com.autokrew.utils.Permissions;
 import com.autokrew.utils.Pref;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 
-
-public class GroupAttendanceFragment extends Fragment implements ApiListener,RecyclerViewClickListener ,View.OnClickListener {
+public class GroupAttendanceFragment extends Fragment implements ApiListener, RecyclerViewClickListener, View.OnClickListener {
 
     View view;
     String str_name, str_disname;
 
-    TextView txt_search;
+    TextView txt_search, txt_payslip;
+    CardView cv_payslip, cv_search;
     String TAG = "GroupAttendanceFragment";
 
     TextView txt_child_item;
 
-    ImageView iv_month ,iv_company,iv_location,iv_sub_location,iv_vertical,iv_department,iv_sub_department,iv_designation
-            ,iv_year,iv_team_member,iv_leave_status;
+    ImageView iv_month, iv_company, iv_location, iv_sub_location, iv_vertical, iv_department, iv_sub_department, iv_designation, iv_year, iv_team_member, iv_leave_status;
 
-    Spinner edt_month,edt_company,edt_location,edt_sub_location,edt_vertical,edt_department,edt_sub_department,edt_designation
-            ,edt_year,edt_team_member,edt_approval_status;
+    Spinner edt_month, edt_company, edt_location, edt_sub_location, edt_vertical, edt_department, edt_sub_department, edt_designation, edt_year, edt_team_member, edt_approval_status;
 
-    LinearLayout ll_designation,ll_company,ll_location,ll_sublocation,ll_vertical,ll_department,ll_subdepartment;
+    LinearLayout ll_designation, ll_company, ll_location, ll_sublocation, ll_vertical, ll_department,
+            ll_subdepartment, ll_team_meber, ll_approval_status;
     String mToken;
     String mApprovalStatus = "";
 
     //=======================================
     CommonDetailModel modelCommon;
-    TeamMemberModel modelTeam ;
+    TeamMemberModel modelTeam;
     LocationModel modelLocation;
     SubLocationModel modelSubLocation;
     DepartmentModel modelDepartment;
     SubDepartmentModel modelSubDepartment;
 
-   // all array list ...
-    ArrayList<DropdownModel> mCompanyList= new ArrayList<>();
-    ArrayList<DropdownModel> mVerticalList= new ArrayList<>();
-    ArrayList<DropdownModel> mDesignationList= new ArrayList<>();
-    ArrayList<DropdownModel> mLocationList= new ArrayList<>();
+    // all array list ...
+    ArrayList<DropdownModel> mCompanyList = new ArrayList<>();
+    ArrayList<DropdownModel> mVerticalList = new ArrayList<>();
+    ArrayList<DropdownModel> mDesignationList = new ArrayList<>();
+    ArrayList<DropdownModel> mLocationList = new ArrayList<>();
     ArrayList<DropdownModel> mSubLocationList = new ArrayList<>();
-    ArrayList<DropdownModel> mDepartmentList= new ArrayList<>();
-    ArrayList<DropdownModel> mSubDepartmentList= new ArrayList<>();
+    ArrayList<DropdownModel> mDepartmentList = new ArrayList<>();
+    ArrayList<DropdownModel> mSubDepartmentList = new ArrayList<>();
 
-    ArrayList<DropdownModel> mYearList= new ArrayList<>();
-    ArrayList<DropdownModel> mMonthList= new ArrayList<>();
-    ArrayList<DropdownModel> mTeamMemberList= new ArrayList<>();
+    ArrayList<DropdownModel> mYearList = new ArrayList<>();
+    ArrayList<DropdownModel> mMonthList = new ArrayList<>();
+    ArrayList<DropdownModel> mTeamMemberList = new ArrayList<>();
 
     int checkCompany = 0;
     int checkLocation = 0;
@@ -105,6 +123,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     Dialog dialog;
     Handler handler;
 
+    String from_last_api_call = "" ,file_name_payslip = "";
+
+    private NotificationManager mNotifyManager;
+    private Builder build;
+    int id = 1;
+
     //===========================================
 
     @Nullable
@@ -116,7 +140,15 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         findView(view);
         setData();
         setListner();
-        
+
+        mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
+        //clear pref...
+        Pref.setValue(getActivity(), "mApprovalStatus", "");
+        Pref.setValue(getActivity(), "mYearPK", "");
+        Pref.setValue(getActivity(), "mMonthPK", "");
+        Pref.setValue(getActivity(), "mEmployeePK", "");
+        setupDropDown();
+
         return view;
     }
 
@@ -133,7 +165,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     private void setData() {
         txt_child_item.setText(str_disname);
 
-        if(str_disname.equalsIgnoreCase("My Team Attendance")){
+        if (str_disname.equalsIgnoreCase("My Team Attendance")) {
             //hide some filters
             ll_designation.setVisibility(View.GONE);
             ll_company.setVisibility(View.GONE);
@@ -143,11 +175,33 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             ll_department.setVisibility(View.GONE);
             ll_subdepartment.setVisibility(View.GONE);
 
+            cv_payslip.setVisibility(View.GONE);
+            cv_search.setVisibility(View.VISIBLE);
+
             call_team_or_group = "team";
-        }
-        else{
+        } else if (str_disname.equalsIgnoreCase("Group Attendance")) {
+            cv_payslip.setVisibility(View.GONE);
             call_team_or_group = "group";
+        } else if (str_disname.equalsIgnoreCase("My Payslip")) {
+            //hide some filters
+            cv_payslip.setVisibility(View.VISIBLE);
+            cv_search.setVisibility(View.GONE);
+
+            ll_designation.setVisibility(View.GONE);
+            ll_company.setVisibility(View.GONE);
+            ll_location.setVisibility(View.GONE);
+            ll_sublocation.setVisibility(View.GONE);
+            ll_vertical.setVisibility(View.GONE);
+            ll_department.setVisibility(View.GONE);
+            ll_subdepartment.setVisibility(View.GONE);
+            ll_team_meber.setVisibility(View.GONE);
+            ll_approval_status.setVisibility(View.GONE);
+            cv_payslip.setVisibility(View.VISIBLE);
+            cv_search.setVisibility(View.GONE);
+
+            call_team_or_group = "my_payslip";
         }
+
 
         setPleaseSelect("Location");
         setPleaseSelect("SubLocation");
@@ -159,31 +213,31 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
-                if(++checkCompany > 1) {
-                   // CommonUtils.getInstance().displayToast(getActivity(),mCompanyList.get(position).getCompanyPK()); //pk
+                if (++checkCompany > 1) {
+                    // CommonUtils.getInstance().displayToast(getActivity(),mCompanyList.get(position).getCompanyPK()); //pk
 
-                    if(mCompanyList.get(position).getCompanyPK().equalsIgnoreCase("-1")){
+                    if (mCompanyList.get(position).getCompanyPK().equalsIgnoreCase("-1")) {
                         setPleaseSelect("Location");
-                    }else{
+                    } else {
                         //api calls
                         params = new CommonDetailModelParams();
                         params.setFlag("Location");
                         params.setTranTypes(Integer.parseInt(mCompanyList.get(position).getCompanyPK()));
                         //call common detail api here..
                         new WebServices(getActivity()/* ActivityContext */, GroupAttendanceFragment.this /* ApiListener */,
-                                false /* show progress dialog */,true).
-                                callGetCommonDetailAPI(mToken,params); //from_last = ""
+                                false /* show progress dialog */, true).
+                                callGetCommonDetailAPI(mToken, params); //from_last = ""
                     }
 
                     //bind employee
                     bindEmployee("");
 
-                }
-                else{
-                  //  CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
+                } else {
+                    //  CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
                 }
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -196,11 +250,11 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                 // CommonUtils.getInstance().displayToast(getActivity(),mLocationList.get(position).getLocationPK()); //pk
-                if(++checkLocation > 1) {
+                if (++checkLocation > 1) {
 
-                    if(mLocationList.get(position).getLocationPK().equalsIgnoreCase("-1")){
+                    if (mLocationList.get(position).getLocationPK().equalsIgnoreCase("-1")) {
                         setPleaseSelect("SubLocation");
-                    }else {
+                    } else {
                         params = new CommonDetailModelParams();
                         params.setFlag("SubLocation");
                         params.setTranTypes(Integer.parseInt(mLocationList.get(position).getLocationPK()));
@@ -212,12 +266,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
                         bindEmployee("");
 
                     }
-                }
-                else{
-                   // CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
+                } else {
+                    // CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
                 }
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -229,12 +283,13 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                 //CommonUtils.getInstance().displayToast(getActivity(),mSubLocationList.get(position).getSubLocationPK()); //pk
-                if(++checkSubLocation > 1) {
+                if (++checkSubLocation > 1) {
                     // bind employee
                     bindEmployee("");
                 }
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -248,25 +303,23 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
                 // your code here
                 //  CommonUtils.getInstance().displayToast(getActivity(),mVerticalList.get(position).getVerticalPK()); //pk
 
-                if(++checkVertical > 1) {
+                if (++checkVertical > 1) {
 
-                    if(mVerticalList.get(position).getVerticalPK().equalsIgnoreCase("-1")){
+                    if (mVerticalList.get(position).getVerticalPK().equalsIgnoreCase("-1")) {
                         setPleaseSelect("Department");
-                    }
-                    else{
+                    } else {
                         //api calls
                         params = new CommonDetailModelParams();
                         params.setFlag("Department");
                         params.setTranTypes(Integer.parseInt(mVerticalList.get(position).getVerticalPK()));
                         new WebServices(getActivity()/* ActivityContext */, GroupAttendanceFragment.this /* ApiListener */,
-                                false /* show progress dialog */,true).
-                                callGetCommonDetailAPI(mToken,params); //from_last = ""
+                                false /* show progress dialog */, true).
+                                callGetCommonDetailAPI(mToken, params); //from_last = ""
                     }
 
                     //bind employee
                     bindEmployee("");
-                }
-                else{
+                } else {
                     //CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
                 }
 
@@ -283,30 +336,30 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                if(++checkDepartment > 1) {
+                if (++checkDepartment > 1) {
 
-                    if(mDepartmentList.get(position).getDepartmentPK().equalsIgnoreCase("-1")){
+                    if (mDepartmentList.get(position).getDepartmentPK().equalsIgnoreCase("-1")) {
 
                         setPleaseSelect("SubDepartment");
 
-                    }else{
+                    } else {
 
                         params = new CommonDetailModelParams();
                         params.setFlag("SubDepartment");
                         params.setTranTypes(Integer.parseInt(mDepartmentList.get(position).getDepartmentPK()));
                         //call common detail api here..
                         new WebServices(getActivity()/* ActivityContext */, GroupAttendanceFragment.this /* ApiListener */,
-                                false /* show progress dialog */,true).
-                                callGetCommonDetailAPI(mToken,params); //from_last = ""
+                                false /* show progress dialog */, true).
+                                callGetCommonDetailAPI(mToken, params); //from_last = ""
                     }
                     //bind employee
                     bindEmployee("");
-                }
-                else{
-                   // CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
+                } else {
+                    // CommonUtils.getInstance().displayToast(getActivity(),"its kns"); //pk
                 }
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -318,11 +371,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                if(++checkSubDepartment > 1) {
+                if (++checkSubDepartment > 1) {
                     // bind employee
                     bindEmployee("");
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -333,11 +387,12 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                if(++checkDesignation > 1) {
+                if (++checkDesignation > 1) {
                     // bind employee
                     bindEmployee("");
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -351,6 +406,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
                 // your code here
                 // CommonUtils.getInstance().displayToast(getActivity(),mTeamMemberList.get(position).getEmployeePK()); //pk
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
@@ -360,7 +416,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
     private void setPleaseSelect(String from_last) {
 
-        if(from_last.equalsIgnoreCase("Location")){
+        if (from_last.equalsIgnoreCase("Location")) {
             mLocationList.clear();
             DropdownModel model;
             model = new DropdownModel();
@@ -369,16 +425,16 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             mLocationList.add(model);
 
             ArrayList<String> mName = new ArrayList<>();
-            for (int i = 0; i <mLocationList.size(); i++) {
+            for (int i = 0; i < mLocationList.size(); i++) {
                 mName.add(mLocationList.get(i).getLocation());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             edt_location.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
 
-        if(from_last.equalsIgnoreCase("SubLocation")){
+        if (from_last.equalsIgnoreCase("SubLocation")) {
             mSubLocationList.clear();
             DropdownModel model;
             model = new DropdownModel();
@@ -387,17 +443,17 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             mSubLocationList.add(model);
 
             ArrayList<String> mName = new ArrayList<>();
-            for (int i = 0; i <mSubLocationList.size(); i++) {
+            for (int i = 0; i < mSubLocationList.size(); i++) {
                 mName.add(mSubLocationList.get(i).getSubLocation());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             edt_sub_location.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
 
 
-        if(from_last.equalsIgnoreCase("Department")){
+        if (from_last.equalsIgnoreCase("Department")) {
             mDepartmentList.clear();
             DropdownModel model;
             model = new DropdownModel();
@@ -406,17 +462,17 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             mDepartmentList.add(model);
 
             ArrayList<String> mName = new ArrayList<>();
-            for (int i = 0; i <mDepartmentList.size(); i++) {
+            for (int i = 0; i < mDepartmentList.size(); i++) {
                 mName.add(mDepartmentList.get(i).getDepartment());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             edt_department.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
 
 
-        if(from_last.equalsIgnoreCase("SubDepartment")){
+        if (from_last.equalsIgnoreCase("SubDepartment")) {
             mSubDepartmentList.clear();
             DropdownModel model;
             model = new DropdownModel();
@@ -425,10 +481,10 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             mSubDepartmentList.add(model);
 
             ArrayList<String> mName = new ArrayList<>();
-            for (int i = 0; i <mSubDepartmentList.size(); i++) {
+            for (int i = 0; i < mSubDepartmentList.size(); i++) {
                 mName.add(mSubDepartmentList.get(i).getSubDepartment());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             edt_sub_department.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -438,23 +494,23 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     }
 
 
-
-
-
-
-
     @Override
     public void onResume() {
         super.onResume();
-        mToken = Pref.getValue(getActivity(),Constant.PREF_TOKEN,"");
-        //clear pref...
-        Pref.setValue(getActivity(),"mApprovalStatus","");
-        Pref.setValue(getActivity(),"mYearPK","");
-        Pref.setValue(getActivity(),"mMonthPK","");
-        Pref.setValue(getActivity(),"mEmployeePK","");
 
 
-        setupDropDown();
+      /*  if(str_disname.equalsIgnoreCase("My Payslip")){
+            //do nothing ....
+
+        }else{
+            mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
+            //clear pref...
+            Pref.setValue(getActivity(), "mApprovalStatus", "");
+            Pref.setValue(getActivity(), "mYearPK", "");
+            Pref.setValue(getActivity(), "mMonthPK", "");
+            Pref.setValue(getActivity(), "mEmployeePK", "");
+            setupDropDown();
+        }*/
     }
 
     private void setListner() {
@@ -471,46 +527,55 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         iv_team_member.setOnClickListener(this);
         iv_leave_status.setOnClickListener(this);
         txt_search.setOnClickListener(this);
+        txt_payslip.setOnClickListener(this);
 
     }
 
     private void findView(View v) {
 
-        txt_child_item = (TextView)v.findViewById(R.id.txt_child_item);
-        ll_designation = (LinearLayout)v.findViewById(R.id.ll_designation);
-        ll_company = (LinearLayout)v.findViewById(R.id.ll_company);
-        ll_location = (LinearLayout)v.findViewById(R.id.ll_location);
-        ll_sublocation = (LinearLayout)v.findViewById(R.id.ll_sublocation);
-        ll_vertical = (LinearLayout)v.findViewById(R.id.ll_vertical);
-        ll_department = (LinearLayout)v.findViewById(R.id.ll_department);
-        ll_subdepartment = (LinearLayout)v.findViewById(R.id.ll_subdepartment);
+        txt_child_item = (TextView) v.findViewById(R.id.txt_child_item);
+        ll_designation = (LinearLayout) v.findViewById(R.id.ll_designation);
+        ll_company = (LinearLayout) v.findViewById(R.id.ll_company);
+        ll_location = (LinearLayout) v.findViewById(R.id.ll_location);
+        ll_sublocation = (LinearLayout) v.findViewById(R.id.ll_sublocation);
+        ll_vertical = (LinearLayout) v.findViewById(R.id.ll_vertical);
+        ll_department = (LinearLayout) v.findViewById(R.id.ll_department);
+        ll_subdepartment = (LinearLayout) v.findViewById(R.id.ll_subdepartment);
 
-        iv_month = (ImageView)v.findViewById(R.id.iv_month);
-        iv_company = (ImageView)v.findViewById(R.id.iv_company);
-        iv_location = (ImageView)v.findViewById(R.id.iv_location);
-        iv_sub_location = (ImageView)v.findViewById(R.id.iv_sub_location);
-        iv_vertical = (ImageView)v.findViewById(R.id.iv_vertical);
-        iv_department = (ImageView)v.findViewById(R.id.iv_department);
-        iv_sub_department = (ImageView)v.findViewById(R.id.iv_sub_department);
-        iv_designation = (ImageView)v.findViewById(R.id.iv_designation);
-        iv_year = (ImageView)v.findViewById(R.id.iv_year);
-        iv_team_member = (ImageView)v.findViewById(R.id.iv_team_member);
-        iv_leave_status = (ImageView)v.findViewById(R.id.iv_leave_status);
 
-        edt_month = (Spinner)v.findViewById(R.id.edt_month);
-        edt_company = (Spinner)v.findViewById(R.id.edt_company);
-        edt_location = (Spinner)v.findViewById(R.id.edt_location);
-        edt_sub_location = (Spinner)v.findViewById(R.id.edt_sub_location);
-        edt_vertical = (Spinner)v.findViewById(R.id.edt_vertical);
-        edt_department = (Spinner)v.findViewById(R.id.edt_department);
-        edt_sub_department = (Spinner)v.findViewById(R.id.edt_sub_department);
-        edt_designation = (Spinner)v.findViewById(R.id.edt_designation);
+        cv_search = (CardView) v.findViewById(R.id.cv_search);
+        cv_payslip = (CardView) v.findViewById(R.id.cv_payslip);
 
-        edt_year = (Spinner)v.findViewById(R.id.edt_year);
-        edt_team_member = (Spinner)v.findViewById(R.id.edt_team_member);
-        edt_approval_status = (Spinner)v.findViewById(R.id.edt_approval_status);
+        ll_team_meber = (LinearLayout) v.findViewById(R.id.ll_team_meber);
+        ll_approval_status = (LinearLayout) v.findViewById(R.id.ll_approval_status);
+
+        iv_month = (ImageView) v.findViewById(R.id.iv_month);
+        iv_company = (ImageView) v.findViewById(R.id.iv_company);
+        iv_location = (ImageView) v.findViewById(R.id.iv_location);
+        iv_sub_location = (ImageView) v.findViewById(R.id.iv_sub_location);
+        iv_vertical = (ImageView) v.findViewById(R.id.iv_vertical);
+        iv_department = (ImageView) v.findViewById(R.id.iv_department);
+        iv_sub_department = (ImageView) v.findViewById(R.id.iv_sub_department);
+        iv_designation = (ImageView) v.findViewById(R.id.iv_designation);
+        iv_year = (ImageView) v.findViewById(R.id.iv_year);
+        iv_team_member = (ImageView) v.findViewById(R.id.iv_team_member);
+        iv_leave_status = (ImageView) v.findViewById(R.id.iv_leave_status);
+
+        edt_month = (Spinner) v.findViewById(R.id.edt_month);
+        edt_company = (Spinner) v.findViewById(R.id.edt_company);
+        edt_location = (Spinner) v.findViewById(R.id.edt_location);
+        edt_sub_location = (Spinner) v.findViewById(R.id.edt_sub_location);
+        edt_vertical = (Spinner) v.findViewById(R.id.edt_vertical);
+        edt_department = (Spinner) v.findViewById(R.id.edt_department);
+        edt_sub_department = (Spinner) v.findViewById(R.id.edt_sub_department);
+        edt_designation = (Spinner) v.findViewById(R.id.edt_designation);
+
+        edt_year = (Spinner) v.findViewById(R.id.edt_year);
+        edt_team_member = (Spinner) v.findViewById(R.id.edt_team_member);
+        edt_approval_status = (Spinner) v.findViewById(R.id.edt_approval_status);
 
         txt_search = (TextView) v.findViewById(R.id.txt_search);
+        txt_payslip = (TextView) v.findViewById(R.id.txt_payslip);
 
       /*  Typeface copperplateGothicLight = Typeface.createFromAsset(getAppContext().getAssets(), "GillSans-SemiBold.ttf");
         btn_search.setTypeface(copperplateGothicLight);*/
@@ -521,7 +586,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         dialog.setContentView(R.layout.progress_dialog);
         dialog.show();
 
-        if(call_team_or_group.equalsIgnoreCase("team")){
+        if (call_team_or_group.equalsIgnoreCase("team")) {
             handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -534,25 +599,25 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
     }
 
-    private void setupDropDown(){
+    private void setupDropDown() {
 
-        if (CommonUtils.getInstance().isNetworkAvailable(getActivity())){
+        if (CommonUtils.getInstance().isNetworkAvailable(getActivity())) {
             params = new CommonDetailModelParams();
             params.setFlag("common");
             params.setTranTypes(-1);
 
             //call common detail api here..
             new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                    false /* show progress dialog */,true).
-                    callGetCommonDetailAPI(mToken,params); //from_last = ""
-        }
-        else{
+                    false /* show progress dialog */, true).
+                    callGetCommonDetailAPI(mToken, params); //from_last = ""
+        } else {
             CommonUtils.getInstance().displayToast(getActivity(), Constant.INTERNET_FAILURE);
-
         }
 
 
     }
+
+
 
     /**
      * On Api success call
@@ -563,98 +628,141 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     public void onApiSuccess(Object mObject) {
 
         //set adapter here
+        if (from_last_api_call.equalsIgnoreCase("pay_slip")) {
 
-        if (mObject instanceof String) {
-            //LoginModel model = (LoginModel) mObject;
-            // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
-            try {
-                JSONObject jsonObj = new JSONObject(mObject.toString());
+            if(mObject.toString().equalsIgnoreCase("No data")){
+                CommonUtils.getInstance().displayToast(getActivity(), "Payslip is not generated yet! Kindly contact your Hr. person.");
+            }else{
 
-                if(jsonObj.getJSONArray("Table").length()==0){
-                    setTeamMemberForEmptydata();
-                    if(dialog!=null){
-                        if(dialog.isShowing()){
-                            dialog.dismiss();
+                if (dialog != null) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+
+                String s[] = mObject.toString().split("/");
+                file_name_payslip = s[1];
+                Intent intent ;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    File file=new File(Constant.FILE_DIRECTORY_DOC +"/"+file_name_payslip);
+                    Uri uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", file);
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    File file = new File(Constant.FILE_DIRECTORY_DOC +"/"+file_name_payslip);
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+                    intent = Intent.createChooser(intent, "Open File");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+
+                PendingIntent pIntent = PendingIntent.getActivity(getActivity(), (int) System.currentTimeMillis(), intent, 0);
+
+                mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                build = new NotificationCompat.Builder(getActivity(),"my_channel_01");
+                build.setContentTitle("Download")
+                        .setContentText("view your payslip")
+                        .setContentIntent(pIntent)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.mipmap.ic_launcher);
+
+
+
+                new DownloadFileFromURL().execute(Pref.getValue(getActivity(), Constant.PREF_MOBILE_URL, "")+"Upload/EmployeDocument/"+ mObject.toString());
+
+            }
+
+            //for payslip only
+
+        } else {
+
+            if (mObject instanceof String) {
+                //LoginModel model = (LoginModel) mObject;
+                // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
+
+                //for all
+                try {
+                    JSONObject jsonObj = new JSONObject(mObject.toString());
+                    Log.e("", "onApiSuccess: 123 >>  " + mObject.toString());
+                    if (jsonObj.getJSONArray("Table").length() == 0) {
+                        setTeamMemberForEmptydata();
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                            }
                         }
                     }
 
-                }
 
-                //for very first time
-                if(jsonObj.toString().contains("nationalPK")){
-                    //parse common detail data
-                    Log.e("", "onApiSuccess: common json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelCommon = gson.fromJson(mObject.toString(), CommonDetailModel.class);
-                    //api calls for original data...
+                    //for very first time
+                    if (jsonObj.toString().contains("nationalPK")) {
+                        //parse common detail data
+                        Log.e("", "onApiSuccess: common json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelCommon = gson.fromJson(mObject.toString(), CommonDetailModel.class);
+                        //api calls for original data...
 
-                    setCompany(modelCommon);
-                    setVertical(modelCommon);
-                    setDesignation(modelCommon);
-                    setMonth(modelCommon);
-                    setYear(modelCommon);
-                    setApprovalStatus(modelCommon);
-
-
-                    //check from team or from group ?
-                    // if team -> direct bind employee ,if group-> as per the filter bind employee
-                    //pending...
-
-                    bindEmployee("common");
-
-                }
-
-                //for company change...
-               else if(jsonObj.toString().contains("LocationPK") && params.getFlag().equalsIgnoreCase("Location")){
-                    Log.e("", "onApiSuccess: company->location json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelLocation = gson.fromJson(mObject.toString(), LocationModel.class);
-                    setLocation(modelLocation);
-
-                }
-
-                else if(jsonObj.toString().contains("SubLocationPK")&& params.getFlag().equalsIgnoreCase("SubLocation")){
-                    Log.e("", "onApiSuccess: location->sublocation json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelSubLocation = gson.fromJson(mObject.toString(), SubLocationModel.class);
-                    setSubLocation(modelSubLocation);
-
-                }
-
-                else if(jsonObj.toString().contains("DepartmentPK")&& params.getFlag().equalsIgnoreCase("Department")){
-                    Log.e("", "onApiSuccess: vertical->department json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelDepartment = gson.fromJson(mObject.toString(), DepartmentModel.class);
-                    setDepartment(modelDepartment);
-
-                }
-
-                else if(jsonObj.toString().contains("SubDepartmentPK")&& params.getFlag().equalsIgnoreCase("SubDepartment")){
-                    Log.e("", "onApiSuccess: department->sub department json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelSubDepartment = gson.fromJson(mObject.toString(), SubDepartmentModel.class);
-                    setSubDepartment(modelSubDepartment);
-
-                }
+                        setCompany(modelCommon);
+                        setVertical(modelCommon);
+                        setDesignation(modelCommon);
+                        setMonth(modelCommon);
+                        setYear(modelCommon);
+                        setApprovalStatus(modelCommon);
 
 
-                else if(jsonObj.toString().contains("EmployeePK")){
-                    // parse team member json
-                    if(dialog!=null){
-                        if(dialog.isShowing()){
-                            dialog.dismiss();
-                        }
+                        //check from team or from group ?
+                        // if team -> direct bind employee ,if group-> as per the filter bind employee
+                        //pending...
+
+                        bindEmployee("common");
+
                     }
 
-                    Log.e("", "onApiSuccess: Team member json >>  "+jsonObj.toString());
-                    Gson gson = new Gson();
-                    modelTeam = gson.fromJson(mObject.toString(), TeamMemberModel.class);
-                    setTeamMember(modelTeam);
-                }
+                    //for company change...
+                    else if (jsonObj.toString().contains("LocationPK") && params.getFlag().equalsIgnoreCase("Location")) {
+                        Log.e("", "onApiSuccess: company->location json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelLocation = gson.fromJson(mObject.toString(), LocationModel.class);
+                        setLocation(modelLocation);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-                dialog.dismiss();
+                    } else if (jsonObj.toString().contains("SubLocationPK") && params.getFlag().equalsIgnoreCase("SubLocation")) {
+                        Log.e("", "onApiSuccess: location->sublocation json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelSubLocation = gson.fromJson(mObject.toString(), SubLocationModel.class);
+                        setSubLocation(modelSubLocation);
+
+                    } else if (jsonObj.toString().contains("DepartmentPK") && params.getFlag().equalsIgnoreCase("Department")) {
+                        Log.e("", "onApiSuccess: vertical->department json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelDepartment = gson.fromJson(mObject.toString(), DepartmentModel.class);
+                        setDepartment(modelDepartment);
+
+                    } else if (jsonObj.toString().contains("SubDepartmentPK") && params.getFlag().equalsIgnoreCase("SubDepartment")) {
+                        Log.e("", "onApiSuccess: department->sub department json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelSubDepartment = gson.fromJson(mObject.toString(), SubDepartmentModel.class);
+                        setSubDepartment(modelSubDepartment);
+
+                    } else if (jsonObj.toString().contains("EmployeePK")) {
+                        // parse team member json
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                            }
+                        }
+
+                        Log.e("", "onApiSuccess: Team member json >>  " + jsonObj.toString());
+                        Gson gson = new Gson();
+                        modelTeam = gson.fromJson(mObject.toString(), TeamMemberModel.class);
+                        setTeamMember(modelTeam);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    dialog.dismiss();
+                }
             }
 
         }
@@ -678,7 +786,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     public void recyclerViewListClicked(View v, int position) {
 
 
-       // CommonUtils.getInstance().displayToast(getActivity(),"pos >>" +position);
+        // CommonUtils.getInstance().displayToast(getActivity(),"pos >>" +position);
 
 
     }
@@ -686,74 +794,111 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     @Override
     public void onClick(View v) {
 
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.txt_search:
 
-                if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("pending")){
+                if (edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("pending")) {
                     mApprovalStatus = "-1";
-                }
-               else if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("All")){
+                } else if (edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("All")) {
                     mApprovalStatus = "0";
-                }
-
-                else if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Approved Full Day")){
+                } else if (edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Approved Full Day")) {
                     mApprovalStatus = "1";
-                }
-                else if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Approved Half Day")){
+                } else if (edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Approved Half Day")) {
                     mApprovalStatus = "2";
-                }
-                else if(edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Rejected")){
+                } else if (edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString().equalsIgnoreCase("Rejected")) {
                     mApprovalStatus = "3";
                 }
 
                 //CommonUtils.getInstance().displayToast(getActivity(),""+edt_approval_status.getItemAtPosition(edt_approval_status.getSelectedItemPosition()).toString());
 
                 //Bundle mBundle = new Bundle();
-               // mBundle.putString("mApprovalStatus",mApprovalStatus);
+                // mBundle.putString("mApprovalStatus",mApprovalStatus);
                 //clear below pref....
-                Pref.setValue(getActivity(),"mApprovalStatus",mApprovalStatus);
-                Pref.setValue(getActivity(),"mYear",edt_year.getSelectedItem().toString());
-                Pref.setValue(getActivity(),"mYearPK",mYearList.get(edt_year.getSelectedItemPosition()).getYearPk());
-                Pref.setValue(getActivity(),"mMonthPK",mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
-
+                Pref.setValue(getActivity(), "mApprovalStatus", mApprovalStatus);
+                Pref.setValue(getActivity(), "mYear", edt_year.getSelectedItem().toString());
+                Pref.setValue(getActivity(), "mYearPK", mYearList.get(edt_year.getSelectedItemPosition()).getYearPk());
+                Pref.setValue(getActivity(), "mMonthPK", mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
 
 
                 Pref.setValue(getActivity(), "mEmployeePK", mTeamMemberList.get(edt_team_member.getSelectedItemPosition()).getEmployeePK());
 
 
                 //for group
-                if(call_team_or_group.equalsIgnoreCase("group")) {
-                    Pref.setValue(getActivity(),"call_team_or_group","group");
+                if (call_team_or_group.equalsIgnoreCase("group")) {
+                    Pref.setValue(getActivity(), "call_team_or_group", "group");
 
-                    Pref.setValue(getActivity(),"CompanyFK",mCompanyList.get(edt_company.getSelectedItemPosition()).getCompanyPK());
-                    Pref.setValue(getActivity(),"LocationFK",mLocationList.get(edt_location.getSelectedItemPosition()).getLocationPK());
-                    Pref.setValue(getActivity(),"SubLocationFK",mSubLocationList.get(edt_sub_location.getSelectedItemPosition()).getSubLocationPK());
-                    Pref.setValue(getActivity(),"VerticalFK",mVerticalList.get(edt_vertical.getSelectedItemPosition()).getVerticalPK());
-                    Pref.setValue(getActivity(),"DepartmentFK",mDepartmentList.get(edt_department.getSelectedItemPosition()).getDepartmentPK());
-                    Pref.setValue(getActivity(),"SubDepartmentFK",mSubDepartmentList.get(edt_sub_department.getSelectedItemPosition()).getSubDepartmentPK());
-                    Pref.setValue(getActivity(),"DesignationFK",mDesignationList.get(edt_designation.getSelectedItemPosition()).getDesignationPK());
-                }
-                else{
-                    Pref.setValue(getActivity(),"call_team_or_group","team");
+                    Pref.setValue(getActivity(), "CompanyFK", mCompanyList.get(edt_company.getSelectedItemPosition()).getCompanyPK());
+                    Pref.setValue(getActivity(), "LocationFK", mLocationList.get(edt_location.getSelectedItemPosition()).getLocationPK());
+                    Pref.setValue(getActivity(), "SubLocationFK", mSubLocationList.get(edt_sub_location.getSelectedItemPosition()).getSubLocationPK());
+                    Pref.setValue(getActivity(), "VerticalFK", mVerticalList.get(edt_vertical.getSelectedItemPosition()).getVerticalPK());
+                    Pref.setValue(getActivity(), "DepartmentFK", mDepartmentList.get(edt_department.getSelectedItemPosition()).getDepartmentPK());
+                    Pref.setValue(getActivity(), "SubDepartmentFK", mSubDepartmentList.get(edt_sub_department.getSelectedItemPosition()).getSubDepartmentPK());
+                    Pref.setValue(getActivity(), "DesignationFK", mDesignationList.get(edt_designation.getSelectedItemPosition()).getDesignationPK());
+                } else if (call_team_or_group.equalsIgnoreCase("team")) {
+                    Pref.setValue(getActivity(), "call_team_or_group", "team");
                 }
                 //for team no need to store above details.
 
+                //@payslip stuff====================================================================
+                else if (call_team_or_group.equalsIgnoreCase("my_payslip")) {
+                }
+                //==================================================================================
+
 
                 CommonUtils.getInstance().startActivity(getActivity(), AttendanceActivity.class);
-                getActivity().overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
+                getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
 
                 break;
 
+
+            case R.id.txt_payslip:
+
+              if (Permissions.getInstance().isWriteStoragePermissionGranted(getActivity())) {
+
+                    try {
+                       // from_last = "iv_download";
+
+                AttendanceModelParams params = new AttendanceModelParams();
+                params.setLetterType("PaySlip");
+                params.setLoginUserFk(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0));
+                params.setMonthFK(Integer.parseInt(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk())); //
+                params.setYearFk(Integer.parseInt(mYearList.get(edt_year.getSelectedItemPosition()).getYearPk())); //
+                params.setFlag("MyPaySlip");
+                params.setEmployeeFK(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0));
+                from_last_api_call = "pay_slip";
+
+                String mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
+
+
+                new WebServices(getActivity(), this,
+                        true, true).
+                        callPayslipAPI(mToken, params);
+
+
+                    } catch (Exception e) {
+
+                        Log.e("", "Exception >>> " + e.toString());
+                    }
+                } else {
+                    Log.e("", "permisson denined >>> ");
+
+                }
+
+
+
+
+                break;
+
+
             case R.id.iv_month:
 
-            break;
+                break;
 
 
             case R.id.iv_company:
 
-            break;
+                break;
             case R.id.iv_location:
 
                 break;
@@ -791,35 +936,41 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     }
 
     private void setYear(CommonDetailModel modelCommon) {
-        DropdownModel model ;
+        DropdownModel model;
         mYearList.clear();
 
-        for (int i = 0; i <modelCommon.getTable17().size() ; i++) {
+        for (int i = 0; i < modelCommon.getTable17().size(); i++) {
             model = new DropdownModel();
-                model.setYearPk(modelCommon.getTable17().get(i).getYearPk());
-                model.setYear(modelCommon.getTable17().get(i).getYear());
+            model.setYearPk(modelCommon.getTable17().get(i).getYearPk());
+            model.setYear(modelCommon.getTable17().get(i).getYear());
             mYearList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mYearList.size(); i++) {
+        for (int i = 0; i < mYearList.size(); i++) {
             mName.add(String.valueOf(mYearList.get(i).getYear()));
         }
 
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int c_year = calendar.get(Calendar.YEAR);
-        int c_year_index = 0 ;
-        for (int i = 0; i <mName.size() ; i++) {
-            if(Integer.parseInt(mName.get(i)) == c_year){
+        int c_year_index = 0;
+        for (int i = 0; i < mName.size(); i++) {
+            if (Integer.parseInt(mName.get(i)) == c_year) {
                 c_year_index = i;
             }
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_year.setAdapter(adapter);
         edt_year.setSelection(c_year_index);
+
+       /* if(datePicker!=null){
+            datePicker.setYearRange(1970,c_year_index);
+
+        }*/
+
 
     }
 
@@ -828,7 +979,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         DropdownModel model;
         mMonthList.clear();
 
-        for (int i = 0; i <modelCommon.getTable16().size() ; i++) {
+        for (int i = 0; i < modelCommon.getTable16().size(); i++) {
             model = new DropdownModel();
             model.setMonthPk(modelCommon.getTable16().get(i).getMonthPk());
             model.setMonth(modelCommon.getTable16().get(i).getMonth());
@@ -836,7 +987,7 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mMonthList.size(); i++) {
+        for (int i = 0; i < mMonthList.size(); i++) {
             mName.add(String.valueOf(mMonthList.get(i).getMonth()));
         }
 
@@ -844,16 +995,16 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         int c_month = calendar.get(Calendar.MONTH);
         String current_month = getMonthForInt(c_month);
 
-        int c_month_index = 0 ;
-        for (int i = 0; i <mName.size() ; i++) {
-            if(mName.get(i).equalsIgnoreCase(current_month)){
+        int c_month_index = 0;
+        for (int i = 0; i < mName.size(); i++) {
+            if (mName.get(i).equalsIgnoreCase(current_month)) {
                 c_month_index = i;
             }
         }
 
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_month.setAdapter(adapter);
         edt_month.setSelection(c_month_index);
     }
@@ -863,30 +1014,30 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
         String month = "wrong";
         DateFormatSymbols dfs = new DateFormatSymbols();
         String[] months = dfs.getMonths();
-        if (num >= 0 && num <= 11 ) {
+        if (num >= 0 && num <= 11) {
             month = months[num];
         }
         return month;
     }
 
-    private void setApprovalStatus(CommonDetailModel modelCommon ) {
+    private void setApprovalStatus(CommonDetailModel modelCommon) {
         ArrayList<String> mCompanyList = new ArrayList<String>();
 
 
-        for (int i = 0; i <= modelCommon.getTable25().size()+1 ; i++) {
-            if(i==0){
+        for (int i = 0; i <= modelCommon.getTable25().size() + 1; i++) {
+            if (i == 0) {
                 mCompanyList.add("Pending");  //set -1
             }
-            if(i==1){
+            if (i == 1) {
                 mCompanyList.add("All"); //set 0
             }
-            if(i>1){
-                mCompanyList.add(modelCommon.getTable25().get(i-2).getDeviationApproval());
+            if (i > 1) {
+                mCompanyList.add(modelCommon.getTable25().get(i - 2).getDeviationApproval());
             }
 
         }
-        String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, list);
+        String[] list = mCompanyList.toArray(new String[mCompanyList.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, list);
 
         edt_approval_status.setAdapter(adapter);
 
@@ -895,38 +1046,37 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
     private void setTeamMember(TeamMemberModel model) {
 
 
-
-      DropdownModel model2 ;
+        DropdownModel model2;
         mTeamMemberList.clear();
         //   mCompanyList = new ArrayList<>();
-        for (int i = 0; i <model.getTable().size()+1 ; i++) {
+        for (int i = 0; i < model.getTable().size() + 1; i++) {
             model2 = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model2.setEmployeePK("-1");
                 model2.setEmployee("Please Select");
-            }else{
-                model2.setEmployeePK(model.getTable().get(i-1).getEmployeePK());
-                model2.setEmployee(model.getTable().get(i-1).getName());
+            } else {
+                model2.setEmployeePK(model.getTable().get(i - 1).getEmployeePK());
+                model2.setEmployee(model.getTable().get(i - 1).getName());
             }
             mTeamMemberList.add(model2);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mTeamMemberList.size(); i++) {
+        for (int i = 0; i < mTeamMemberList.size(); i++) {
             mName.add(mTeamMemberList.get(i).getEmployee());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_team_member.setAdapter(adapter);
     }
 
 
     private void setTeamMemberForEmptydata() {
 
-        DropdownModel model2 ;
+        DropdownModel model2;
         mTeamMemberList.clear();
         //   mCompanyList = new ArrayList<>();
-        for (int i = 0; i <1 ; i++) {
+        for (int i = 0; i < 1; i++) {
             model2 = new DropdownModel();
             if (i == 0) {
                 model2.setEmployeePK("-1");
@@ -936,13 +1086,13 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
             }
         }
 
-            ArrayList<String> mName = new ArrayList<>();
-            for (int i = 0; i < mTeamMemberList.size(); i++) {
-                mName.add(mTeamMemberList.get(i).getEmployee());
-            }
+        ArrayList<String> mName = new ArrayList<>();
+        for (int i = 0; i < mTeamMemberList.size(); i++) {
+            mName.add(mTeamMemberList.get(i).getEmployee());
+        }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
-            edt_team_member.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
+        edt_team_member.setAdapter(adapter);
 
     }
 
@@ -951,88 +1101,86 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
     //company --> location --> sublocation
     private void setCompany(CommonDetailModel modelCommon) {
-        DropdownModel model ;
+        DropdownModel model;
         mCompanyList.clear();
-     //   mCompanyList = new ArrayList<>();
+        //   mCompanyList = new ArrayList<>();
 
-        for (int i = 0; i <modelCommon.getTable7().size()+1 ; i++) {
+        for (int i = 0; i < modelCommon.getTable7().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setCompanyPK("-1");
                 model.setCompany("Please Select");
-            }else{
-                model.setCompanyPK(modelCommon.getTable7().get(i-1).getCompanyPK());
-                model.setCompany(modelCommon.getTable7().get(i-1).getCompany());
+            } else {
+                model.setCompanyPK(modelCommon.getTable7().get(i - 1).getCompanyPK());
+                model.setCompany(modelCommon.getTable7().get(i - 1).getCompany());
             }
             mCompanyList.add(model);
         }
-        
+
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mCompanyList.size(); i++) {
+        for (int i = 0; i < mCompanyList.size(); i++) {
             mName.add(mCompanyList.get(i).getCompany());
         }
 
-       // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_company.setAdapter(adapter);
     }
 
     private void setLocation(LocationModel modelLocation) {
 
-        DropdownModel model ;
+        DropdownModel model;
         mLocationList.clear();
         //  mLocationList = new ArrayList<>();
-        for (int i = 0; i <modelLocation.getTable().size()+1 ; i++) {
+        for (int i = 0; i < modelLocation.getTable().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setLocationPK("-1");
                 model.setLocation("Please Select");
-            }
-            else{
-                model.setLocationPK(modelLocation.getTable().get(i-1).getLocationPK());
-                model.setLocation(modelLocation.getTable().get(i-1).getLocation());
+            } else {
+                model.setLocationPK(modelLocation.getTable().get(i - 1).getLocationPK());
+                model.setLocation(modelLocation.getTable().get(i - 1).getLocation());
             }
 
             mLocationList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mLocationList.size(); i++) {
+        for (int i = 0; i < mLocationList.size(); i++) {
             mName.add(mLocationList.get(i).getLocation());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_location.setAdapter(adapter);
 
     }
 
     private void setSubLocation(SubLocationModel modelSubLocation) {
 
-        DropdownModel model ;
+        DropdownModel model;
         mSubLocationList.clear();
         // mSubLocationList = new ArrayList<>();
-        for (int i = 0; i <modelSubLocation.getTable().size()+1 ; i++) {
+        for (int i = 0; i < modelSubLocation.getTable().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setSubLocationPK("-1");
                 model.setSubLocation("Please Select");
-            }
-            else{
-                model.setSubLocationPK(modelSubLocation.getTable().get(i-1).getSubLocationPK());
-                model.setSubLocation(modelSubLocation.getTable().get(i-1).getSubLocation());
+            } else {
+                model.setSubLocationPK(modelSubLocation.getTable().get(i - 1).getSubLocationPK());
+                model.setSubLocation(modelSubLocation.getTable().get(i - 1).getSubLocation());
             }
 
             mSubLocationList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mSubLocationList.size(); i++) {
+        for (int i = 0; i < mSubLocationList.size(); i++) {
             mName.add(mSubLocationList.get(i).getSubLocation());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_sub_location.setAdapter(adapter);
 
     }
@@ -1042,122 +1190,120 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
     private void setVertical(CommonDetailModel modelCommon) {
 
-        DropdownModel model ;
+        DropdownModel model;
         mVerticalList.clear();
-       // mVerticalList = new ArrayList<>();
-        for (int i = 0; i <modelCommon.getTable8().size()+1 ; i++) {
+        // mVerticalList = new ArrayList<>();
+        for (int i = 0; i < modelCommon.getTable8().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setVerticalPK("-1");
                 model.setVertical("Please Select");
-            }
-            else {
-                model.setVerticalPK(modelCommon.getTable8().get(i-1).getVerticalPK());
-                model.setVertical(modelCommon.getTable8().get(i-1).getVertical());
+            } else {
+                model.setVerticalPK(modelCommon.getTable8().get(i - 1).getVerticalPK());
+                model.setVertical(modelCommon.getTable8().get(i - 1).getVertical());
             }
             mVerticalList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mVerticalList.size(); i++) {
+        for (int i = 0; i < mVerticalList.size(); i++) {
             mName.add(mVerticalList.get(i).getVertical());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_vertical.setAdapter(adapter);
     }
 
     private void setDepartment(DepartmentModel modelDepartment) {
 
-        DropdownModel model ;
+        DropdownModel model;
         mDepartmentList.clear();
-       // mDepartmentList = new ArrayList<>();
-        for (int i = 0; i <modelDepartment.getTable().size()+1 ; i++) {
+        // mDepartmentList = new ArrayList<>();
+        for (int i = 0; i < modelDepartment.getTable().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setDepartmentPK("-1");
                 model.setDepartment("Please Select");
-            }else{
-                model.setDepartmentPK(modelDepartment.getTable().get(i-1).getDepartmentPK());
-                model.setDepartment(modelDepartment.getTable().get(i-1).getDepartment());
+            } else {
+                model.setDepartmentPK(modelDepartment.getTable().get(i - 1).getDepartmentPK());
+                model.setDepartment(modelDepartment.getTable().get(i - 1).getDepartment());
             }
             mDepartmentList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mDepartmentList.size(); i++) {
+        for (int i = 0; i < mDepartmentList.size(); i++) {
             mName.add(mDepartmentList.get(i).getDepartment());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_department.setAdapter(adapter);
 
     }
 
     private void setSubDepartment(SubDepartmentModel modelSubDepartment) {
 
-        DropdownModel model ;
+        DropdownModel model;
         mSubDepartmentList.clear();
-       // mSubDepartmentList = new ArrayList<>();
-        for (int i = 0; i <modelSubDepartment.getTable().size()+1 ; i++) {
+        // mSubDepartmentList = new ArrayList<>();
+        for (int i = 0; i < modelSubDepartment.getTable().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setSubDepartmentPK("-1");
                 model.setSubDepartment("Please Select");
-            }else {
-                model.setSubDepartmentPK(modelSubDepartment.getTable().get(i-1).getSubDepartmentPK());
-                model.setSubDepartment(modelSubDepartment.getTable().get(i-1).getSubDepartment());
+            } else {
+                model.setSubDepartmentPK(modelSubDepartment.getTable().get(i - 1).getSubDepartmentPK());
+                model.setSubDepartment(modelSubDepartment.getTable().get(i - 1).getSubDepartment());
             }
             mSubDepartmentList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mSubDepartmentList.size(); i++) {
+        for (int i = 0; i < mSubDepartmentList.size(); i++) {
             mName.add(mSubDepartmentList.get(i).getSubDepartment());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_sub_department.setAdapter(adapter);
 
     }
 
     private void setDesignation(CommonDetailModel modelCommon) {
-        DropdownModel model ;
+        DropdownModel model;
         mDesignationList.clear();
         //mDesignationList = new ArrayList<>();
-        for (int i = 0; i <modelCommon.getTable9().size()+1 ; i++) {
+        for (int i = 0; i < modelCommon.getTable9().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setDesignationPK("-1");
                 model.setDesignation("Please Select");
-            }else {
-                model.setDesignationPK(modelCommon.getTable9().get(i-1).getDesignationPK());
-                model.setDesignation(modelCommon.getTable9().get(i-1).getDesignation());
+            } else {
+                model.setDesignationPK(modelCommon.getTable9().get(i - 1).getDesignationPK());
+                model.setDesignation(modelCommon.getTable9().get(i - 1).getDesignation());
             }
             mDesignationList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mDesignationList.size(); i++) {
+        for (int i = 0; i < mDesignationList.size(); i++) {
             mName.add(mDesignationList.get(i).getDesignation());
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_designation.setAdapter(adapter);
     }
 
 
-    private void bindEmployee(String from_last ) {
-
+    private void bindEmployee(String from_last) {
 
 
         TeamMemberModelParams params = null;
 
-        if(from_last.equalsIgnoreCase("common")){
+        if (from_last.equalsIgnoreCase("common")) {
             params = new TeamMemberModelParams();
             params.setCompanyFK(-1);
             params.setLocationFK(-1);
@@ -1169,12 +1315,10 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
             params.setDesignationFK(-1);
 
-           // params.setIsDailyWages(0);
-            params.setSessionUserFk(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0));
+            // params.setIsDailyWages(0);
+            params.setSessionUserFk(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0));
 
-        }
-
-        else {
+        } else {
             //for all filter from group...
             params = new TeamMemberModelParams();
             params.setCompanyFK(Integer.parseInt(mCompanyList.get(edt_company.getSelectedItemPosition()).getCompanyPK()));
@@ -1187,17 +1331,107 @@ public class GroupAttendanceFragment extends Fragment implements ApiListener,Rec
 
             params.setDesignationFK(Integer.parseInt(mDesignationList.get(edt_designation.getSelectedItemPosition()).getDesignationPK()));
 
-           // params.setIsDailyWages(0);
-            params.setSessionUserFk(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0));
+            // params.setIsDailyWages(0);
+            params.setSessionUserFk(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0));
         }
 
 
-
         //api calls with updated params
-        new WebServices(getActivity(), this ,
-                false ,true).
-                callGetTeamMemberAPI(mToken,params ,call_team_or_group);
+        new WebServices(getActivity(), this,
+                false, true).
+                callGetTeamMemberAPI(mToken, params, call_team_or_group);
 
+    }
+
+
+    class DownloadFileFromURL extends AsyncTask<String, Integer, String> {
+        int downloadedSize = 0 ;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            build.setProgress(100, 0, false);
+            mNotifyManager.notify(id, build.build());
+        }
+
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+
+            String file_url = "";
+            try {
+                Log.e("", "doInBackground: " + "Downloading");
+                URL url = new URL(f_url[0]);
+
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                // input stream to read file - with 8k buffer
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+
+                File fileDirDoc = new File(Constant.FILE_DIRECTORY_DOC);
+                if (!fileDirDoc.exists()) {
+                    fileDirDoc.mkdirs();
+                }
+
+                //String name = "abc.pdf";
+
+                fileDirDoc = new File(fileDirDoc, file_name_payslip);
+                // getting file length
+                //lenghtOfFile = conection.getContentLength();
+
+                OutputStream output = new FileOutputStream(fileDirDoc, false);
+                byte data[] = new byte[1024];
+
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+
+                    // writing data to file
+                    output.write(data, 0, count);
+                    // This will call onProgressUpdate
+                    downloadedSize += count;
+                    publishProgress(downloadedSize);
+
+
+                }
+
+                // flushing output
+                output.flush();
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return file_name_payslip;
+        }
+
+        /**
+         * After completing background task
+         **/
+        @Override
+        protected void onPostExecute(String file_name_payslip) {
+            Log.e("", "onPostExecute: Downloaded");
+
+            CommonUtils.getInstance().displayToast(getActivity(), file_name_payslip+" Downloaded.");
+            //build.setContentText("Download complete");
+            // Removes the progress bar
+            build.setProgress(0, 0, false);
+            mNotifyManager.notify(id, build.build());
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            build.setProgress(100, values[0], false);
+            mNotifyManager.notify(id, build.build());
+            super.onProgressUpdate(values);
+        }
     }
 
 

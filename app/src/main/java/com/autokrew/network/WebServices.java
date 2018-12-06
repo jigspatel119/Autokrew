@@ -545,6 +545,46 @@ public class WebServices {
     }
 
 
+
+
+    /**
+     * //===========================( callPayslipAPI data)==============================//
+     */
+    public void callPayslipAPI(String mToken , AttendanceModelParams params) {
+
+        // Check for internet connection
+        if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
+
+            Call<String> call = null;
+
+            call = mApiInterface.getPayslip(mToken,
+                    Pref.getValue(mContext, Constant.PREF_MOBILE_URL ,""),params);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Object mObject = response.body();
+                    if (mObject != null) {
+                        onSuccessResponse(mObject);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
+                    onFailureResponse(t);
+                }
+            });
+
+        } else {
+            // No Internet connection available
+            onNoInternetConnection();
+        }
+    }
+
+
+
+
     /** //for attendance in detail
      * //===========================( get Attendance API )==============================//
      */

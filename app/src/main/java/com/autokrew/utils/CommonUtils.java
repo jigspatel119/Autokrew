@@ -1,5 +1,6 @@
 package com.autokrew.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
@@ -91,14 +93,11 @@ public class CommonUtils {
         return false;
     }
 
-    public static void turnOffGPS(Context context){
+    public static void turnOffGPS(Context context) {
         Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
         intent.putExtra("enabled", false);
         context.sendBroadcast(intent);
     }
-
-
-
 
 
     /**
@@ -425,7 +424,7 @@ public class CommonUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return encoded;
-        }finally {
+        } finally {
             return decodedString;
         }
 
@@ -439,14 +438,14 @@ public class CommonUtils {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             String base64Encoded = Base64.encodeToString(data, Base64.NO_WRAP);
             return base64Encoded;
         }
     }
 
 
-    public static Animation getAnimation(Context ctx){
+    public static Animation getAnimation(Context ctx) {
         Animation animBounce;
         // load the animation
 
@@ -458,7 +457,7 @@ public class CommonUtils {
     }
 
 
-    public  static void setupCustomToolbar(Toolbar toolbar){
+    public static void setupCustomToolbar(Toolbar toolbar) {
         //set custom font to the toolbar
         TextView toolbarTitle = null;
         for (int i = 0; i < toolbar.getChildCount(); ++i) {
@@ -548,11 +547,10 @@ public class CommonUtils {
     }
 
 
+    public static String getAddressFromLatLong(Context mContext, double latitude, double longitude) {
 
-
-    public static void getAddressFromLatLong(Context mContext, double latitude, double longitude) {
-
-        mPreferenceHelper = new PreferenceHelper(mContext);
+       // mPreferenceHelper = new PreferenceHelper(mContext);
+        String mAddress = "";
 
         // Check for internet connection
         if (CommonUtils.getInstance().isNetworkAvailable(mContext)) {
@@ -563,39 +561,49 @@ public class CommonUtils {
 
                 addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                mAddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String city = addresses.get(0).getLocality();
-                String state = addresses.get(0).getAdminArea();
-                String country = addresses.get(0).getCountryName();
-                String postalCode = addresses.get(0).getPostalCode();
+                 String state = addresses.get(0).getAdminArea();
+                 String country = addresses.get(0).getCountryName();
+                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
 
 
-                mPreferenceHelper.setCity(city);
-                mPreferenceHelper.setState(state);
-                mPreferenceHelper.setCountry(country);
-                mPreferenceHelper.setAddress(address);
+                //mPreferenceHelper.setCity(city);
+                //mPreferenceHelper.setState(state);
+                // mPreferenceHelper.setCountry(country);
+               // mPreferenceHelper.setAddress(address);
 
-                AppLog.debugE("address >>>>  " + address);
-                AppLog.debugD("city : " + city);
-                AppLog.debugD("state : " + state);
-                AppLog.debugD("country : " + country);
-                AppLog.debugD("postalCode : " + postalCode);
-                AppLog.debugD("knownName : " + knownName);
+                AppLog.debugE("address >>>>  " + mAddress);
+                  AppLog.debugE("city : " + city);
+                 AppLog.debugE("state : " + state);
+                 AppLog.debugE("country : " + country);
+                 AppLog.debugE("postalCode : " + postalCode);
+                 AppLog.debugE("knownName : " + knownName);
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        return mAddress;
     }
 
 
+    public String getIMEI(Context mContext) {
 
-    public String getIMEI(Context mContext){
+        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
 
-        TelephonyManager telephonyManager = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
 
+        }
         return telephonyManager.getDeviceId();
     }
 

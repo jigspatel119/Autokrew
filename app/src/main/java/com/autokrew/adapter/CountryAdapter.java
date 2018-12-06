@@ -107,6 +107,10 @@ public class CountryAdapter extends BaseExpandableListAdapter {
             img_parent_left.setImageResource(R.drawable.ic_leave);
         }
 
+        else if(al_country.get(i).getStr_country().equalsIgnoreCase("Payslip")){
+            img_parent_left.setImageResource(R.drawable.ic_document);
+        }
+
         else if(al_country.get(i).getStr_country().equalsIgnoreCase("Sign Out")){
             img_parent_left.setImageResource(R.drawable.ic_signout);
         }
@@ -135,7 +139,9 @@ public class CountryAdapter extends BaseExpandableListAdapter {
         });
 
 
-        if(tv_state.getText().toString().equalsIgnoreCase("My Attendance")||tv_state.getText().toString().equalsIgnoreCase("My Leave")){
+        if(tv_state.getText().toString().equalsIgnoreCase("My Attendance")
+                ||tv_state.getText().toString().equalsIgnoreCase("My Leave")
+                ||tv_state.getText().toString().equalsIgnoreCase("My Payslip")){
             view_top.setVisibility(View.VISIBLE);
         }
         else{

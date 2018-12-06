@@ -566,6 +566,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_team_meber"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="10dp"
@@ -627,6 +628,7 @@
 
 
             <LinearLayout
+                android:id="@+id/ll_approval_status"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="10dp"
@@ -689,6 +691,7 @@
 
 
             <android.support.v7.widget.CardView
+                android:id="@+id/cv_search"
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 app:cardBackgroundColor="@color/colorPrimary"
@@ -699,6 +702,7 @@
                 card_view:cardUseCompatPadding="true">
 
                 <RelativeLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -736,6 +740,43 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="Search"
                 android:textColor="@color/white" />-->
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_payslip"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                card_view:cardCornerRadius="@dimen/card_corner_radius"
+                card_view:cardElevation="4"
+                android:layout_margin="10dp"
+                android:layout_gravity="right"
+                card_view:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/img2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:padding="1dp"
+                        android:src="@drawable/ic_document"/>
+
+                    <TextView
+                        android:id="@+id/txt_payslip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/img2"
+                        android:layout_centerVertical="true"
+                        android:text=" Get Pay Slip"
+                        android:textColor="#ffffff" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
 
 
         </LinearLayout>

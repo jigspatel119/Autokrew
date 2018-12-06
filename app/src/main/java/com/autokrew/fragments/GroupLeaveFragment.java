@@ -162,9 +162,11 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
             ll_subdepartment.setVisibility(View.GONE);
 
             call_team_or_group = "team";
-        } else {
+        }
+        else if(str_disname.equalsIgnoreCase("Group Leave")){
             call_team_or_group = "group";
         }
+
 
         setPleaseSelect("Location");
         setPleaseSelect("SubLocation");
@@ -720,17 +722,19 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
                     Pref.setValue(getActivity(), "DepartmentFK", mDepartmentList.get(edt_department.getSelectedItemPosition()).getDepartmentPK());
                     Pref.setValue(getActivity(), "SubDepartmentFK", mSubDepartmentList.get(edt_sub_department.getSelectedItemPosition()).getSubDepartmentPK());
                     Pref.setValue(getActivity(), "DesignationFK", mDesignationList.get(edt_designation.getSelectedItemPosition()).getDesignationPK());
-                } else {
+                }
+                else if(call_team_or_group.equalsIgnoreCase("team")) {
                     Pref.setValue(getActivity(), "call_team_or_group_leave", "team");
                 }
                 //for team no need to store above details.
+
 
                 CommonUtils.getInstance().startActivity(getActivity(), LeaveActivity.class);
                 //CommonUtils.getInstance().startActivity(getActivity(), GroupLeaveActivity.class);
                 getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
                 break;
-
+/*
             case R.id.iv_month:
 
                 break;
@@ -769,7 +773,7 @@ public class GroupLeaveFragment extends Fragment implements ApiListener, Recycle
                 break;
             case R.id.iv_leave_status:
 
-                break;
+                break;*/
 
         }
 

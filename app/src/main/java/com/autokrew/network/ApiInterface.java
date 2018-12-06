@@ -95,6 +95,7 @@ public interface ApiInterface {
     );
 
 
+
     //get Attendance
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Attendance/EmpAttendanceDetails")
@@ -353,6 +354,16 @@ public interface ApiInterface {
             @Body MyprofileParams body
     );
 
+
+
+    //get payslip
+    @Headers("Content-Type: application/json")
+    @POST("{MAIN_URL}/api/PaySlip/PrintMyPaySlip")
+    Call<String> getPayslip(
+            @Header("Authorization") String token,
+            @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
+            @Body AttendanceModelParams body
+    );
 
     //add deviation for TEAM
     @Headers("Content-Type: application/json")

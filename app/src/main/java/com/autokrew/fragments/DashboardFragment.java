@@ -30,6 +30,7 @@ import android.widget.Button;
 import com.autokrew.R;
 import com.autokrew.activity.MainActivity;
 import com.autokrew.activity.QRScanActivity;
+import com.autokrew.activity.QRScanActivity2;
 import com.autokrew.activity.SigninActivity;
 import com.autokrew.activity.WebViewActivity;
 import com.autokrew.adapter.AnnouncementAdapter;
@@ -56,8 +57,8 @@ import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
-//import com.autokrew.utils.FusedLocationAPIService;
-import com.autokrew.utils.GPSTracker;
+
+import com.autokrew.utils.FusedLocationAPIService;
 import com.autokrew.utils.Permissions;
 import com.autokrew.utils.Pref;
 import com.autokrew.utils.PreferenceHelper;
@@ -82,12 +83,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.fabric.sdk.android.services.common.Crash;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 
 public class DashboardFragment extends Fragment implements RecyclerViewDashBoardListener, ApiListener
-        , GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+       {
 
     //General Variables
     private static final String TAG = DashboardFragment.class.getSimpleName();
@@ -271,7 +272,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
                             //display version upgrade dialog
                             mVersionDialog = new VersionUpgradeDialog(getActivity());
                             mVersionDialog.setCancelable(false);
-                            mVersionDialog.setCanceledOnTouchOutside(true);
+                            mVersionDialog.setCanceledOnTouchOutside(false);
                             mVersionDialog.show();
                         } else {
 
@@ -308,34 +309,30 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         fab_qrcode = (FloatingActionButton) v.findViewById(R.id.fab_qrcode);
 
 
-        if (is_outside_allow == 0) {
+        /*if (is_outside_allow == 0) {
             fab_attendance.setVisibility(View.GONE);
         } else {
             fab_attendance.setVisibility(View.VISIBLE);
-        }
+        }*/
 
-       // fab_attendance.setVisibility(View.VISIBLE);
+        fab_attendance.setVisibility(View.VISIBLE);
 
         //materialDesignFAM.setVisibility(View.GONE);
         fab_attendance.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
 
-                if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
 
-                    if (Permissions.getInstance().isLocationPermissionGranted(getActivity())) {
-
-                        if (!CommonUtils.isGpsEnabled(getActivity())) {
-                            CommonUtils.displayLocationSettingsRequest(getActivity());
-                        } else {
+                if (!CommonUtils.isGpsEnabled(getActivity())) {
+                    CommonUtils.displayLocationSettingsRequest(getActivity());
+                } else {
+                  //  if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
+                        if (Permissions.getInstance().isLocationPermissionGranted(getActivity())) {
                             requestPermissionForLocation();
                         }
-                    }
+                   // }
+
                 }
-
-
-                // Fragment fragment = new TempFragment();
-                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, "TEMP").addToBackStack("null").commit();
 
             }
         });
@@ -345,16 +342,17 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
             public void onClick(View v) {
                 //TODO something when floating action menu first item clicked
                 // Crashlytics.getInstance().crash(); // Force a crash
-
-                if (Permissions.getInstance().isCameraPermissionGranted(getActivity())) {
-
-                    if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
-                        //open camera and api calls for qrcode..
-                        CommonUtils.getInstance().startActivity(getActivity(), QRScanActivity.class);
-                        getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
-                        materialDesignFAM.close(true);
+                if (!CommonUtils.isGpsEnabled(getActivity())) {
+                    CommonUtils.displayLocationSettingsRequest(getActivity());
+                } else {
+                    if (Permissions.getInstance().isCameraPermissionGranted(getActivity())) {
+                        if (Permissions.getInstance().isReadPhoneStatePermissionGranted(getActivity())) {
+                            //open camera and api calls for qrcode..
+                            CommonUtils.getInstance().startActivity(getActivity(), QRScanActivity.class);
+                            getActivity().overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
+                            materialDesignFAM.close(true);
+                        }
                     }
-
                 }
             }
         });
@@ -381,91 +379,44 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     private void startLocationService() {
 
-   /*     if (!CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
+        if (!CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
             Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
             getActivity().startService(intent);
-        }*/
+        }
 
-        buildGoogleApiClient();
-        createLocationRequest();
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+
+        if(CommonUtils.lattitude != 0.0 && CommonUtils.logitude != 0.0 ){
+            if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
+                mLat = String.valueOf(CommonUtils.lattitude);
+                mLong = String.valueOf(CommonUtils.logitude);
+                mAddress = CommonUtils.getAddressFromLatLong(getActivity(),
+                        CommonUtils.lattitude,
+                        CommonUtils.logitude);
+                IMEINumber = CommonUtils.getInstance().getIMEI(getActivity());
+
+              //  CommonUtils.getInstance().displayToast(getActivity(),"mAddress >> " +mAddress);
+
+                if (IMEINumber != null && IMEINumber.length() > 0) {
+                    callOutSideAttendanceFromMobileAppAPI("", mLat, mLong, mAddress, IMEINumber);
+                    materialDesignFAM.close(true);
+                    CommonUtils.lattitude = 0.0 ;
+                    CommonUtils.logitude = 0.0 ;
+                }
             }
         }
-        LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, locationCallback,
-                Looper.myLooper());
-
-
-        // location = new GPSTracker(mActivity).getLocation();
-        if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
-
-            mLat = String.valueOf(CommonUtils.lattitude);
-            mLong = String.valueOf(CommonUtils.logitude);
-            mAddress = mPreferenceHelper.getAddress();
-            IMEINumber = CommonUtils.getInstance().getIMEI(getActivity());
-
-            if (IMEINumber != null && IMEINumber.length() > 0) {
-                callOutSideAttendanceFromMobileAppAPI("", mLat, mLong, mAddress, IMEINumber);
-                materialDesignFAM.close(true);
-            }
+        else{
+            CommonUtils.getInstance().displayToast(getActivity(),"gps is enabling! Please Wait.");
         }
+
     }
 
-    synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+    private void stopLocationService() {
 
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
+        if (CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
+            Log.e(TAG, "stopLocationService: called ");
+            Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
+            getActivity().stopService(intent);
         }
-    }
-    private void createLocationRequest() {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL); // Update location every 19 minute
-        mLocationRequest.setFastestInterval(LOCATION_UPDATE_INTERVAL);
-        /**
-         * To get location information consistently
-         * mLocationRequest.setNumUpdates(1) Commented out
-         * Uncomment the code below
-         */
-        // mLocationRequest.setNumUpdates(1);
-        //mLocationRequest.setSmallestDisplacement()
-    }
-
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-//            Location location = locationResult.getLastLocation();
-
-//            super.onLocationResult(locationResult);
-            for (Location location : locationResult.getLocations()) {
-                Log.e(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude() + " " + location.getBearing());
-                Log.e(TAG, "onCreate: lat-->" + location.getLatitude());
-                Log.e(TAG, "onCreate: lon-->" + location.getLongitude());
-                CommonUtils.lattitude = location.getLatitude();
-                CommonUtils.logitude = location.getLongitude();
-                CommonUtils.getAddressFromLatLong(getActivity(), location.getLatitude(), location.getLongitude());
-
-            }
-        }
-    };
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        //if (CommonUtils.isMyServiceRunning(getActivity(), FusedLocationAPIService.class)) {
-       /* Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
-        getActivity().stopService(intent);*/
-        Log.e(TAG, "onStop: **********stopService**********");
-        // }
     }
 
     private void callOutSideAttendanceFromMobileAppAPI(String QR_text, String mLat, String mLong, String mAddress, String IMEINumber) {
@@ -555,17 +506,19 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     }
 
 
-    public static DashboardFragment newInstance() {
-        return new DashboardFragment();
-    }
-
     @Override
     public void recyclerViewListClicked(View v, int position) {
 
-        mDialog = new GreetingsDialog(getActivity(), position);
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(true);
-        mDialog.show();
+        if(mDialog!=null && mDialog.isShowing()){
+            //check for multiple dialogs open
+        }
+        else {
+
+            mDialog = new GreetingsDialog(getActivity(), position);
+            mDialog.setCancelable(false);
+            mDialog.setCanceledOnTouchOutside(true);
+            mDialog.show();
+        }
 
     }
 
@@ -684,26 +637,37 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
                 } else if (from_last.equalsIgnoreCase("AttendanceDetail")) {
 
+                    if(mAttendanceDetailDialog!=null && mAttendanceDetailDialog.isShowing()){
+                        //check for multiple dialogs open
+                    }
+                    else{
                     attendanceDetailModel = gson.fromJson(mObject.toString(), AttendanceDetailModel.class);
                     mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(), attendanceDetailModel, null, "Pending Attendance Approval", "Pending Attendance");
                     mAttendanceDetailDialog.setCancelable(false);
                     mAttendanceDetailDialog.setCanceledOnTouchOutside(true);
                     mAttendanceDetailDialog.show();
+                    }
 
                 } else if (from_last.equalsIgnoreCase("LeaveDetail")) {
 
-                    leaveDetailModel = gson.fromJson(mObject.toString(), LeaveDetailModel.class);
-                    mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(), null, leaveDetailModel, "Pending Leave Approval", "Pending Leave");
-                    mAttendanceDetailDialog.setCancelable(false);
-                    mAttendanceDetailDialog.setCanceledOnTouchOutside(true);
-                    mAttendanceDetailDialog.show();
+                    if(mAttendanceDetailDialog!=null && mAttendanceDetailDialog.isShowing()){
+                        //check for multiple dialogs open
+                    }
+                    else {
 
+                        leaveDetailModel = gson.fromJson(mObject.toString(), LeaveDetailModel.class);
+                        mAttendanceDetailDialog = new AttendanceDetailDialog(getActivity(), null, leaveDetailModel, "Pending Leave Approval", "Pending Leave");
+                        mAttendanceDetailDialog.setCancelable(false);
+                        mAttendanceDetailDialog.setCanceledOnTouchOutside(true);
+                        mAttendanceDetailDialog.show();
+
+                    }
 
                 } else if (from_last.equalsIgnoreCase("OutSideAttendance")) {
 
                     mOutsideSideAttendanceModel = gson.fromJson(mObject.toString(), OutSideAttendanceModel.class);
-
                     CommonUtils.getInstance().displayToast(getActivity(), "" + mOutsideSideAttendanceModel.getTable().get(0).getResult());
+                    stopLocationService();
                 }
 
 
@@ -790,7 +754,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
 
 
-    @Override
+ /*   @Override
     public void onConnected(@Nullable Bundle bundle) {
 
     }
@@ -804,16 +768,14 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: Called");
         buildGoogleApiClient();
-    }
+    }*/
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        // LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
+
+        stopLocationService();
         Log.e(TAG, "mGoogleApiClient: onDestroy : *****client disconnect***" );
 
     }

@@ -1,8 +1,9 @@
 package com.autokrew.fragments;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -23,12 +25,17 @@ import com.autokrew.models.MyprofileParams;
 import com.autokrew.models.UpdateUserProfileParams;
 import com.autokrew.network.ApiListener;
 import com.autokrew.network.WebServices;
+import com.autokrew.utils.BlurTransformation;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ProfileFragment extends Fragment implements ApiListener, View.OnClickListener {
@@ -52,6 +59,8 @@ public class ProfileFragment extends Fragment implements ApiListener, View.OnCli
     //EditText txt_marital_status ,txt_height ,txt_weight ,txt_blood_group;
 
     Spinner edt_marital_status ,edt_height ,edt_weight ,edt_blood_group;
+    ImageView mAppCompactImageView ;
+    CircleImageView mIvCenter;
 
     public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
@@ -137,6 +146,28 @@ public class ProfileFragment extends Fragment implements ApiListener, View.OnCli
         edt_height =  (Spinner) view.findViewById(R.id.edt_height);
         edt_weight =  (Spinner) view.findViewById(R.id.edt_weight);
         edt_blood_group =  (Spinner) view.findViewById(R.id.edt_blood_group);
+
+        mAppCompactImageView = view.findViewById(R.id.mAppCompactImageView);
+
+        mIvCenter = (CircleImageView)view.findViewById(R.id.mIvCenter);
+
+
+
+
+        Glide.with(this)
+                .load(Pref.getValue(getActivity(), "profile_pic_server", ""))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.profile_image)
+                .transform(new BlurTransformation(getActivity()))
+                .error(R.drawable.profile_image)
+                .into(mAppCompactImageView);
+
+        Glide.with(this)
+                .load(Pref.getValue(getActivity(), "profile_pic_server", ""))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.profile_image)
+                .error(R.drawable.profile_image)
+                .into(mIvCenter);
 
 
 

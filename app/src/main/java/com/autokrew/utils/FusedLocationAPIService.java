@@ -8,34 +8,47 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 
 public class FusedLocationAPIService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = FusedLocationAPIService.class.getSimpleName();
-    public double latitude = 0.0, longitude = 0.0;
-   // Location mLastLocation;
+    public static double latitude = 0.0, longitude = 0.0;
+    Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-
-
     private Context mContext;
+    //private long LOCATION_UPDATE_INTERVAL = 19 * 60 * 1000;// 19 minutes
+    private long LOCATION_UPDATE_INTERVAL = 3 * 1000;//  30 sec
 
-    private long LOCATION_UPDATE_INTERVAL = 2000;// 2 sec  [60000 = 1 min]
-    private static final float LOCATION_DISTANCE = 10f;
+    public double getLatitude(){
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+
+        this.longitude = longitude;
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -50,18 +63,17 @@ public class FusedLocationAPIService extends Service implements GoogleApiClient.
             }
         }
 
-        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, locationCallback,
-                Looper.myLooper());
-       /* mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if(mLastLocation!=null){
             Log.e(TAG, "onCreate: lat-->" + mLastLocation.getLatitude());
             Log.e(TAG, "onCreate: lon-->" + mLastLocation.getLongitude());
             CommonUtils.lattitude = mLastLocation.getLatitude();
             CommonUtils.logitude = mLastLocation.getLongitude();
-           // CommonUtils.getAddressFromLatLong(mContext, latitude, longitude);
-
-        }*/
+            // CommonUtils.getAddressFromLatLong(mContext, latitude, longitude);
+        }
 
 
     }
@@ -72,24 +84,33 @@ public class FusedLocationAPIService extends Service implements GoogleApiClient.
 
     }
 
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-//            Location location = locationResult.getLastLocation();
+    @Override
+    public void onLocationChanged(Location location) {
 
-//            super.onLocationResult(locationResult);
-            for (Location location : locationResult.getLocations()) {
-                Log.e(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude() + " " + location.getBearing());
-                Log.e(TAG, "onCreate: lat-->" + location.getLatitude());
-                Log.e(TAG, "onCreate: lon-->" + location.getLongitude());
-                CommonUtils.lattitude = location.getLatitude();
-                CommonUtils.logitude = location.getLongitude();
-                CommonUtils.getAddressFromLatLong(mContext, location.getLatitude(), location.getLongitude());
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
 
-            }
+
+        //setLatitude(latitude);
+        //setLongitude(longitude);
+
+
+        CommonUtils.lattitude = latitude;
+        CommonUtils.logitude = longitude;
+
+
+        if(mLastLocation!=null){
+            Log.e(TAG, "onLocationChanged: lat-->" + mLastLocation.getLatitude());
+            Log.e(TAG, "onLocationChanged: lon-->" + mLastLocation.getLongitude());
         }
-    };
 
+       // CommonUtils.getAddressFromLatLong(mContext, latitude, longitude);
+       // Log.e(TAG, "onLocationChanged: latitude-->" + latitude);
+       // Log.e(TAG, "onLocationChanged: longitude-->" + longitude);
+
+
+
+    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -117,7 +138,6 @@ public class FusedLocationAPIService extends Service implements GoogleApiClient.
 
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -130,12 +150,12 @@ public class FusedLocationAPIService extends Service implements GoogleApiClient.
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand: Called");
 
-       // mSharedPrefs = new SharedPreferenceClass(getApplicationContext());
+        // mSharedPrefs = new SharedPreferenceClass(getApplicationContext());
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-        return START_NOT_STICKY; //states that you need not recreate service in case it is been killed.
+        return START_STICKY;
     }
 
     @Nullable
@@ -145,22 +165,16 @@ public class FusedLocationAPIService extends Service implements GoogleApiClient.
         return null;
     }
 
-
-
     private void createLocationRequest() {
 
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL); // Update location every 19 minute
+        mLocationRequest.setInterval(LOCATION_UPDATE_INTERVAL); // Update location every 3 sec
         mLocationRequest.setFastestInterval(LOCATION_UPDATE_INTERVAL);
-        /**
-         * To get location information consistently
-         * mLocationRequest.setNumUpdates(1) Commented out
-         * Uncomment the code below
-         */
-       // mLocationRequest.setNumUpdates(1);
-       //mLocationRequest.setSmallestDisplacement()
 
     }
+
+
+
 
 }

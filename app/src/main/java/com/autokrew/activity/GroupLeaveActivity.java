@@ -192,10 +192,15 @@ public class GroupLeaveActivity extends AppCompatActivity implements ApiListener
             int leaveDetailPK = model.getTable().get(position).getLeaveDetailPK();
 
             RevisedDialog mDialog = new RevisedDialog(this,GroupLeaveActivity.this, position ,leaveDetailPK);
-            mDialog.setCancelable(false);
-            mDialog.setCanceledOnTouchOutside(true);
-            mDialog.show();
 
+            if(mDialog!=null && mDialog.isShowing()){
+                //check for multiple dialogs open
+            }
+            else {
+                mDialog.setCancelable(false);
+                mDialog.setCanceledOnTouchOutside(true);
+                mDialog.show();
+            }
 
         }
 

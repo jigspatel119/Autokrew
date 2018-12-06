@@ -209,20 +209,32 @@ public class LeaveRequestFragment extends Fragment implements ApiListener, View.
         String leave_button = Pref.getValue(getActivity(), Constant.PREF_LEAVE_BUTTON,"");
         if(leave_button.equalsIgnoreCase("iv_edit")){
             int leaveDetailPK =  model.getTable().get(position).getLeaveDetailPK();
+
             LeaveRequestDialog mDialog = new LeaveRequestDialog(getActivity(),position ,leaveDetailPK ,LeaveRequestFragment.this ,model);
-            mDialog.setCancelable(false);
-            mDialog.setCanceledOnTouchOutside(true);
-            mDialog.show();
+
+            if(mDialog!=null && mDialog.isShowing()){
+                //check for multiple dialogs open
+            }
+            else {
+                mDialog.setCancelable(false);
+                mDialog.setCanceledOnTouchOutside(true);
+                mDialog.show();
+            }
         }
 
         else if(leave_button.equalsIgnoreCase("iv_revised")){
             int leaveDetailPK = model.getTable().get(position).getLeaveDetailPK();
 
             RevisedDialog mDialog = new RevisedDialog(getActivity(),LeaveRequestFragment.this, position ,leaveDetailPK);
-            mDialog.setCancelable(false);
-            mDialog.setCanceledOnTouchOutside(true);
-            mDialog.show();
 
+            if(mDialog!=null && mDialog.isShowing()){
+                //check for multiple dialogs open
+            }
+            else {
+                mDialog.setCancelable(false);
+                mDialog.setCanceledOnTouchOutside(true);
+                mDialog.show();
+            }
 
         }
 

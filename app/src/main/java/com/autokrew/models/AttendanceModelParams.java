@@ -13,6 +13,31 @@ public class AttendanceModelParams {
     //{"SessionUserFk":8816,"MonthFK":9,"YearFk":2017,"EmployeeFK":-1,"CompanyFK" :-1,"LocationFK":-1,"SubLocationFK":-1,"VerticalFK":-1,"DepartmentFK":-1,"SubDepartmentFK":-1,"DesignationFK":-1,"ApprovalStatus":"1","Flag":"Employee_Attendance_Register"}
 
 
+    // for pay slip===================
+    @SerializedName("LoginUserFk")
+    @Expose
+    private Integer LoginUserFk;
+    @SerializedName("LetterType")
+    @Expose
+    private String LetterType;
+
+    public Integer getLoginUserFk() {
+        return LoginUserFk;
+    }
+
+    public void setLoginUserFk(Integer loginUserFk) {
+        LoginUserFk = loginUserFk;
+    }
+
+    public String getLetterType() {
+        return LetterType;
+    }
+
+    public void setLetterType(String letterType) {
+        LetterType = letterType;
+    }
+    //====================================
+
     @SerializedName("SessionEmployeeFK")
     @Expose
     private Integer sessionEmployeeFK;

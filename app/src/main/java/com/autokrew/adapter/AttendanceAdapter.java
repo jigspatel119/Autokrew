@@ -38,6 +38,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
     }
 
+    public AttendanceAdapter() {
+
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txt_intime ,txt_outtime,txt_workinghrs ,date_time ,
                 txt_deviation,txt_emp_remarks,txt_rep_person_status,txt_rep_person_remarks;

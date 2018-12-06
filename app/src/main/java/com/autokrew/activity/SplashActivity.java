@@ -135,10 +135,16 @@ public class SplashActivity extends BaseActivity implements ApiListener ,DialogL
             fileDirMain.mkdirs();
         }
 
-        File fileDirCache = new File(Constant.FILE_DIRECTORY_MEDIA);
-        if (!fileDirCache.exists()) {
-            fileDirCache.mkdirs();
+        File fileDirMedia = new File(Constant.FILE_DIRECTORY_MEDIA);
+        if (!fileDirMedia.exists()) {
+            fileDirMedia.mkdirs();
         }
+
+        File fileDirDoc = new File(Constant.FILE_DIRECTORY_DOC);
+        if (!fileDirDoc.exists()) {
+            fileDirDoc.mkdirs();
+        }
+
     }
 
 

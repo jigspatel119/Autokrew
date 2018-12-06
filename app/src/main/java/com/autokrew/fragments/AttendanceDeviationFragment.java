@@ -24,6 +24,7 @@ import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
+import com.github.mikephil.charting.charts.PieChart;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -33,7 +34,7 @@ import java.util.List;
 
 
 public class AttendanceDeviationFragment extends Fragment implements ApiListener, View.OnClickListener,
-        RecyclerViewClickListener,AttendanceDialogInterface {
+        RecyclerViewClickListener, AttendanceDialogInterface {
 
     private RecyclerView rv_attendance_deviation;
     CardView card_view;
@@ -42,15 +43,17 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
     List<AttendanceTeamGroupModel> mList;
     AttendanceDeviationTGModel model;
     //AttendanceStatusModel mStatusModel;
-   // AttendanceRegisterModel mRegisterModel;
+    // AttendanceRegisterModel mRegisterModel;
 
     AttendanceTeamGroupDialog mDialog;
-    String mApprovalStatus ;
-    String mMonthPK,mYear;
-    String mEmployeePK,CompanyFK,LocationFK,SubLocationFK,VerticalFK,DepartmentFK,SubDepartmentFK,DesignationFK;
+    String mApprovalStatus;
+    String mMonthPK, mYear;
+    String mEmployeePK, CompanyFK, LocationFK, SubLocationFK, VerticalFK, DepartmentFK, SubDepartmentFK, DesignationFK;
 
     String from_last;
     String _flag;
+
+
 
     public AttendanceDeviationFragment() {
         // Required empty public constructor
@@ -74,27 +77,27 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
         getData();
         findView(view);
         setData();
-
         return view;
     }
 
 
+
     private void getData() {
 
-        if(Pref.getValue(getActivity(),"call_team_or_group","").equalsIgnoreCase("group")){
-            CompanyFK =  Pref.getValue(getActivity(),"CompanyFK","");
-            LocationFK = Pref.getValue(getActivity(),"LocationFK","");
-            SubLocationFK = Pref.getValue(getActivity(),"SubLocationFK","");
-            VerticalFK =  Pref.getValue(getActivity(),"VerticalFK","");
-            DepartmentFK = Pref.getValue(getActivity(),"DepartmentFK","");
-            SubDepartmentFK =  Pref.getValue(getActivity(),"SubDepartmentFK","");
-            DesignationFK = Pref.getValue(getActivity(),"DesignationFK","");
+        if (Pref.getValue(getActivity(), "call_team_or_group", "").equalsIgnoreCase("group")) {
+            CompanyFK = Pref.getValue(getActivity(), "CompanyFK", "");
+            LocationFK = Pref.getValue(getActivity(), "LocationFK", "");
+            SubLocationFK = Pref.getValue(getActivity(), "SubLocationFK", "");
+            VerticalFK = Pref.getValue(getActivity(), "VerticalFK", "");
+            DepartmentFK = Pref.getValue(getActivity(), "DepartmentFK", "");
+            SubDepartmentFK = Pref.getValue(getActivity(), "SubDepartmentFK", "");
+            DesignationFK = Pref.getValue(getActivity(), "DesignationFK", "");
 
         }
-        mApprovalStatus =  Pref.getValue(getActivity(),"mApprovalStatus","");
-        mMonthPK =  Pref.getValue(getActivity(),"mMonthPK","");
-        mYear =  Pref.getValue(getActivity(),"mYear","");
-        mEmployeePK =  Pref.getValue(getActivity(),"mEmployeePK","");
+        mApprovalStatus = Pref.getValue(getActivity(), "mApprovalStatus", "");
+        mMonthPK = Pref.getValue(getActivity(), "mMonthPK", "");
+        mYear = Pref.getValue(getActivity(), "mYear", "");
+        mEmployeePK = Pref.getValue(getActivity(), "mEmployeePK", "");
 
     }
 
@@ -102,6 +105,7 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
         rv_attendance_deviation = (RecyclerView) view.findViewById(R.id.rv_attendance_deviation);
         card_view = (CardView) view.findViewById(R.id.card_view);
         card_view.setVisibility(View.GONE);
+
 
     }
 
@@ -120,7 +124,7 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
 
             AttendanceModelParams params = new AttendanceModelParams();
             params.setMonthFK(Integer.parseInt(mMonthPK)); //
-            params.setSessionUserFk(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0));
+            params.setSessionUserFk(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0));
             params.setYearFk(Integer.parseInt(mYear)); //
             params.setApprovalStatus(mApprovalStatus);
             params.setFlag("Attendance_Deviations");
@@ -128,7 +132,7 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
             params.setEmployeeFK(Integer.parseInt(mEmployeePK)); //team member fk
 
 
-            if(Pref.getValue(getActivity(),"call_team_or_group","").equalsIgnoreCase("group")){
+            if (Pref.getValue(getActivity(), "call_team_or_group", "").equalsIgnoreCase("group")) {
                 params.setCompanyFK(Integer.parseInt(CompanyFK));
                 params.setLocationFK(Integer.parseInt(LocationFK));
                 params.setSubLocationFK(Integer.parseInt(SubLocationFK));
@@ -138,18 +142,16 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
                 params.setDesignationFK(Integer.parseInt(DesignationFK));
 
                 from_last = "GroupAttendance";
-            }
-
-            else{
+            } else {
                 from_last = "TeamAttendance";
             }
 
-            String mToken = Pref.getValue(getActivity(),Constant.PREF_TOKEN,"");
+            String mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
 
 
             new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                    false /* show progress dialog */,true).
-                    callGetAttendanceAPI(mToken,params ,from_last);
+                    false /* show progress dialog */, true).
+                    callGetAttendanceAPI(mToken, params, from_last);
             //  }
 
 
@@ -174,19 +176,19 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
             // Log.e("", "onApiSuccess: >>  "+mObject.toString() );
             try {
                 JSONObject jsonObj = new JSONObject(mObject.toString());
-                Log.e("", "onApiSuccess:AttendanceDeviationTG json >>  "+jsonObj);
+                Log.e("", "onApiSuccess:AttendanceDeviationTG json >>  " + jsonObj);
                 Gson gson = new Gson();
-                if(_flag.equalsIgnoreCase("Attendance_Deviations")){
+                if (_flag.equalsIgnoreCase("Attendance_Deviations")) {
                     model = gson.fromJson(mObject.toString(), AttendanceDeviationTGModel.class);
                     //setupRecyclerView(model);
-                    if(model.getTable().size()==0){
+                    if (model.getTable().size() == 0) {
                         //no record found
                         card_view.setVisibility(View.VISIBLE);
                         rv_attendance_deviation.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         card_view.setVisibility(View.GONE);
                         rv_attendance_deviation.setVisibility(View.VISIBLE);
-                      //  apicallsforStatus();
+                        //  apicallsforStatus();
                         setupRecyclerView(model);
                     }
                 }
@@ -221,11 +223,18 @@ public class AttendanceDeviationFragment extends Fragment implements ApiListener
     @Override
     public void recyclerViewListClicked(View v, int position) {
 
-        mDialog = new AttendanceTeamGroupDialog(getActivity(), position ,model.getTable().get(position).getName(),
-                model.getTable().get(position).getDate(), model.getTable().get(position).getAttendancePK()
-                ,AttendanceDeviationFragment.this);
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(true);
-        mDialog.show();
+        if (mDialog != null && mDialog.isShowing()) {
+            //check for multiple dialogs open
+        } else {
+            mDialog = new AttendanceTeamGroupDialog(getActivity(), position, model.getTable().get(position).getName(),
+                    model.getTable().get(position).getDate(), model.getTable().get(position).getAttendancePK()
+                    , AttendanceDeviationFragment.this);
+            mDialog.setCancelable(false);
+            mDialog.setCanceledOnTouchOutside(true);
+            mDialog.show();
+        }
     }
+
+
+
 }

@@ -365,7 +365,6 @@ public class DashboardFragment2 extends Fragment implements RecyclerViewDashBoar
             Intent intent = new Intent(getActivity(), FusedLocationAPIService.class);
             getActivity().startService(intent);
         }
-        // location = new GPSTracker(mActivity).getLocation();
         if (String.valueOf(CommonUtils.lattitude) != null && String.valueOf(CommonUtils.logitude) != null) {
 
             mLat = String.valueOf(CommonUtils.lattitude);

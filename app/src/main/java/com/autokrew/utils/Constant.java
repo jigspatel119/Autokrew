@@ -21,6 +21,8 @@ public class Constant {
      */
     public static final String FILE_DIRECTORY_MAIN = "/sdcard/"+aap_name;
     public static final String FILE_DIRECTORY_MEDIA = "/sdcard/"+aap_name+"/Media";
+    public static final String FILE_DIRECTORY_DOC = "/sdcard/"+aap_name+"/Document";
+
 
 
     public static final String PREF_FILE = aap_name+"_PREF";

@@ -45,7 +45,6 @@ import com.autokrew.ActionSheetDialog.ActionSheetDialog;
 import com.autokrew.ActionSheetDialog.OnOpenItemClickL;
 import com.autokrew.R;
 import com.autokrew.adapter.CountryAdapter;
-import com.autokrew.dialogs.LeaveRequestDialog;
 import com.autokrew.dialogs.ResetPasswordDialog;
 import com.autokrew.fragments.DashboardFragment;
 import com.autokrew.fragments.GroupAttendanceFragment;
@@ -84,7 +83,7 @@ import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener ,ApiListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ApiListener {
 
     ArrayList<Model_country> al_main = new ArrayList<>();
     ExpandableListView ev_list;
@@ -92,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
     Fragment fragment;
-    String TAG_FRAGMENT ;
+    String TAG_FRAGMENT;
 
-    TextView tv_name ,txt_user_name ,txt_dashboard ,txt_employee_code;
-    ImageView img_upload_doc,img_reset_password;
+    TextView tv_name, txt_user_name, txt_dashboard, txt_employee_code;
+    ImageView img_upload_doc, img_reset_password;
     LinearLayout ll_user_profile;
     TextView txt_view_profile;
     RelativeLayout rl_menu;
@@ -107,14 +106,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int MY_PERMISSION_REQUEST_CAMERA = 2;
     private static final int REQUEST_CAMERA = 1;
     private static final int MY_PERMISSION_REQUEST_READ_STORAGE = 1;
-    private static final int MY_PERMISSION_REQUEST_READ_STORAGE_PROFILE_IMAGE = 3;
+    private static final int MY_PERMISSION_REQUEST_READ_STORAGE_PROFILE_IMAGE = 4;
     private int RESULT_LOAD_PROFILE_IMAGE = 111;
 
     private String strUserImagePath = "", strCoverImagePath = "";
 
 
-
-    ImageView img_profile ;
+    ImageView img_profile;
     private Boolean isForProfilePicture = false;
     String mToken;
     Fragment f;
@@ -127,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Pref.setValue(this, "auto_login","true");
+        Pref.setValue(this, "auto_login", "true");
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
@@ -150,16 +148,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         img_profile.setOnClickListener(this);
         //txt_user_name.setOnClickListener(this);
-       // ll_user_profile.setOnClickListener(this);
+        // ll_user_profile.setOnClickListener(this);
         txt_view_profile.setOnClickListener(this);
-       // txt_dashboard.setOnClickListener(this);
+        // txt_dashboard.setOnClickListener(this);
     }
 
     private void init() {
 
         //getSupportActionBar().hide();
 
-       // txt_dashboard = (TextView) findViewById(R.id.txt_dashboard);
+        // txt_dashboard = (TextView) findViewById(R.id.txt_dashboard);
         ev_list = (ExpandableListView) findViewById(R.id.ev_menu);
         tv_name = (TextView) findViewById(R.id.tv_name);
         img_upload_doc = (ImageView) findViewById(R.id.img_upload_doc);
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         obj_adapter = new CountryAdapter(MainActivity.this, al_main);
 
-       final View v = findViewById(R.id.left_drawer);
+        final View v = findViewById(R.id.left_drawer);
 
         v.post(new Runnable() {
             @Override
@@ -188,20 +186,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 params.width = (int) ((int) (width) * (0.8));
                 v.setLayoutParams(params);
 
-             //   v.setLayoutParams(new DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.FILL_PARENT,width/2));
+                //   v.setLayoutParams(new DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.FILL_PARENT,width/2));
 
             }
         });
-        img_profile = (ImageView)v.findViewById(R.id.img_profile);
+        img_profile = (ImageView) v.findViewById(R.id.img_profile);
 
         //progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        txt_user_name = (TextView)v.findViewById(R.id.txt_user_name);
+        txt_user_name = (TextView) v.findViewById(R.id.txt_user_name);
         txt_user_name.setText(userProfileModel.getTable().get(0).getEmpName());
 
-       // ll_user_profile = (LinearLayout)v.findViewById(R.id.ll_user_profile);
-        txt_view_profile = (TextView)v.findViewById(R.id.txt_view_profile);
+        // ll_user_profile = (LinearLayout)v.findViewById(R.id.ll_user_profile);
+        txt_view_profile = (TextView) v.findViewById(R.id.txt_view_profile);
 
-        txt_employee_code =(TextView)v.findViewById(R.id.txt_employee_code);
+        txt_employee_code = (TextView) v.findViewById(R.id.txt_employee_code);
         txt_employee_code.setText(userProfileModel.getTable().get(0).getEmployeeCode());
 
 //MobileURL/Upload/EmployeDocument/8816/a9a46b04-76fd-4434-9f05-2cf78fff06b0_images.png
@@ -214,8 +212,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             displayProfilePic(file_path);*/
 
 
-
-
         ev_list.setAdapter(obj_adapter);
         ev_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -224,7 +220,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         int groupPosition, long id) {
                 setListViewHeight(parent, groupPosition);
 
-                if(groupPosition == 0){
+                /**
+                 * 0 to 4 item inside left navigation menu
+                 * */
+                if (groupPosition == 0) { //for dashboard
 
                     img_upload_doc.setVisibility(View.INVISIBLE);
                     img_reset_password.setVisibility(View.INVISIBLE);
@@ -236,10 +235,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
 
-                }
-                else if(groupPosition == 3){
+                } else if (groupPosition == 4) { //last item for signout click
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                     showAlert();
+                }
+                else if (groupPosition == 3) { //payslip clicked
+
+                    Bundle bundle = new Bundle();
+                    fragment = new GroupAttendanceFragment();
+                    bundle.putString("name", "Payslip");
+                    bundle.putString("dish","My Payslip");
+                    fragment.setArguments(bundle);
+                    TAG_FRAGMENT = "GroupAttendanceFragment";
+                    img_upload_doc.setVisibility(View.INVISIBLE);
+
+                    getSupportFragmentManager().beginTransaction().
+                            replace(R.id.content_frame, fragment, TAG_FRAGMENT).
+                            addToBackStack("null").
+                            commit();
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    tv_name.setText("My Payslip");
                 }
 
 
@@ -268,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setExpandableListViewHeightBasedOnChildren(ev_list);
 
 
-
         //default fragment load..
         img_upload_doc.setVisibility(View.INVISIBLE);
         img_reset_password.setVisibility(View.INVISIBLE);
@@ -291,30 +305,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
 
                 CommonUtils.getInstance().startActivity(MainActivity.this, UploadDocumentActivity.class);
-                MainActivity.this.overridePendingTransition(R.anim.activity_open_translate,R.anim.activity_close_scale);
+                MainActivity.this.overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
 
-           }
+            }
         });
 
         img_reset_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                CommonUtils.getInstance().displayToast(MainActivity.this,"Under development!");
+                // CommonUtils.getInstance().displayToast(MainActivity.this,"Under development!");
 
-              /*  ResetPasswordDialog mDialog = new ResetPasswordDialog(MainActivity.this ,"main_activity");
-                mDialog.setCancelable(false);
-                mDialog.setCanceledOnTouchOutside(true);
-                mDialog.show();*/
+                ResetPasswordDialog mDialog = new ResetPasswordDialog(MainActivity.this, "main_activity");
+
+                if(mDialog!=null && mDialog.isShowing()){
+                    //check for multiple dialogs open
+                }
+                else {
+                    mDialog.setCancelable(false);
+                    mDialog.setCanceledOnTouchOutside(true);
+                    mDialog.show();
+                }
             }
         });
     }
 
     private void displayProfilePic(String file_path) {
 
-        Log.e(TAG, "file_path >> "+file_path );
+        Log.e(TAG, "file_path >> " + file_path);
 
-        if(file_path!=null){
+        if (file_path != null) {
             // loadImageIntoProfilePicture(file_path);
             Glide.with(this)
                     .load(file_path).dontAnimate()
@@ -379,10 +399,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getData() {
 
-        mToken = Pref.getValue(this,Constant.PREF_TOKEN,"");
+        mToken = Pref.getValue(this, Constant.PREF_TOKEN, "");
         //get user profile model and retrieve use's detail
-        String data=  Pref.getValue(this,Constant.PREF_USER_DATA,"");
-            Gson gson = new Gson();
+        String data = Pref.getValue(this, Constant.PREF_USER_DATA, "");
+        Gson gson = new Gson();
         userProfileModel = gson.fromJson(data, UserProfileModel.class);
 
         String str_data = loadJSONFromAsset();
@@ -393,11 +413,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             al_main = new ArrayList<>();
 
-           int roleFK= Pref.getValue(this,Constant.PREF_ROLE_FK,0);
+            int roleFK = Pref.getValue(this, Constant.PREF_ROLE_FK, 0);
 
+            /** if-else condition for group-hr and normal employee
+             * */
 
-            if(roleFK==2 || roleFK ==4){
-                for (int i = 0; i < 4 ; i++) {
+            if (roleFK == 2 || roleFK == 4) {
+                for (int i = 0; i < 5; i++) {
 
                     Model_country obj_country = new Model_country();
                     JSONObject jsonObject = jsonArray_country.getJSONObject(i);
@@ -409,8 +431,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         JSONObject jsonObject_dishes = jsonArray_dishes.getJSONObject(j);
                         Model_Dish obj_dish = new Model_Dish();
                         obj_dish.setStr_name(jsonObject_dishes.getString("dishname"));
-                        obj_dish.setStr_description(jsonObject_dishes.getString("description"));
-                        obj_dish.setStr_image(jsonObject_dishes.getString("image"));
+                        // obj_dish.setStr_description(jsonObject_dishes.getString("description"));
+                        // obj_dish.setStr_image(jsonObject_dishes.getString("image"));
                         al_dishes.add(obj_dish);
                     }
 
@@ -419,25 +441,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     al_main.add(obj_country);
                 }
-            }
+            } else {
 
-            else{
 
-                for (int i = 0; i < 4 ; i++) {
+                for (int i = 0; i < 5; i++) {
 
                     Model_country obj_country = new Model_country();
                     JSONObject jsonObject = jsonArray_country.getJSONObject(i);
                     JSONArray jsonArray_dishes = jsonObject.getJSONArray("dishes");
                     ArrayList<Model_Dish> al_dishes = new ArrayList<>();
 
-                    for (int j = 0; j < jsonArray_dishes.length()-1; j++) {
+                    for (int j = 0; j < jsonArray_dishes.length() - 1; j++) {
                         JSONObject jsonObject_dishes = jsonArray_dishes.getJSONObject(j);
                         Model_Dish obj_dish = new Model_Dish();
                         obj_dish.setStr_name(jsonObject_dishes.getString("dishname"));
-                        obj_dish.setStr_description(jsonObject_dishes.getString("description"));
-                        obj_dish.setStr_image(jsonObject_dishes.getString("image"));
-                        al_dishes.add(obj_dish);
+                        // obj_dish.setStr_description(jsonObject_dishes.getString("description"));
+                        //obj_dish.setStr_image(jsonObject_dishes.getString("image"));
+
+                        //@patch for dynamic menu option display =============================================
+                      /*  if(jsonObject_dishes.getString("dishname").equalsIgnoreCase("Team Payslip")){
+                            //skip
+                        }
+                        else if(jsonObject_dishes.getString("dishname").equalsIgnoreCase("Group Payslip")){
+                            //replace "Group Payslip" -> "My Arrears Payslip"
+                            obj_dish.setStr_name("My Arrears Payslip");
+                            al_dishes.add(obj_dish);
+                        }*/
+                        //=====================================================================================
+
+                       // else{
+                            //for rest of the all child options....
+                            al_dishes.add(obj_dish);
+                        //}
+
+
                     }
+
+
 
                     obj_country.setAl_state(al_dishes);
                     obj_country.setStr_country(jsonObject.getString("name"));
@@ -527,11 +567,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bundle.putString("name", al_main.get(group).getStr_country());
                 //bundle.putString("des", al_main.get(group).getAl_state().get(child).getStr_description());
                 bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
-               // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
+                // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
                 fragment.setArguments(bundle);
-                TAG_FRAGMENT=  "MyAttendanceFragment";
+                TAG_FRAGMENT = "MyAttendanceFragment";
 
-            break;
+                break;
 
             case "My Team Attendance":
 
@@ -545,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fragment.setArguments(bundle);
                 TAG_FRAGMENT = "GroupAttendanceFragment";
 
-            break;
+                break;
 
             case "Group Attendance":
                 fragment = new GroupAttendanceFragment();
@@ -556,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fragment.setArguments(bundle);
                 TAG_FRAGMENT = "GroupAttendanceFragment";
 
-            break;
+                break;
 
 
             case "My Leave":
@@ -566,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
                 // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
                 fragment.setArguments(bundle);
-                TAG_FRAGMENT=  "MyLeaveFragment";
+                TAG_FRAGMENT = "MyLeaveFragment";
                 break;
 
 
@@ -583,7 +623,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
 
-
             case "Team Leave":
                 //opening same #Group Leave fragment for Team Leave...
                 // xml are same //just change the title
@@ -597,6 +636,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
 
+
+            //@payslip stuff managed with GroupLeaveFragment UI=====================================
+            case "My Payslip":
+
+                fragment = new GroupAttendanceFragment();
+                bundle.putString("name", al_main.get(group).getStr_country());
+                //bundle.putString("des", al_main.get(group).getAl_state().get(child).getStr_description());
+                bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
+                // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
+                fragment.setArguments(bundle);
+                TAG_FRAGMENT = "GroupAttendanceFragment";
+
+                break;
+           /* case "Team Payslip":
+
+                fragment = new GroupLeaveFragment();
+                bundle.putString("name", al_main.get(group).getStr_country());
+                //bundle.putString("des", al_main.get(group).getAl_state().get(child).getStr_description());
+                bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
+                // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
+                fragment.setArguments(bundle);
+                TAG_FRAGMENT = "GroupLeave";
+
+                break;
+            case "Group Payslip":
+
+                fragment = new GroupLeaveFragment();
+                bundle.putString("name", al_main.get(group).getStr_country());
+                //bundle.putString("des", al_main.get(group).getAl_state().get(child).getStr_description());
+                bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
+                // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
+                fragment.setArguments(bundle);
+                TAG_FRAGMENT = "GroupLeave";
+
+                break;
+            case "My Arrears Payslip":
+
+                fragment = new GroupLeaveFragment();
+                bundle.putString("name", al_main.get(group).getStr_country());
+                //bundle.putString("des", al_main.get(group).getAl_state().get(child).getStr_description());
+                bundle.putString("dish", al_main.get(group).getAl_state().get(child).getStr_name());
+                // bundle.putString("image", al_main.get(group).getAl_state().get(child).getStr_image());
+                fragment.setArguments(bundle);
+                TAG_FRAGMENT = "GroupLeave";
+
+                break;*/
+            //======================================================================================
         }
 
         img_upload_doc.setVisibility(View.INVISIBLE);
@@ -619,15 +705,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
 
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                Log.e(TAG, "onBackPressed: if >> "+getSupportFragmentManager().getBackStackEntryCount());
+                Log.e(TAG, "onBackPressed: if >> " + getSupportFragmentManager().getBackStackEntryCount());
                 f = mManager.findFragmentById(R.id.content_frame);
 
                 if (f != null && f instanceof DashboardFragment) {
-                   // showAlert();
+                    // showAlert();
                     exitAlert();
-                }
-
-                else{
+                } else {
                     img_upload_doc.setVisibility(View.INVISIBLE);
 
                     fragment = new DashboardFragment();
@@ -645,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.img_profile:
 
-                             changeProfilePicture();
+                changeProfilePicture();
                 break;
 
             case R.id.txt_view_profile:
@@ -688,10 +772,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
-
-
-
-}
+    }
 
 
     private void changeProfilePicture() {
@@ -710,8 +791,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     case "Camera":
 
-                      isForProfilePicture = true;
-                      requestPermissionForCameraPermission();
+                        isForProfilePicture = true;
+                        requestPermissionForCameraPermission();
 
                         dialog.dismiss();
                         break;
@@ -774,7 +855,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
 
-
         }
     }
 
@@ -790,15 +870,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Create an image file name
         //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         //File image = new File(imagePath,"MyProject_"+ timeStamp + ".jpg");
-        File destination = new File(Constant.FILE_DIRECTORY_MEDIA, "profile_pic_"+System.currentTimeMillis() + ".jpeg");
-        Pref.setValue(this,"profile_pic_path" ,"profile_pic_"+System.currentTimeMillis() + ".jpeg");
+        File destination = new File(Constant.FILE_DIRECTORY_MEDIA, "profile_pic_" + System.currentTimeMillis() + ".jpeg");
+        Pref.setValue(this, "profile_pic_path", "profile_pic_" + System.currentTimeMillis() + ".jpeg");
 
         filePath = destination.getAbsolutePath();
         Log.e(TAG, "onCaptureImageResult: filePath >> " + filePath);
 
         // Create an File Uri
-       // return Uri.fromFile(destination);
-        return FileProvider.getUriForFile(MainActivity.this, this.getApplicationContext().getPackageName() + ".provider",destination);
+        // return Uri.fromFile(destination);
+        return FileProvider.getUriForFile(MainActivity.this, this.getApplicationContext().getPackageName() + ".provider", destination);
     }
 
 
@@ -827,12 +907,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-         if (requestCode == RESULT_LOAD_PROFILE_IMAGE && resultCode == RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_PROFILE_IMAGE && resultCode == RESULT_OK && null != data) {
 
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -847,33 +926,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             strUserImagePath = picturePath;
 
-             File f = new File(Constant.FILE_DIRECTORY_MEDIA, "profile_pic_"+System.currentTimeMillis() + ".jpeg");
+            File f = new File(Constant.FILE_DIRECTORY_MEDIA, "profile_pic_" + System.currentTimeMillis() + ".jpeg");
 
             // Pref.setValue(this,"profile_pic_path" ,"profile_pic_"+System.currentTimeMillis() + ".jpeg");
 
 
            /*  if (!f.exists())
              {*/
-                 try {
-                     f.createNewFile();
-                     copyFile(new File(picturePath), f);
-                 } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                 }
-           //  }
+            try {
+                f.createNewFile();
+                copyFile(new File(picturePath), f);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //  }
 
 
             loadImageIntoProfilePicture(picturePath);
 
 
+        } else if (requestCode == REQUEST_CAMERA) {
+            if (resultCode == RESULT_OK)
+                onCaptureImageResult2(data);
         }
-
-
-         else if (requestCode == REQUEST_CAMERA) {
-             if (resultCode == RESULT_OK)
-                 onCaptureImageResult2(data);
-         }
 
         //requestCode = 1 for coming back from verification screen
 
@@ -889,7 +965,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
-
 
 
     private void copyFile(File sourceFile, File destFile) throws IOException {
@@ -916,7 +991,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void onCaptureImageResult2(Intent data) {
-       // Bitmap reducedSizeBitmap = getBitmap(currentImageUri.getPath());
+        // Bitmap reducedSizeBitmap = getBitmap(currentImageUri.getPath());
         if (isForProfilePicture) {
             loadImageIntoProfilePicture(filePath);
             isForProfilePicture = false;
@@ -927,7 +1002,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void loadImageIntoProfilePicture(String fileName) {
 
-        try{
+        try {
             Bitmap bm = BitmapFactory.decodeFile(fileName);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 80, baos); //bm is the bitmap object
@@ -936,20 +1011,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //api calls for image upload
             ProfileImageParams params = new ProfileImageParams();
-            params.setEmployeeFK(Pref.getValue(this,Constant.PREF_SESSION_EMPLOYEE_FK,0));
+            params.setEmployeeFK(Pref.getValue(this, Constant.PREF_SESSION_EMPLOYEE_FK, 0));
             params.setImageAsString(ImageAsString); //create file type object
 
-            params.setFileName("profile_pic_"+System.currentTimeMillis() + ".jpeg");
+            params.setFileName("profile_pic_" + System.currentTimeMillis() + ".jpeg");
 
 
             new WebServices(this/* ActivityContext */, this /* ApiListener */,
-                    true /* show progress dialog */,true).
-                    callProfileImageAPI(mToken,params);
+                    true /* show progress dialog */, true).
+                    callProfileImageAPI(mToken, params);
+        } catch (Exception e) {
+            Log.e(TAG, "loadImageIntoProfilePicture: " + e);
         }
-        catch (Exception e){
-            Log.e(TAG, "loadImageIntoProfilePicture: " +e);
-        }
-
 
 
     }
@@ -980,21 +1053,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 // dialog.dismiss();
                 //clear pref
-                Pref.setValue(MainActivity.this, "auto_login","false");
+                Pref.setValue(MainActivity.this, "auto_login", "false");
 
                 //login credential
-                Pref.setValue(MainActivity.this,"user_id","");
-                Pref.setValue(MainActivity.this,"user_password","");
+                Pref.setValue(MainActivity.this, "user_id", "");
+                Pref.setValue(MainActivity.this, "user_password", "");
 
-                Pref.setValue(MainActivity.this,"profile_pic_server" ,""); //clear profile pic
+                Pref.setValue(MainActivity.this, "profile_pic_server", ""); //clear profile pic
 
 
-                Pref.setValue(MainActivity.this,"mApprovalStatus","");
-                Pref.setValue(MainActivity.this,"mYearPK","");
-                Pref.setValue(MainActivity.this,"mMonthPK","");
-                Pref.setValue(MainActivity.this,"mEmployeePK","");
+                Pref.setValue(MainActivity.this, "mApprovalStatus", "");
+                Pref.setValue(MainActivity.this, "mYearPK", "");
+                Pref.setValue(MainActivity.this, "mMonthPK", "");
+                Pref.setValue(MainActivity.this, "mEmployeePK", "");
 
-               CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
+                CommonUtils.getInstance().startActivityWithoutStack(getApplicationContext(), SigninActivity.class);
 
 
             }
@@ -1047,19 +1120,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //LoginModel model = (LoginModel) mObject;
             // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
             try {
-                if(mObject.toString().contains(".jpeg")){
+                if (mObject.toString().contains(".jpeg")) {
 
-                    String file_path = Pref.getValue(this,Constant.PREF_MOBILE_URL,"")+ mObject.toString();
-                    Pref.setValue(this,"profile_pic_server" ,file_path);
+                    String file_path = Pref.getValue(this, Constant.PREF_MOBILE_URL, "") + mObject.toString();
+                    Pref.setValue(this, "profile_pic_server", file_path);
 
-                    Toast.makeText(this,"Profile picture changed!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Profile picture changed!", Toast.LENGTH_LONG).show();
+
+
 
                     displayProfilePic(file_path);
-                }else{
-                    CommonUtils.getInstance().displayToast(this,mObject.toString());
+                } else {
+                    CommonUtils.getInstance().displayToast(this, mObject.toString());
                 }
                 Log.e("", "onApiSuccess: profile image upload >>  " + mObject.toString());
-
 
 
             } catch (Exception e) {
@@ -1070,7 +1144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onApiFailure(Throwable mThrowable) {
-        Log.e("", "onApiFailure: profile image upload >>  " );
+        Log.e("", "onApiFailure: profile image upload >>  ");
 
 
     }
@@ -1080,9 +1154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         //set profile pic again.
-        String mProfilePath = Pref.getValue(this,"profile_pic_server","");
-        if(mProfilePath!=null){
-           displayProfilePic(mProfilePath);
+        String mProfilePath = Pref.getValue(this, "profile_pic_server", "");
+        if (mProfilePath != null) {
+            displayProfilePic(mProfilePath);
         }
         /*else{
             String file_path = Pref.getValue(this,Constant.PREF_MOBILE_URL,"")+"Upload/EmployeeDocument/"+userProfileModel.getTable().get(0).getImageUrl();

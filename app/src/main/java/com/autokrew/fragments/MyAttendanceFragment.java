@@ -2,6 +2,8 @@ package com.autokrew.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +14,10 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,8 +47,15 @@ import com.autokrew.network.WebServices;
 import com.autokrew.utils.CommonUtils;
 import com.autokrew.utils.Constant;
 import com.autokrew.utils.Pref;
+import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.gson.Gson;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -93,7 +106,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
     ArrayList<DropdownModel> mYearList= new ArrayList<>();
     ArrayList<DropdownModel> mMonthList= new ArrayList<>();
-    MaterialCalendarView widget;
+   // MaterialCalendarView widget;
     ArrayList<Date> mListP = new ArrayList<>();
     ArrayList<Date> mListA = new ArrayList<>();
     ArrayList<Date> mListWO = new ArrayList<>();
@@ -106,8 +119,19 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     SimpleDateFormat formatter;
     Calendar cal;
 
-    private CaldroidFragment caldroidFragment;
+    private CaldroidFragment caldroidFragment = new CaldroidFragment();
     FragmentTransaction t;
+
+    private PieChart mChart;
+    protected String[] mParties = new String[] {
+            "Working", "Present", "Absent", "WeekOff", "Half Days", "Leave", "Punch Late", "Punch Early"
+
+    };
+
+    ArcProgress arc_progress1, arc_progress2 ,arc_progress3 ,arc_progress4, arc_progress5 ,arc_progress6,arc_progress7,arc_progress8;
+
+
+
 
     @Nullable
     @Override
@@ -119,8 +143,13 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         setupRecyclerView(); //api calls
         setListner();
 
+
+       // setPieChart();
+
+
         return view;
     }
+
 
     private void getData() {
 
@@ -135,8 +164,9 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
         txt_child_item.setText(str_disname);
 
+
         if(model!=null){
-            txt_workingdays.setText(""+model.getTable1().get(0).getWorkingDays());
+         /*   txt_workingdays.setText(""+model.getTable1().get(0).getWorkingDays());
             txt_presentdays.setText(""+model.getTable1().get(0).getPresentDays());
             txt_absent.setText(""+model.getTable1().get(0).getAbsentDays());
             txt_weekoff.setText(""+model.getTable1().get(0).getWeekOff());
@@ -144,7 +174,20 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
             txt_leave.setText(""+model.getTable1().get(0).getLeave());
           //  txt_holiday.setText(""+model.getTable1().get(0).getHoliday());
             txt_punchlate.setText(""+model.getTable1().get(0).getPunchLate());
-            txt_punchearly.setText(""+model.getTable1().get(0).getPunchEarly());
+            txt_punchearly.setText(""+model.getTable1().get(0).getPunchEarly());*/
+
+
+            arc_progress1.setProgress(model.getTable1().get(0).getWorkingDays());
+            arc_progress2.setProgress(model.getTable1().get(0).getPresentDays());
+            arc_progress3.setProgress(model.getTable1().get(0).getAbsentDays());
+
+            arc_progress4.setProgress(model.getTable1().get(0).getWeekOff());
+            arc_progress5.setProgress(model.getTable1().get(0).getHalfDays());
+            arc_progress6.setProgress(model.getTable1().get(0).getLeave());
+            arc_progress7.setProgress(model.getTable1().get(0).getPunchLate());
+            arc_progress8.setProgress(model.getTable1().get(0).getPunchEarly());
+
+
         }
 
     }
@@ -159,12 +202,28 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
     private void findView(View v) {
         rv_data_attendance = (RecyclerView) v.findViewById(R.id.rv_data_attendance);
         card_view = (CardView)v.findViewById(R.id.card_view);
+        mChart = (PieChart) view.findViewById(R.id.chart1);
+
+
+        arc_progress1 = (ArcProgress) view.findViewById(R.id.arc_progress1);
+        arc_progress2 = (ArcProgress) view.findViewById(R.id.arc_progress2);
+        arc_progress3 = (ArcProgress) view.findViewById(R.id.arc_progress3);
+        arc_progress4 = (ArcProgress) view.findViewById(R.id.arc_progress4);
+        arc_progress5 = (ArcProgress) view.findViewById(R.id.arc_progress5);
+        arc_progress6 = (ArcProgress) view.findViewById(R.id.arc_progress6);
+        arc_progress7 = (ArcProgress) view.findViewById(R.id.arc_progress7);
+        arc_progress8 = (ArcProgress) view.findViewById(R.id.arc_progress8);
+
+
+
+
+
 
         formatter = new SimpleDateFormat("dd MMM yyyy");
 
         root_view = (NestedScrollView) v.findViewById(R.id.root_view);
 
-        widget = (MaterialCalendarView)v.findViewById(R.id.calendarView);
+      //  widget = (MaterialCalendarView)v.findViewById(R.id.calendarView);
 
         ll_root = (LinearLayout)v.findViewById(R.id.ll_root);
         ll_root.setVisibility(View.INVISIBLE);
@@ -187,6 +246,37 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         edt_month = (Spinner) v.findViewById(R.id.edt_month);
         edt_year = (Spinner)v.findViewById(R.id.edt_year);
 
+    }
+
+    private void setArcs() {
+
+        // arcProgress1.setProgress((int)(Math.random() * 100));
+       /* arc_progress1.setProgress(Float.valueOf(10));
+        arc_progress2.setProgress(Float.valueOf(20));
+        arc_progress3.setProgress(Float.valueOf(30));
+
+        arc_progress4.setProgress(Float.valueOf(10));
+        arc_progress5.setProgress(Float.valueOf(20));
+        arc_progress6.setProgress(Float.valueOf(30));
+        arc_progress7.setProgress(Float.valueOf(30));
+        arc_progress8.setProgress(Float.valueOf(30));*/
+
+
+    /*    arc_progress1.setBottomText("dsaasd");
+        arc_progress2.setBottomText("dffdsfd");
+        arc_progress3.setBottomText("5efefc");
+        arc_progress4.setBottomText("dsdsdd");
+        arc_progress5.setBottomText("rrrrr");
+        arc_progress6.setBottomText("tyyyyy");
+        arc_progress7.setBottomText("iujyfjg");
+        arc_progress8.setBottomText("iujyfjg");*/
+
+
+
+        //arcProgress1.setSuffixText("Rs");
+        //arcProgress1.setTextSize(arcProgress1.default_text_size2);
+       // arcProgress1.setSuffixTextPadding(0);
+       // arcProgress1.setSuffixTextSize(arcProgress1.suffix_text_padding2);
     }
 
     private void setCalender1Data() {
@@ -353,7 +443,10 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                 }
 
                 else if(jsonObj.toString().contains("AttDate")){
-
+                    if(mDialog!=null && mDialog.isShowing()){
+                        //check for multiple dialogs open
+                    }
+                    else{
                     Log.e("", "onApiSuccess: add deviation json >>  "+jsonObj.toString());
                     Gson gson = new Gson();
                     modelDeviationAdd = gson.fromJson(mObject.toString(), AddDeviationModel.class);
@@ -367,6 +460,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                     mDialog.setCancelable(false);
                     mDialog.setCanceledOnTouchOutside(true);
                     mDialog.show();
+                    }
                 }
 
                 else{
@@ -395,21 +489,34 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                         // Setup caldroid fragment
                         // **** If you want normal CaldroidFragment, use below line ****
                         //init every time...
-                        caldroidFragment = new CaldroidFragment();
-                        caldroidFragment.setCaldroidListener(listener);
 
-                        setCalender1();
 
-                        // Attach to the activity
-                        t = getActivity().getSupportFragmentManager().beginTransaction();
-                        t.add(R.id.calendar1, caldroidFragment);
-                        t.commit();
 
-                        setTestData(model);
 
-                        setCalender1Data();
-                        //uncomment below
-                        setData();
+                        if(!caldroidFragment.isAdded())  //to manage regenerate new calender control
+                        {
+                            //return;
+                            // Attach to the activity
+
+                            caldroidFragment = new CaldroidFragment();
+                            caldroidFragment.setCaldroidListener(listener);
+                            /*if(mAdapter!=null){
+                                mAdapter.notifyDataSetChanged();
+                            }*/
+
+
+                            setCalender1();
+                            t = getActivity().getSupportFragmentManager().beginTransaction();
+                            t.add(R.id.calendar1, caldroidFragment);
+                            t.commit();
+
+                            setTestData(model);
+
+                            setCalender1Data();
+                            //uncomment below
+                            setData();
+                        }
+
 
                     }
                     //dismiss dialog
@@ -690,6 +797,7 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
 
     @Override
     public void recallAllAPI() {
+        //remove old calender control
 
         AttendanceModelParams params = new AttendanceModelParams();
         //int monthFK = CommonUtils.setMonthFK(edt_month.getSelectedItem().toString());
@@ -724,6 +832,8 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
                      rv_data_attendance.setAdapter(mAdapter);
                      rv_data_attendance.setNestedScrollingEnabled(false);//for smooth nested scroll
 
+                    rv_data_attendance.smoothScrollToPosition(0);
+                    mAdapter.notifyDataSetChanged();
 
                     root_view.post(new Runnable() {
                         @Override
@@ -761,4 +871,140 @@ public class MyAttendanceFragment extends Fragment implements ApiListener,Recycl
         }
 
     };
+
+
+
+
+
+    private SpannableString generateCenterSpannableText() {
+
+        SpannableString s = new SpannableString("MPAndroidChart\ndeveloped by Philipp Jahoda");
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
+        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
+        return s;
+    }
+
+
+
+
+    private void setPieChart() {
+        mChart.setUsePercentValues(true);
+        mChart.getDescription().setEnabled(false);
+        mChart.setExtraOffsets(5, 10, 5, 5);
+
+        mChart.setDragDecelerationFrictionCoef(0.95f);
+
+       // mChart.setCenterTextTypeface(mTfLight);
+       // mChart.setCenterText(generateCenterSpannableText());
+
+        mChart.setDrawHoleEnabled(true);
+        mChart.setHoleColor(Color.WHITE);
+
+        mChart.setTransparentCircleColor(Color.WHITE);
+        mChart.setTransparentCircleAlpha(110);
+
+        mChart.setHoleRadius(58f);
+        mChart.setTransparentCircleRadius(61f);
+
+        mChart.setDrawCenterText(true);
+
+        mChart.setRotationAngle(0);
+        // enable rotation of the chart by touch
+        mChart.setRotationEnabled(true);
+        mChart.setHighlightPerTapEnabled(true);
+
+        // mChart.setUnit(" €");
+        // mChart.setDrawUnitsInChart(true);
+
+        // add a selection listener
+        //mChart.setOnChartValueSelectedListener(this);
+
+        setPiechartData(8, 100);
+
+       // mChart.animateY(1400, Easing.EaseInOutQuad);
+        // mChart.spin(2000, 0, 360);
+
+
+      /*  Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
+*/
+        // entry label styling
+        mChart.setEntryLabelColor(Color.WHITE);
+      //  mChart.setEntryLabelTypeface(mTfRegular);
+        mChart.setEntryLabelTextSize(12f);
+    }
+
+    private void setPiechartData(int count, float range) {
+
+
+            float mult = range;
+
+            ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+
+            // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+            // the chart.
+            for (int i = 0; i < count ; i++) {
+                entries.add(new PieEntry((float) ((Math.random() * mult) + mult / 5),
+                        mParties[i % mParties.length],
+                        getResources().getDrawable(R.drawable.ic_absent)));
+            }
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+
+            dataSet.setDrawIcons(false);
+
+            dataSet.setSliceSpace(3f);
+            dataSet.setIconsOffset(new MPPointF(0, 40));
+            dataSet.setSelectionShift(5f);
+
+            // add a lot of colors
+
+            ArrayList<Integer> colors = new ArrayList<Integer>();
+
+            for (int c : ColorTemplate.VORDIPLOM_COLORS)
+                colors.add(c);
+
+            for (int c : ColorTemplate.JOYFUL_COLORS)
+                colors.add(c);
+
+            for (int c : ColorTemplate.COLORFUL_COLORS)
+                colors.add(c);
+
+            for (int c : ColorTemplate.LIBERTY_COLORS)
+                colors.add(c);
+
+            for (int c : ColorTemplate.PASTEL_COLORS)
+                colors.add(c);
+
+            colors.add(ColorTemplate.getHoloBlue());
+
+            dataSet.setColors(colors);
+            //dataSet.setSelectionShift(0f);
+
+            PieData data = new PieData(dataSet);
+            data.setValueFormatter(new PercentFormatter());
+            data.setValueTextSize(11f);
+            data.setValueTextColor(Color.WHITE);
+            //data.setValueTypeface(mTfLight);
+            mChart.setData(data);
+
+            // undo all highlights
+            mChart.highlightValues(null);
+
+            mChart.invalidate();
+
+
+    }
+
+
 }

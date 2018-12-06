@@ -54,22 +54,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerViewClickListener ,
-        View.OnClickListener ,AttendanceDialogInterface {
+public class MyLeaveFragment extends Fragment implements ApiListener, RecyclerViewClickListener,
+        View.OnClickListener, AttendanceDialogInterface {
 
     View view;
-    TextView  txt_child_item,
-            txt_balance,txt_leave_type,txt_eligible,txt_available;
+    TextView txt_child_item,
+            txt_balance, txt_leave_type, txt_eligible, txt_available;
     ImageView iv_image;
     String str_name, str_disname, str_des, str_imagename;
 
     private RecyclerView rv_data_leave;
     LeaveAdapter mAdapter;
 
-    ImageView iv_month ,iv_year;
+    ImageView iv_month, iv_year;
     TextView txt_search;
 
-    Spinner edt_month,edt_year,edt_leave_status;
+    Spinner edt_month, edt_year, edt_leave_status;
     CancelDialog mDialog;
     ApplyLeaveDialog mDialogLeave;
 
@@ -83,11 +83,11 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
     LeaveCardModel modelLeaveCard;
     CommonDetailModel modelCommon;
     ReportingPersonModel modelReportingPerson;
-    ArrayList<DropdownModel> mYearList= new ArrayList<>();
-    ArrayList<DropdownModel> mMonthList= new ArrayList<>();
-    ArrayList<DropdownModel> mLeaveStatusList= new ArrayList<>();
+    ArrayList<DropdownModel> mYearList = new ArrayList<>();
+    ArrayList<DropdownModel> mMonthList = new ArrayList<>();
+    ArrayList<DropdownModel> mLeaveStatusList = new ArrayList<>();
 
-    String mLeaveTypeFK = "" ;
+    String mLeaveTypeFK = "";
     CardView card_view;
 
     Dialog dialog;
@@ -111,7 +111,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
     private void getData() {
 
-        mToken = Pref.getValue(getActivity(),Constant.PREF_TOKEN,"");
+        mToken = Pref.getValue(getActivity(), Constant.PREF_TOKEN, "");
         str_name = getArguments().getString("name");
         str_disname = getArguments().getString("dish");
         //str_des = getArguments().getString("des");
@@ -120,11 +120,10 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         //api calls for get reporting person name
         //leave card api
         LeaveCardParams params = new LeaveCardParams();
-        params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0)));
+        params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
         new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                false /* show progress dialog */,true).
-                callGetReportingPersonAPI(mToken,params); //from_last = ""
-
+                false /* show progress dialog */, true).
+                callGetReportingPersonAPI(mToken, params); //from_last = ""
 
 
     }
@@ -140,47 +139,49 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                if(productList.get(position).getIsApplyLeave().length()>0){
+                if (productList.get(position).getIsApplyLeave().length() > 0) {
+
+                    if (mDialogLeave != null && mDialogLeave.isShowing()) {
+                        //check for multiple dialogs open
+                    } else {
 
 
+                        String mLeaveType = ((TextView) view.findViewById(R.id.mLeaveType)).getText().toString(); //1
+                        String mBalance = ((TextView) view.findViewById(R.id.mBalance)).getText().toString(); //1
+                        int isCompoff = modelLeaveCard.getTable().get(position).getIscompoff();
 
-
-                String mLeaveType = ((TextView)view.findViewById(R.id.mLeaveType)).getText().toString(); //1
-                String mBalance = ((TextView)view.findViewById(R.id.mBalance)).getText().toString(); //1
-                int isCompoff = modelLeaveCard.getTable().get(position).getIscompoff();
-
-                String mApplyLeave =  modelLeaveCard.getTable().get(position).get_$ApplyLeave296();
-               // Log.e("", "mApplyLeave >>  "+mApplyLeave);
-                Pattern pattern = Pattern.compile("data-leavetypepk=(.*?)data-balance");
-                Matcher matcher = pattern.matcher(mApplyLeave);
-                while (matcher.find()) {
-                    Log.e("",">>>>> "+matcher.group(1));
-                    mLeaveTypeFK = matcher.group(1);
-                }
+                        String mApplyLeave = modelLeaveCard.getTable().get(position).get_$ApplyLeave296();
+                        // Log.e("", "mApplyLeave >>  "+mApplyLeave);
+                        Pattern pattern = Pattern.compile("data-leavetypepk=(.*?)data-balance");
+                        Matcher matcher = pattern.matcher(mApplyLeave);
+                        while (matcher.find()) {
+                            Log.e("", ">>>>> " + matcher.group(1));
+                            mLeaveTypeFK = matcher.group(1);
+                        }
 
                /* String mEligible = ((TextView)view.findViewById(R.id.mEligible)).getText().toString();
                 String mAvailed = ((TextView)view.findViewById(R.id.mAvailed)).getText().toString();
                 String price = ((TextView)view.findViewById(R.id.mBalance)).getText().toString();*/
 
-                String emp_name = modelReportingPerson.getTable().get(0).getName();//2
-                String reporting_person = modelReportingPerson.getTable().get(0).getReportingPerson();//3
+                        String emp_name = modelReportingPerson.getTable().get(0).getName();//2
+                        String reporting_person = modelReportingPerson.getTable().get(0).getReportingPerson();//3
 
                 /*Toast.makeText(getActivity(), "mLeaveType: " + mLeaveType +"\n"
                        , Toast.LENGTH_SHORT).show();*/
 
 
-                mDialogLeave = new ApplyLeaveDialog(getActivity(),MyLeaveFragment.this,
-                        "Apply Leave",mLeaveType,emp_name,reporting_person ,mLeaveTypeFK.trim(),mBalance
-                        ,isCompoff
-                ,mToken);
-                mDialogLeave.setCancelable(false);
-                mDialogLeave.setCanceledOnTouchOutside(true);
-                mDialogLeave.show();
+                        mDialogLeave = new ApplyLeaveDialog(getActivity(), MyLeaveFragment.this,
+                                "Apply Leave", mLeaveType, emp_name, reporting_person, mLeaveTypeFK.trim(), mBalance
+                                , isCompoff
+                                , mToken);
+                        mDialogLeave.setCancelable(false);
+                        mDialogLeave.setCanceledOnTouchOutside(true);
+                        mDialogLeave.show();
+                    }
 
                 }
             }
         });
-
 
 
     }
@@ -195,23 +196,23 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
     private void findView(View v) {
         rv_data_leave = (RecyclerView) v.findViewById(R.id.rv_data_leave);
-        btn_apply_leave = (Button)v.findViewById(R.id.btn_apply_leave);
+        btn_apply_leave = (Button) v.findViewById(R.id.btn_apply_leave);
 
         card_view = (CardView) v.findViewById(R.id.card_view);
 
 
         // txt_balance = (TextView) v.findViewById(R.id.txt_balance);
-       // txt_available = (TextView) v.findViewById(R.id.txt_available);
+        // txt_available = (TextView) v.findViewById(R.id.txt_available);
 
-        txt_child_item = (TextView)v.findViewById(R.id.txt_child_item);
+        txt_child_item = (TextView) v.findViewById(R.id.txt_child_item);
 
-        iv_month = (ImageView)v.findViewById(R.id.iv_month);
-        iv_year = (ImageView)v.findViewById(R.id.iv_year);
+        iv_month = (ImageView) v.findViewById(R.id.iv_month);
+        iv_year = (ImageView) v.findViewById(R.id.iv_year);
         txt_search = (TextView) v.findViewById(R.id.txt_search);
 
         edt_month = (Spinner) v.findViewById(R.id.edt_month);
         edt_year = (Spinner) v.findViewById(R.id.edt_year);
-        edt_leave_status = (Spinner)v.findViewById(R.id.edt_leave_status);
+        edt_leave_status = (Spinner) v.findViewById(R.id.edt_leave_status);
 
         //productList = new ArrayList<LeaveCardModel>();
         lview = (MyListView) v.findViewById(R.id.listview);
@@ -219,7 +220,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
     }
 
-    private void setupRecyclerView(LeaveCardModel modelLeaveCard){
+    private void setupRecyclerView(LeaveCardModel modelLeaveCard) {
 
         rv_data_leave.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv_data_leave.setHasFixedSize(true);
@@ -238,8 +239,8 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         params.setTranTypes(-1);
         //call common detail api here..
         new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                false /* show progress dialog */,true).
-                callGetCommonDetailAPI(mToken,params); //from_last = ""
+                false /* show progress dialog */, true).
+                callGetCommonDetailAPI(mToken, params); //from_last = ""
 
     }
 
@@ -254,11 +255,11 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         //set adapter here
         if (mObject instanceof String) {
             //LoginModel model = (LoginModel) mObject;
-           // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
+            // Log.e("", "onApiSuccess: 123 >>  "+mObject.toString() );
             try {
-                if(mObject.toString().contains("nationalPK")){
+                if (mObject.toString().contains("nationalPK")) {
                     //parse common detail data
-                    Log.e("", "onApiSuccess: common json >>  "+mObject.toString());
+                    Log.e("", "onApiSuccess: common json >>  " + mObject.toString());
                     Gson gson = new Gson();
                     modelCommon = gson.fromJson(mObject.toString(), CommonDetailModel.class);
                     //api calls for original data...
@@ -270,24 +271,21 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                     //leave card api
                     LeaveCardParams params = new LeaveCardParams();
                     params.setFlag("Grid");
-                    params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0)));
+                    params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
                     params.setMonth(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
-                    params.setYear(""+mYearList.get(edt_year.getSelectedItemPosition()).getYear());
+                    params.setYear("" + mYearList.get(edt_year.getSelectedItemPosition()).getYear());
                     params.setLeaveStatusFK("-1");
                     new WebServices(getActivity()/* ActivityContext */, this /* ApiListener */,
-                            false /* show progress dialog */,true).
-                            callLeaveCardAPI(mToken,params); //from_last = ""
+                            false /* show progress dialog */, true).
+                            callLeaveCardAPI(mToken, params); //from_last = ""
 
 
-                }
-
-                else if(mObject.toString().contains("ReportingPerson")){
+                } else if (mObject.toString().contains("ReportingPerson")) {
                     //parse common detail data
-                    Log.e("", "onApiSuccess: ReportingPerson json >>  "+mObject.toString());
+                    Log.e("", "onApiSuccess: ReportingPerson json >>  " + mObject.toString());
                     Gson gson = new Gson();
                     modelReportingPerson = gson.fromJson(mObject.toString(), ReportingPersonModel.class);
-                }
-                else{
+                } else {
                     JSONObject jsonObj = new JSONObject(mObject.toString());
                     Log.e("", "onApiSuccess: leave card >>  " + jsonObj.toString());
                     Gson gson = new Gson();
@@ -298,17 +296,17 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                     adapter = new listviewAdapter(getActivity(), productList);
                     lview.setAdapter(adapter);
 
-                    if(modelLeaveCard.getTable1().size()==0){
+                    if (modelLeaveCard.getTable1().size() == 0) {
                         //no record found
                         card_view.setVisibility(View.VISIBLE);
                         rv_data_leave.setVisibility(View.GONE);
 
-                    }else{
+                    } else {
                         card_view.setVisibility(View.GONE);
                         rv_data_leave.setVisibility(View.VISIBLE);
 
                         //setup adapter and recycler view
-                        mAdapter = new LeaveAdapter(getActivity(), modelLeaveCard,MyLeaveFragment.this);
+                        mAdapter = new LeaveAdapter(getActivity(), modelLeaveCard, MyLeaveFragment.this);
                         rv_data_leave.setAdapter(mAdapter);
                         rv_data_leave.setNestedScrollingEnabled(false); //for smooth nested scroll
                     }
@@ -321,8 +319,8 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                if(dialog!=null){
-                    if(dialog.isShowing())
+                if (dialog != null) {
+                    if (dialog.isShowing())
                         dialog.dismiss();
                 }
             }
@@ -333,7 +331,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
     private void setLeaveCard(LeaveCardModel modelLeaveCard) {
         productList.clear();
         Model model;
-        for (int i = 0; i <modelLeaveCard.getTable().size(); i++) {
+        for (int i = 0; i < modelLeaveCard.getTable().size(); i++) {
 
             model = new Model(
                     modelLeaveCard.getTable().get(i).get_$LeaveType123(),
@@ -366,39 +364,42 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         //CommonUtils.getInstance().displayToast(getActivity(),"pos >>" +position);
         int leavePK = modelLeaveCard.getTable1().get(position).getLeaveDetailPK();
 
-        mDialog = new CancelDialog(getActivity(),MyLeaveFragment.this, position ,leavePK);
-        mDialog.setCancelable(false);
-        mDialog.setCanceledOnTouchOutside(true);
-        mDialog.show();
-
+        if(mDialog!=null && mDialog.isShowing()){
+            //check for multiple dialogs open
+        }
+        else {
+            mDialog = new CancelDialog(getActivity(), MyLeaveFragment.this, position, leavePK);
+            mDialog.setCancelable(false);
+            mDialog.setCanceledOnTouchOutside(true);
+            mDialog.show();
+        }
     }
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.iv_month:
                 //pickMonthAndYear();
-            break;
+                break;
 
             case R.id.iv_year:
-              //  pickMonthAndYear();
-            break;
+                //  pickMonthAndYear();
+                break;
 
             case R.id.txt_search:
 
                 LeaveCardParams params = new LeaveCardParams();
                 params.setFlag("Grid");
-                params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0)));
+                params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
                 params.setMonth(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
-                params.setYear(""+mYearList.get(edt_year.getSelectedItemPosition()).getYear());
+                params.setYear("" + mYearList.get(edt_year.getSelectedItemPosition()).getYear());
                 params.setLeaveStatusFK(mLeaveStatusList.get(edt_leave_status.getSelectedItemPosition()).getLeaveStatusPK());
-                new WebServices(getActivity(), this ,
-                        true ,true).
-                        callLeaveCardAPI(mToken,params);
+                new WebServices(getActivity(), this,
+                        true, true).
+                        callLeaveCardAPI(mToken, params);
 
-            break;
+                break;
 
             case R.id.btn_apply_leave:
               /*  mDialogLeave = new ApplyLeaveDialog(getActivity(),"Apply Leave");
@@ -406,17 +407,17 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
                 mDialogLeave.setCanceledOnTouchOutside(true);
                 mDialogLeave.show();*/
 
-            break;
+                break;
 
         }
     }
 
 
     private void setYear(CommonDetailModel modelCommon) {
-        DropdownModel model ;
+        DropdownModel model;
         mYearList.clear();
 
-        for (int i = 0; i <modelCommon.getTable17().size() ; i++) {
+        for (int i = 0; i < modelCommon.getTable17().size(); i++) {
             model = new DropdownModel();
             model.setYearPk(modelCommon.getTable17().get(i).getYearPk());
             model.setYear(modelCommon.getTable17().get(i).getYear());
@@ -424,33 +425,33 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mYearList.size(); i++) {
+        for (int i = 0; i < mYearList.size(); i++) {
             mName.add(String.valueOf(mYearList.get(i).getYear()));
         }
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int c_year = calendar.get(Calendar.YEAR);
 
-        int c_year_index = 0 ;
-        for (int i = 0; i <mName.size() ; i++) {
-            if(Integer.parseInt(mName.get(i)) == c_year){
+        int c_year_index = 0;
+        for (int i = 0; i < mName.size(); i++) {
+            if (Integer.parseInt(mName.get(i)) == c_year) {
                 c_year_index = i;
             }
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_year.setAdapter(adapter);
         edt_year.setSelection(c_year_index);
 
     }
 
-    private void setMonth(CommonDetailModel modelCommon ) {
+    private void setMonth(CommonDetailModel modelCommon) {
 
         DropdownModel model;
         mMonthList.clear();
 
-        for (int i = 0; i <modelCommon.getTable16().size() ; i++) {
+        for (int i = 0; i < modelCommon.getTable16().size(); i++) {
             model = new DropdownModel();
             model.setMonthPk(modelCommon.getTable16().get(i).getMonthPk());
             model.setMonth(modelCommon.getTable16().get(i).getMonth());
@@ -458,7 +459,7 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mMonthList.size(); i++) {
+        for (int i = 0; i < mMonthList.size(); i++) {
             mName.add(String.valueOf(mMonthList.get(i).getMonth()));
         }
 
@@ -467,54 +468,54 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
         int c_month = calendar.get(Calendar.MONTH);
         String current_month = getMonthForInt(c_month);
 
-        int c_month_index = 0 ;
-        for (int i = 0; i <mName.size() ; i++) {
-            if(mName.get(i).equalsIgnoreCase(current_month)){
+        int c_month_index = 0;
+        for (int i = 0; i < mName.size(); i++) {
+            if (mName.get(i).equalsIgnoreCase(current_month)) {
                 c_month_index = i;
             }
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_month.setAdapter(adapter);
         edt_month.setSelection(c_month_index);
 
     }
+
     @TargetApi(Build.VERSION_CODES.N)
     String getMonthForInt(int num) {
         String month = "wrong";
         DateFormatSymbols dfs = new DateFormatSymbols();
         String[] months = dfs.getMonths();
-        if (num >= 0 && num <= 11 ) {
+        if (num >= 0 && num <= 11) {
             month = months[num];
         }
         return month;
     }
 
     private void setLeaveStatus(CommonDetailModel modelCommon) {
-        DropdownModel model ;
+        DropdownModel model;
         mLeaveStatusList.clear();
 
-        for (int i = 0; i <modelCommon.getTable28().size()+1 ; i++) {
+        for (int i = 0; i < modelCommon.getTable28().size() + 1; i++) {
             model = new DropdownModel();
-            if(i==0){
+            if (i == 0) {
                 model.setLeaveStatusPK("-1");
                 model.setLeaveStatus("Please Select");
-            }
-            else{
-                model.setLeaveStatusPK(modelCommon.getTable28().get(i-1).getLeaveStatusPK());
-                model.setLeaveStatus(modelCommon.getTable28().get(i-1).getLeaveStatus());
+            } else {
+                model.setLeaveStatusPK(modelCommon.getTable28().get(i - 1).getLeaveStatusPK());
+                model.setLeaveStatus(modelCommon.getTable28().get(i - 1).getLeaveStatus());
             }
             mLeaveStatusList.add(model);
         }
 
         ArrayList<String> mName = new ArrayList<>();
-        for (int i = 0; i <mLeaveStatusList.size(); i++) {
+        for (int i = 0; i < mLeaveStatusList.size(); i++) {
             mName.add(String.valueOf(mLeaveStatusList.get(i).getLeaveStatus()));
         }
 
         // String [] list = mCompanyList.toArray(new String[mCompanyList.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.selected_item, mName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.selected_item, mName);
         edt_leave_status.setAdapter(adapter);
     }
 
@@ -523,12 +524,12 @@ public class MyLeaveFragment extends Fragment implements ApiListener,RecyclerVie
 
         LeaveCardParams params = new LeaveCardParams();
         params.setFlag("Grid");
-        params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(),Constant.PREF_SESSION_EMPLOYEE_FK,0)));
+        params.setEmployeeFK(String.valueOf(Pref.getValue(getActivity(), Constant.PREF_SESSION_EMPLOYEE_FK, 0)));
         params.setMonth(mMonthList.get(edt_month.getSelectedItemPosition()).getMonthPk());
-        params.setYear(""+mYearList.get(edt_year.getSelectedItemPosition()).getYear());
+        params.setYear("" + mYearList.get(edt_year.getSelectedItemPosition()).getYear());
         params.setLeaveStatusFK(mLeaveStatusList.get(edt_leave_status.getSelectedItemPosition()).getLeaveStatusPK());
-        new WebServices(getActivity(), this ,
-                true ,true).
-                callLeaveCardAPI(mToken,params);
+        new WebServices(getActivity(), this,
+                true, true).
+                callLeaveCardAPI(mToken, params);
     }
 }
