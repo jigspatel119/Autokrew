@@ -50,7 +50,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Created by kumarpalsinh on 29/12/16.
+ * Created by  on 29/12/16.
  */
 
 public interface ApiInterface {
@@ -62,7 +62,6 @@ public interface ApiInterface {
     public static final String Main_URL = Constant.MAIN_URL;
 
     public static String BASE_URL = "http://79.143.188.202:94/";
-
 
 
     //Login
@@ -93,7 +92,6 @@ public interface ApiInterface {
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body ProfileImageParams body
     );
-
 
 
     //get Attendance
@@ -224,19 +222,19 @@ public interface ApiInterface {
     //upload document to server
 
     @Multipart
-  //  @Headers("Content-Type: application/json")
+    //  @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/Profile/UploadEmployeeDocument")
     Call<String> uploadDocument(
             @Header("Authorization") String token,
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             //@Body UploadDocsParams body
-           // @Query("Flag") String Flag,
+            // @Query("Flag") String Flag,
             @Query("EmployeeFK") String EmployeeFK,
-           // @Query("LoginEployeeFk") String LoginEployeeFk,
-           // @Query("ImageAsString") String ImageAsString,
-           // @Query("FileName") String FileName,
-           // @Query("DocumentDetailPK") String DocumentDetailPK,
-          //  @Query("EmpDocument") String EmpDocument,
+            // @Query("LoginEployeeFk") String LoginEployeeFk,
+            // @Query("ImageAsString") String ImageAsString,
+            // @Query("FileName") String FileName,
+            // @Query("DocumentDetailPK") String DocumentDetailPK,
+            //  @Query("EmpDocument") String EmpDocument,
             @Part MultipartBody.Part file
     );
 
@@ -355,7 +353,6 @@ public interface ApiInterface {
     );
 
 
-
     //get payslip
     @Headers("Content-Type: application/json")
     @POST("{MAIN_URL}/api/PaySlip/PrintMyPaySlip")
@@ -441,7 +438,6 @@ public interface ApiInterface {
             @Path(value = "MAIN_URL", encoded = true) String MAIN_URL,
             @Body ResetPasswordParams body
     );
-
 
 
     //get getPointingUrl

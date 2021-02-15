@@ -381,7 +381,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements View.On
 
     public RequestBody getParam(File value) {
 
-        return RequestBody.create(MediaType.parse(""), value);
+        return RequestBody.create(MediaType.parse("image/jpeg"), value);
     }
 
 

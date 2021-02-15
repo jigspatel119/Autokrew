@@ -485,11 +485,11 @@ public class DashboardFragment2 extends Fragment implements RecyclerViewDashBoar
     @Override
     public void recyclerViewListClicked(View v, int position) {
 
-        mDialog = new GreetingsDialog(getActivity(), position);
+       /* mDialog = new GreetingsDialog(getActivity(), position);
         mDialog.setCancelable(false);
         mDialog.setCanceledOnTouchOutside(true);
         mDialog.show();
-
+*/
     }
 
     @Override

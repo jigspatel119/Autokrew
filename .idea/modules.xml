@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AutoKrewESS.iml" filepath="$PROJECT_DIR$/AutoKrewESS.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/appbarspring/appbarspring.iml" filepath="$PROJECT_DIR$/appbarspring/appbarspring.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rackmonthPicker/rackmonthPicker.iml" filepath="$PROJECT_DIR$/rackmonthPicker/rackmonthPicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/autokrewhr.iml" filepath="$PROJECT_DIR$/autokrewhr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/autokrewhr.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/autokrewhr.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/appbarspring/autokrewhr.appbarspring.iml" filepath="$PROJECT_DIR$/.idea/modules/appbarspring/autokrewhr.appbarspring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/autokrewhr.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/autokrewhr.library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rackmonthPicker/autokrewhr.rackmonthPicker.iml" filepath="$PROJECT_DIR$/.idea/modules/rackmonthPicker/autokrewhr.rackmonthPicker.iml" />
     </modules>
   </component>
 </project>

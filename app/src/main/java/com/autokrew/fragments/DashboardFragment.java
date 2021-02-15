@@ -218,7 +218,7 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
 
     private void setData(View v) {
 
-        checkVersionUpgrade();
+       // checkVersionUpgrade();
         setupRecyclerView();
         is_outside_allow = Pref.getValue(getActivity(), "is_outside_allow", 0);
         setupFAB(v);
@@ -514,10 +514,10 @@ public class DashboardFragment extends Fragment implements RecyclerViewDashBoard
         }
         else {
 
-            mDialog = new GreetingsDialog(getActivity(), position);
+           /* mDialog = new GreetingsDialog(getActivity(), position);
             mDialog.setCancelable(false);
             mDialog.setCanceledOnTouchOutside(true);
-            mDialog.show();
+            mDialog.show();*/
         }
 
     }
